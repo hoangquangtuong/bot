@@ -1,0 +1,64 @@
+{
+  "name": "Đồ Nhóc Con",
+  "ID": "100050660501896",
+  "pet": [
+    {
+      "name": "Torterra",
+      "type": "Grass",
+      "HP": "142.5",
+      "Attack": "163.5",
+      "Defense": "157.5",
+      "Speed": "84.0",
+      "skill": [
+        "Overgrow",
+        "Shell Armor"
+      ],
+      "coins": 20000,
+      "images": "https://raw.githubusercontent.com/Purukitto/pokemon-data.json/master/images/pokedex/hires/389.png"
+    },
+    {
+      "name": "Probopass",
+      "type": "Rock",
+      "HP": "24.0",
+      "Attack": "22.0",
+      "Defense": "58.0",
+      "Speed": "16.0",
+      "skill": [
+        "Sturdy",
+        "Magnet Pull",
+        "Sand Force"
+      ],
+      "coins": 0,
+      "images": "https://raw.githubusercontent.com/Purukitto/pokemon-data.json/master/images/pokedex/hires/476.png"
+    },
+    {
+      "name": "Seviper",
+      "type": "Poison",
+      "HP": "109.5",
+      "Attack": "150.0",
+      "Defense": "90.0",
+      "Speed": "97.5",
+      "skill": [
+        "Shed Skin",
+        "Infiltrator"
+      ],
+      "coins": 20000,
+      "images": "https://raw.githubusercontent.com/Purukitto/pokemon-data.json/master/images/pokedex/hires/336.png"
+    }
+  ],
+  "foods": [
+    {
+      "name": "Stone Soup a la Cube",
+      "type": "Ground",
+      "HP": 16,
+      "Attack": 16,
+      "Defense": 16,
+      "Speed": 16
+    }
+  ],
+  "solo": {
+    "win": 0,
+    "lose": 0,
+    "draw": 0
+  }
+}
