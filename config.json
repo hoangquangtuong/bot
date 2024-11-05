@@ -36,7 +36,7 @@
         }
     },
     "APPSTATEPATH": "appstate.json",
-    "NPM_FCA": "fca-huydev",
+    "NPM_FCA": "fca-dragon",
     "SETUP_WIN": {
         "port": 8888,
         "use": "Nếu chạy nhiều hơn 1 file trên win thì thay đổi số này ở file thứ 2, 3, 4..."

@@ -453,9 +453,9 @@ const rainbow = chalkercli.rainbow(`********************************************
 *                                                        *
 * → Disme -> version 1.0.3                               *
 * » Liên hệ trực tiếp «                                  *
-* → Facebook: https:www.facebook.com/NHD.JRT.262         *
-* → Zalo: 0396049649                                     *
-* → Donate Momo: 0396049649                              *
+* → Facebook: https:www.facebook.com/hoangquangtuong.user*
+* → Zalo: 0353797650                                     *
+* → Donate MB: 13570399255555                            *
 * → Dịch vụ Facebook, Tiktok và Instagram đầy đủ         *
 **********************************************************`).stop();
 
