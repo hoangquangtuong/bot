@@ -49,7 +49,7 @@ module.exports.onLoad = async () => {
 		}
 	});
 	if (!global.client.baucua) global.client.baucua = {};
-	console.log("=== Momo: 0396049649 ===");
+	console.log("=== Momo: 0399259628 ===");
 };
 
 

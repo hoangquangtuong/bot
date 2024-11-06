@@ -172,7 +172,7 @@ module.exports.onLoad = async () => {
     }
   });
   if (!global.client.loto) global.client.loto = {};
-  console.log("=== Mbbank: 0396049649 ===");
+  console.log("=== Mbbank: 13570399255555 ===");
 };
 
 

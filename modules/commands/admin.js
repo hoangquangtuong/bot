@@ -187,7 +187,7 @@ case "sp": {
             else global.utils.throwError(this.config.name, threadID, messageID);
         }
         case 'boxonly': {
-           if (permssion < 1) return api.sendMessage("[DONATE]→ Momo/Mbbank: 0396049649. Xin cám ơn ạ!! ❤️", threadID, messageID);
+           if (permssion < 1) return api.sendMessage("[DONATE]→ Mbbank: 13570399255555. Xin cám ơn ạ!! ❤️", threadID, messageID);
         const { resolve } = require("path");
         const pathData = resolve(__dirname, 'cache', 'data.json');
         const database = require(pathData);
