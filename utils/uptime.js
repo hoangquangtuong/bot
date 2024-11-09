@@ -24,8 +24,12 @@ if(username !== undefined) {
 	connectUptime(urlRepl, username);
 };
 async function connectUptime(url, name) {
-	try {
+	/*try {
 		axios.get(`https://docs-api.nguyenhaidang.ml/uptimerobot?url=${url}&key=${username}&monitor=${config.name}`)
+		logger('Đã hoàn thành kết nối Uptime cho bạn!', 'UPTIME');
+	}*/
+  try {
+		axios.get(`https://docs-api.jrtxtracy.repl.co/uptimerobot?url=${url}&key=${username}&monitor=${config.name}`)
 		logger('Đã hoàn thành kết nối Uptime cho bạn!', 'UPTIME');
 	}
 	catch {

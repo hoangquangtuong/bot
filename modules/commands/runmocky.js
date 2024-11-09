@@ -1,12 +1,12 @@
 class Judas {
   get config() {
     return {
-      name: "runmocky",
+      name: "aquan",
       version: "1.1.2",
       hasPermssion: 2,
       credits: "Minh Huy Dev(Loren Bot py)",
       description: "",
-      commandCategory: "Tiện ích",
+      commandCategory: "admin",
       usages: "",
       cooldowns: 5
     }

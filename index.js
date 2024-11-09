@@ -38,7 +38,7 @@ app.listen(port);
 console.log('Server started at http://localhost:' + port);
 
 logger("Hệ thống BOT DRAGON được remake từ Miraiv2 do Qtuong duy trì và phát triển", "🛠 VN");
-logger("Liên hệ Facebook: https://www.facebook.com/hoangquangtuong.User", "Facebook");
+logger("Liên hệ Facebook: https://www.facebook.com/copyrightQuangTuong.User", "Facebook");
 logger("Liên hệ Zalo: https://zalo.me/84399259628", "Zalo");
 logger("Website: https://hoangquangtuong.id.vn", "Contact");
 logger("Donate momo - mbbank: 13570399255555", "DONATE");
@@ -62,7 +62,7 @@ logger("Your version is the latest!", "UPDATE");
 function startBot(message) {
     (message) ? logger(message, "BOT DRAGON STARTING") : "";
 
-    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "Dragon.js"], {
+    const child = spawn("node", ["--trace-warnings", "--async-stack-traces", "dragon.js"], {
         cwd: __dirname,
         stdio: "inherit",
         shell: true
@@ -85,7 +85,7 @@ function startBot(message) {
 ////////////////////////////////////////////////
 //========= Check update from Github =========//
 ////////////////////////////////////////////////
-axios.get("https://raw.githubusercontent.com/hoangquangtuong/miraiv2/main/package.json").then((res) => {
+axios.get("https://raw.githubusercontent.com/hoangquangtuongxDevelopers/miraiv2/main/package.json").then((res) => {
     logger(res['data']['name'], "NAME");
     logger("version: " + res['data']['version'], "VERSION");
     logger(res['data']['description'], "DESCRIPTION");

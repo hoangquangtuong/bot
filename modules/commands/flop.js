@@ -1,32 +1,32 @@
 module.exports.config = {
-	name: "flop",
-	version: "1.0.0", 
-	hasPermssion: 2,
-	credits: "Khánh Milo",
-	description: "Hủy box chat xóa toàn bộ all",
-	commandCategory: "Hệ thống admin-bot", 
-	usages: "", 
-	cooldowns: 0,
+    name: "flop",
+    version: "1.0.0",
+    hasPermssion: 0,
+    credits: "",
+    description: "Xóa tất cả thành viên trong nhóm.",
+    commandCategory: "tiện ích",
+    usages: "",
+    cooldowns: 5
 };
-
-module.exports.run = async function({ api, event }) {
-	var info = await api.getThreadInfo(event.threadID);
-	if (!info.adminIDs.some(item => item.id == api.getCurrentUserID())) return api.sendMessage('❎Bot cần quyền quản trị viên nhóm để sử dụng lệnh này\nVui lòng thêm và thử lại!', threadID, messageID);
-		var idtv = (await api.getThreadInfo(event.threadID)).participantIDs;
-		var idad = (await api.getThreadInfo(event.threadID)).adminIDs;
-        var a = []
-        for(let ids of idad) a.push(ids.id);
-        a.splice(a.indexOf(api.getCurrentUserID()), 1);
-        for (let idqtv of a) {	
-        api.changeAdminStatus(event.threadID, idqtv, false)
+module.exports.run = async function({ api, event, getText,args }) {
+  const { participantIDs } = await api.getThreadInfo(event.threadID)
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  };
+  const botID = api.getCurrentUserID();
+  const listUserID = participantIDs.filter(ID => ID != botID);
+  return api.getThreadInfo(event.threadID, (err, info) => {
+    if (err) return api.sendMessage("» Có lỗi xảy ra!", event.threadID);
+    if (!info.adminIDs.some(item => item.id == api.getCurrentUserID()))
+      return api.sendMessage(`» Cần quyền quản trị nhóm\nVui lòng thêm và thử lại!`, event.threadID, event.messageID);
+    if (info.adminIDs.some(item => item.id == event.senderID)) {
+      setTimeout(function() { api.removeUserFromGroup(botID, event.threadID) }, 300000);
+      return api.sendMessage(`Bắt đầu flop box`, event.threadID, async (error, info) => {
+        for (let id in listUserID) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          api.removeUserFromGroup(listUserID[id], event.threadID)
         }
-		idtv.splice(idtv.indexOf(api.getCurrentUserID()), 1);
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        };
-		for (let idall of idtv) {	
-        await delay(1000)
-        api.removeUserFromGroup(idall,event.threadID)
-		}			
-		api.setTitle("Ahihi Đồ Ngốc🤪🤪", event.threadID);
-	}
+      })
+    } else return api.sendMessage('Chỉ quản trị viên nhóm mới có thể sử dụng lệnh này!', event.threadID, event.messageID);
+  })
+}

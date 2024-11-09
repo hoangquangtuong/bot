@@ -160,19 +160,19 @@ module.exports.languages = {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 module.exports.onLoad = async () => {
-  await require('axios').get("https://raw.githubusercontent.com/J-JRT/version/mainV2/version.json").then(res => {
-    if (res.data["loto_x024"] != this.config.version) console.log("=== LOTO ĐÃ CÓ PHIÊN BẢN MỚI, LIÊN HỆ J-JRT ĐỂ ĐƯỢC CẬP NHẬT ===");
+  await require('axios').get("https://raw.githubusercontent.com/RFS-ADRENO/mirai-modules/main/version.json").then(res => {
+    if (res.data["loto_x024"] != this.config.version) console.log("-LOTO ĐÃ CÓ PHIÊN BẢN MỚI, LIÊN HỆ DungUwU ĐỂ ĐƯỢC CẬP NHẬT-");
   });
-  let path = __dirname + '/loto/';
+  let path = __dirname + '/cache/';
   if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true });
-  await require("axios").get("https://raw.githubusercontent.com/J-JRT/loto/mainV2/data.json").then(async (res) => {
+  await require("axios").get("https://raw.githubusercontent.com/RFS-ADRENO/lotoData/main/data.json").then(async (res) => {
     for (let e in res.data) {
       if (fs.existsSync(path + e)) continue;
       await fs.writeFileSync(path + e, res.data[e], 'base64');
     }
   });
   if (!global.client.loto) global.client.loto = {};
-  console.log("=== Mbbank: 13570399255555 ===");
+  console.log("-----LOTO LOADED SUCCESSFULLY------");
 };
 
 
@@ -270,7 +270,7 @@ module.exports.run = async ({ event, api, args, Currencies, Users, getText }) =>
                 global.client.loto[threadID].data[p] = lotoKeys.splice(randIndex, 1);
                 api.sendMessage({
                   body: 'Phiếu của bạn: ',
-                  attachment: fs.createReadStream(__dirname + `/loto/${global.client.loto[threadID].data[p]}`)
+                  attachment: fs.createReadStream(__dirname + `/cache/${global.client.loto[threadID].data[p]}`)
                 }, p);
                 await delay(300);
               } catch (e) {

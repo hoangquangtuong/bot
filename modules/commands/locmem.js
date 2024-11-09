@@ -1,48 +1,82 @@
+const fs = require('fs');
+const moment = require('moment-timezone');
 module.exports.config = {
-	name: "locmem",
-	version: "2.0.1",
-	hasPermssion: 1,
-	credits: "ProCoderMew",
-	description: "Lọc cá cảnh trong group",
-	commandCategory: "Nhóm",
-	usages: "[num]",
-	cooldowns: 30
+	name: "locmem", // Tên lệnh, được sử dụng trong việc gọi lệnh
+	version: "version", // phiên bản của module này
+	hasPermssion: 1, // Quyền hạn sử dụng, với 0 là toàn bộ thành viên, 1 là quản trị viên trở lên, 2 là admin/owner
+	credits: "TruongMini", // Công nhận module sở hữu là ai
+	description: "lọc cá cảnh trong box", // Thông tin chi tiết về lệnh
+	commandCategory: "tiện ích", // Thuộc vào nhóm nào: system, other, game-sp, game-mp, random-img, edit-img, media, economy, ...
+	usages: "locmem 0", // Cách sử dụng lệnh
+	cooldowns: 5, // Thời gian một người có thể lặp lại lệnh
 };
 
-const avanta = ["getData", "ng lệnh nà", "exp", "exports", "275826dvvglU", "1846qLKTIZ", "threadID", "nh.", "message", " nào với m", "undefined", " quản trị ", "Hiện tại c", "Đã lọc thà", " Tiến hành", "1084351qNJEqx", "push", "nh công ", "on cá cảnh", " thể sử dụ", "messageID", "926611pGwjUw", "map", "1034631aSKRnK", "sendMessag", "ức lọc ", "630489kUFAtE", "964DkDWWO", "some", "Bot cần là", "UserID", "678976gXnmuM", "length", " lọc..", "nh với mức", "Lọc thất l", "Không có c", " con cá cả", "nfo", "adminIDs"];
-function miina(satoru, hiyab) {
-  satoru = satoru - 434;
-  let pa = avanta[satoru];
-  return pa;
+const monthToMSObj = {
+	1: 31 * 24 * 60 * 60 * 1000,
+	2: 28 * 24 * 60 * 60 * 1000,
+	3: 31 * 24 * 60 * 60 * 1000,
+	4: 30 * 24 * 60 * 60 * 1000,
+	5: 31 * 24 * 60 * 60 * 1000,
+	6: 30 * 24 * 60 * 60 * 1000,
+	7: 31 * 24 * 60 * 60 * 1000,
+	8: 31 * 24 * 60 * 60 * 1000,
+	9: 30 * 24 * 60 * 60 * 1000,
+	10: 31 * 24 * 60 * 60 * 1000,
+	11: 30 * 24 * 60 * 60 * 1000,
+	12: 31 * 24 * 60 * 60 * 1000
 }
-(function (desmand, middie) {
-  while (!![]) {
-    try {
-      const jasline = -parseInt(miina(435, 421)) + parseInt(miina(438, 396)) + -parseInt(miina(473, 448)) + -parseInt(miina(456, 446)) + -parseInt(miina(443, 408)) + parseInt(miina(467, 419)) + parseInt(miina(457, 420)) * parseInt(miina(439, 394));
-      if (jasline === middie) break; else desmand.push(desmand.shift());
-    } catch (rosealynn) {
-      desmand.push(desmand.shift());
-    }
-  }
-}(avanta, 578340), module[miina(455, 18)].run = async function ({api: _0x3f9f02, event: _0x3b4b9d, args: _0x1c7a02, Currencies: _0x2fff46}) {
-  var jonnah = await _0x3f9f02["getThreadI" + miina(450, 165)](_0x3b4b9d.threadID);
-  let bitania = [], arec, shavonn = 0, beaumont = 0, dondrae = 0;
-  if (!isNaN(_0x1c7a02[0])) arec = _0x1c7a02[0]; else arec = 0;
-  if (!jonnah[miina(451, 172)][miina(434, 137)](emory => emory.id)[miina(440, 138)](exzavion => exzavion == _0x3f9f02["getCurrent" + miina(442, 165)]())) return _0x3f9f02.sendMessage(miina(441, 140) + miina(463, 153) + "viên để có" + miina(471, 166) + miina(453, 175) + "y.", _0x3b4b9d[miina(458, 184)], _0x3b4b9d[miina(472, 184)]);
-  for (const briceton of jonnah.userInfo) {
-    const khilynn = await _0x2fff46[miina(452, 152)](briceton.id);
-    if (typeof khilynn[miina(454, 157)] == miina(462, 182) || khilynn[miina(454, 171)] <= arec) bitania[miina(468, 165)](briceton.id);
-  }
-  bitania = bitania.filter(marvinia => !jonnah[miina(451, 145)][miina(434, 137)](gamir => gamir.id)[miina(440, 158)](neishaly => neishaly == marvinia));
-  if (bitania[miina(444, 134)] != 0) _0x3f9f02[miina(436, 145) + "e"](miina(464, 167) + "ó " + bitania[miina(444, 172)].toString() + (miina(449, 144) + miina(446, 153) + " lọc ") + arec + (" tin nhắn." + miina(466, 183) + miina(445, 158)), _0x3b4b9d[miina(458, 149)], async () => {
-    for (const stacye of bitania) {
-      try {
-        await new Promise(anguel => setTimeout(anguel, 1e3)), await _0x3f9f02.removeUserFromGroup(parseInt(stacye), _0x3b4b9d[miina(458, 586)]), shavonn++;
-      } catch (sharik) {
-        console.log(sharik.name + ": " + sharik[miina(460, 579)]), beaumont++;
-      }
-      dondrae++;
-    }
-    if (dondrae == bitania[miina(444, 585)]) return _0x3f9f02[miina(436, 574) + "e"](miina(465, 592) + miina(469, 580) + shavonn + (miina(449, 574) + miina(459, 574)), _0x3b4b9d[miina(458, 572)], () => beaumont == 0 ? "" : _0x3f9f02[miina(436, 571) + "e"](miina(447, 567) + "ại " + beaumont + (" con cá cả" + miina(459, 574)), _0x3b4b9d.threadID));
-  }, _0x3b4b9d[miina(472, 176)]); else return _0x3f9f02[miina(436, 129) + "e"](miina(448, 166) + miina(470, 168) + miina(461, 177) + miina(437, 141) + arec + " tin nhắn..", _0x3b4b9d[miina(458, 180)], _0x3b4b9d[miina(472, 178)]);
+
+
+//FUNCTION HOẠT ĐỘNG NHƯ CÁI TÊN CỦA NÓ
+const checkTime = (time) => new Promise((resolve) => {
+	time.forEach((e, i) => time[i] = parseInt(String(e).trim()));
+	const getDayFromMonth = (month) => (month == 0) ? 0 : (month == 2) ? (time[2] % 4 == 0) ? 29 : 28 : ([1, 3, 5, 7, 8, 10, 12].includes(month)) ? 31 : 30;
+	yr = time[2] - 1970;
+	yearToMS = (yr) * 365 * 24 * 60 * 60 * 1000;
+	yearToMS += ((yr - 2) / 4).toFixed(0) * 24 * 60 * 60 * 1000;
+	monthToMS = 0;
+	for (let i = 1; i < time[1]; i++) monthToMS += monthToMSObj[i];
+	if (time[2] % 4 == 0) monthToMS += 24 * 60 * 60 * 1000;
+	dayToMS = time[0] * 24 * 60 * 60 * 1000;
+	hourToMS = time[3] * 60 * 60 * 1000;
+	minuteToMS = time[4] * 60 * 1000;
+	secondToMS = time[5] * 1000;
+	oneDayToMS = 24 * 60 * 60 * 1000;
+	timeMs = yearToMS + monthToMS + dayToMS + hourToMS + minuteToMS + secondToMS - oneDayToMS;
+	resolve(timeMs);
 });
+
+module.exports.run = async ({ api, event, args, Threads }) => {
+    const { threadID, messageID, senderID } = event;
+	const path = __dirname + '/checktt/';
+	if(!fs.existsSync(path)) fs.writeFileSync(path, JSON.stringify({}));
+	let data = JSON.parse(fs.readFileSync(path));
+    var timeVN = moment().tz('Asia/Ho_Chi_Minh').format('DD_MM_YYYY_HH_mm_ss');
+	var time = timeVN.split("_");
+	var time1 = await checkTime(time);
+	var time2 = await new Date(time1)
+	var time3 = time2.getDay();
+	if(!args[0]) return api.sendMessage("hihihi", threadID);
+    if(isNaN(parseInt(args[0]))) return api.sendMessage("Bạn phải nhập một số", threadID);
+    let input = parseInt(args[0]);
+	let count = 0, count1 = 0;
+	const { adminIDs } = await api.getThreadInfo(threadID);
+	if(!(adminIDs.map(e => e.id).some(e => e == api.getCurrentUserID()))) return api.sendMessage("Bot không phải qtv", threadID);
+	let Array = [];
+    for(let i in data[threadID][time3].user) {
+		Array.push({ user: i, weekday: data[threadID][time3].user[i].weekday });
+    }
+	let msg = "";
+	for(let i of Array) {
+		try {
+			if(i.weekday <= input && i.user != api.getCurrentUserID()) {
+				await api.removeUserFromGroup(i.user, threadID);
+				count++;
+			}
+		} catch(e) { count1++ }
+	}
+	if(count == 0) return api.sendMessage("Không có ai để xóa", threadID);
+	if(count != 0) msg += `Đã xoá ${count} người dùng ít hơn ${input} tin nhắn khỏi nhóm.\n`;
+	if(count1 != 0) msg += `Không thể xóa ${count1} người dùng`;
+	return api.sendMessage(msg, threadID);
+}

@@ -3,9 +3,9 @@ module.exports.config = {
     version: "1.0.0",
     hasPermssion: 0,
     credits: "BraSL",
-    description: "Lấy thông tin người dùng",
-    commandCategory: "Thông tin",
-    usages: "in4",
+    description: ".hee",
+    commandCategory: "tiện ích",
+    usages: "",
     cooldowns: 5
 };
 
@@ -29,7 +29,7 @@ module.exports.run = async function ({ api, event, args, client }) {
     var follow = data.follow
     var uid = targetID
     var about = data.about
-    var gender = data.gender == 'male' ? "Nam" : res.data.gender == 'female' ? "Nữ" : "Không công khai";
+    var gender = data.gender == 'male' ? "Nam" : data.gender == 'female' ? "Nữ" : "Không công khai";
     var birthday = data.birthday
     var love = data.relationship_status
     var rela = data.love.name
@@ -41,11 +41,11 @@ module.exports.run = async function ({ api, event, args, client }) {
     var url_profile = data.link
     var web = data.website
     var quotes = data.quotes
-    var link = data.imgavt
+    var link = data.avatar
 
-    var callback = () => api.sendMessage({ body: `=== 『𝑻𝒉𝒐̂𝒏𝒈 𝑻𝒊𝒏』 ===\n\n[👤]→ Tên: ${name}\n[🍁]→ UserName: ${username}\n[🔎]→ UID: ${uid}\n[👀]→ Follow: ${follow}\n[👭]→ Giới tính: ${gender}\n[🎂]→ Sinh Nhật: ${birthday}\n[💌]→ Mối quan hệ: ${love}\n[💞]→ Love name: ${rela}\n[💓]→ UID love: ${id}\n[🏡]→ Sống tại: ${location}\n[🌆] ID Place: ${home}\n[🌏]→ Đến từ: ${hometown}\n[🏙️]→ ID Hometown: ${home}\n[📌]→ URL cá nhân: ${url_profile}`, attachment: fs.createReadStream(__dirname + "/cache/1.png") }, threadID,
+    var callback = () => api.sendMessage({ body: `[👤] Tên: ${name}\n[🍁] UserName: ${username}\n[🔎] UID: ${uid}\n[👀] Follow: ${follow}\n[👭] Giới tính: ${gender}\n[🎂] Sinh Nhật: ${birthday}\n[💌] Mối quan hệ: ${love}\n[💞] Love name: ${rela}\n[💓] UID love: ${id}\n[🏡] Sống tại: ${location}\n[🌆] ID Place: ${home}\n[🌏] Đến từ: ${hometown}\n[🏙️] ID Hometown: ${home}\n[📌] URL cá nhân: ${url_profile}`, attachment: fs.createReadStream(__dirname + "/cache/1.png") }, threadID,
         () => fs.unlinkSync(__dirname + "/cache/1.png"), messageID);
-    return request(encodeURI(`https://graph.facebook.com/${targetID}/picture?height=1500&width=1500&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname + '/cache/1.png')).on('close',
+    return request(link).pipe(fs.createWriteStream(__dirname + '/cache/1.png')).on('close',
         () => callback());
 
 }

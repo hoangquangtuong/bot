@@ -13,7 +13,7 @@ module.exports.config = {
 		"axios": ""
 	}, //Liệt kê các package module ở ngoài tại đây để khi load lệnh nó sẽ tự động cài!
 	envConfig: {
-		"maxPlayers": 5, //khuyến nghị: 5, tối thiểu 2, tối đa 10
+		"maxPlayers": 10, //khuyến nghị: 5, tối thiểu 2, tối đa 10
 		"normalWinBonus": 1, //thưởng 100%
 		"superWinBonus": 2, //thưởng 200%
 		"epicWinBonus": 4,  //thưởng 400%
@@ -133,7 +133,7 @@ module.exports.onLoad = async () => {
 		}
 	});
 	if (!global.client.xidach_otm_nobot) global.client.xidach_otm_nobot = {};
-	console.log("=== Zalo: 0396049649 ===");
+	console.log("=== Zalo: 0399259628 ===");
 };
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));

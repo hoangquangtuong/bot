@@ -40,24 +40,24 @@ module.exports.run = async function ({ api, event }) {
 		if (seconds < 10) seconds = "0" + seconds;
 
 		return api.sendMessage(
-			"===[⚜️] System Info [⚜️]===" +
-			"\n[⚜️] CPU [⚜️]" +
+			"===[🐲] System Info [🐲]===" +
+			"\n[🐲] CPU [🐲]" +
 			"\nCPU Model: " + manufacturer + brand +
 			"\nSpeed: " + speed + "GHz" +
 			"\nCores: " + physicalCores +
 			"\nThreads: " + cores +
 			"\nTemperature: " + mainTemp + "°C" +
 			"\nLoad: " + load.toFixed(1) + "%" +
-			"\n[⚜️] MEMORY [⚜️]" +
+			"\n[🐲] MEMORY [🐲]" +
 			"\nSize: " + byte2mb(memInfo[0].size) +
 			"\nType: " + memInfo[0].type +
 			"\nTotal: " + byte2mb(totalMem) +
 			"\nAvailable: " + byte2mb(availableMem) +
-			"\n[⚜️] DISK [⚜️]" +
+			"\n[🐲] DISK [🐲]" +
 			"\nName: " + diskInfo[0].name +
 			"\nSize: " + byte2mb(diskInfo[0].size) +
 			"\nTemperature: " + diskInfo[0].temperature + "°C" +
-			"\n[⚜️] OS [⚜️]" +
+			"\n[🐲] OS [🐲]" +
 			"\nPlatform: " + OSPlatform +
 			"\nBuild: " + OSBuild +
 			"\nUptime: " + hours + ":" + minutes + ":" + seconds +

@@ -6,7 +6,7 @@ module.exports.config = {
     description: 'Xem danh sách nhóm lệnh, thông tin lệnh',
     commandCategory: 'Danh sách lệnh',
     usages: '[...name commands|all]',
-    cooldowns: 5,
+    cooldowns: 0,
     // seconds
     envConfig: {
         autoUnsend: {
@@ -63,9 +63,9 @@ module.exports.run = async function({
         } else {
             if (args[0] == 'all') {
                 const data = cmds.values();
-                var txt = '[⚜️] ━━━━━━━━━[ TỔNG LỆNH ]━━━━━━━━━ [⚜️]',
+                var txt = '[🐲] ━━━━━━━━━[ TỔNG LỆNH ]━━━━━━━━━ [🐲]',
                 count = 0;
-                for (const cmd of data) txt += `${++count}. ${cmd.config.name} ➜ ${cmd.config.description}\n`;
+                for (const cmd of data) txt += `${++count}. ${cmd.config.name}\n➜ ${cmd.config.description}\n`;
                 const msg = sendAttachments.status ? {
                     body: txt,
                     attachment: await images()}: txt;
@@ -75,19 +75,19 @@ module.exports.run = async function({
                 const arrayCmds= [];
                 for (const cmd of cmdsValue) arrayCmds.push(cmd.config.name);
                 const similarly = findBestMatch(args.join(' '), arrayCmds);
-                if (similarly.bestMatch.rating >= 0.3) return send(`[⚜️]➜ Không có lệnh "${args.join(' ')}"\n[⚜️]➜ Lệnh gần giống là "${similarly.bestMatch.target}" ?`, tid, mid);
+                if (similarly.bestMatch.rating >= 0.3) return send(`[🐲]➜ Không có lệnh "${args.join(' ')}"\n[🐲]➜ Lệnh gần giống là "${similarly.bestMatch.target}" ?`, tid, mid);
                   /*for (const cmd of cmdsValue) if (compareTwoStrings(args.join(' '), cmd.config.name) >= 0.3) return send(`➜ Không có lệnh "${args.join(' ')}"\n➜ Lệnh gần giống là "${cmd.config.name}" ?`, tid, mid);*/
             };
         };
     } else {
         const data = commandsGroup();
-        var txt = '[⚜️] ━━━━━━━━━[ Menu ]━━━━━━━━━ [⚜️]\n\n',
+        var txt = '[🐲] ━━━━━━━━━[ Menu ]━━━━━━━━━ [🐲]\n\n',
         count = 0;
         for (const {
             commandCategory,
             commandsName
-        } of data) txt += `${++count}. ${commandCategory} ➜ Có ${commandsName.length} Lệnh\n`;
-        txt += `\n━━━━━━━━━━━━━━━━━━━━━\n[⚜️]➩ Hiện có: ${global.client.commands.size} lệnh\n[⚜️]➩ Reply từ 1 đến ${data.length} để chọn\n[⚜️]➩ Contact:https://www.facebook.com/copyrightQuangTuong.Developers \n━━━━━━━━━━━━━━━━━━━━━\n[⚜️]=== 『 𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷 』 ===[⚜️]`;
+        } of data) txt += `${++count}. ${commandCategory}\n[🐲]➜ Tổng có ${commandsName.length} lệnh\n━━━━━━━━━━━━━━━━━━\n`;
+        txt += `[🐲]➩ Hiện có: ${global.client.commands.size} lệnh\n[🐲]➩ Reply từ 1 đến ${data.length} để chọn\n[🐲]➩ Contact: m.me/copyrightQuangTuong.Developers\n[🐲]➩ Website: https://Info.tuonghoang.repl.co\n━━━━━━━━━━━━━━━━━━━━━\n[🐲]=== 『 🌸𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷🌸  』 ===[🐲]`;
         const msg = sendAttachments.status ? {
             body: txt,
             attachment: await images()}: txt;
@@ -128,17 +128,17 @@ module.exports.handleReply = async function({
         case 'infoGr': {
             var data = $.data[(+args[0])-1];
             if (data == undefined) {
-                const txt = `[⚜️]➩ ${args[0]} không nằm trong số thứ tự menu`;
+                const txt = `[🐲]➩ ${args[0]} không nằm trong số thứ tự menu`;
                 const msg = sendAttachments.status ? {
                     body: txt,
                     attachment: await images()}: txt;
                 return send(msg, tid, mid);
             };
             un($.messageID);
-            var txt = '[⚜️] ━━━━━━ ' + data.commandCategory + ' ━━━━━━ [⚜️]\n\n',
+            var txt = '[🐲] ━━━━━━ ' + data.commandCategory + ' ━━━━━━ [🐲]\n\n',
             count = 0;
             for (const name of data.commandsName) txt += `${++count}. ${name}\n`;
-            txt += `\n━━━━━━━━━━━━━━━━━━━━━\n[⚜️]➩ Hiện có: ${global.client.commands.size} lệnh\n[⚜️]➩ Reply từ 1 đến 25 để chọn\n[⚜️]➩ Contact: https://www.facebook.com/copyrightQuangTuong.Developers\n ━━━━━━━━━━━━━━━━━━━━\n[⚜️]=== 『 𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷 』 ===[⚜️]`;
+            txt += `\n━━━━━━━━━━━━━━━━━━━━━\n[🐲]➩ Hiện có: ${global.client.commands.size} lệnh\n[🐲]➩ Reply từ 1 đến ${data.commandsName.length} để chọn\n[🐲]➩ Contact: m.me/copyrightQuangTuong.Developers\n[🐲]➩ Website: https://Info.tuonghoang.repl.co\n━━━━━━━━━━━━━━━━━━━━━\n[🐲]=== 『 𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷 』 ===[🐲]`;
             const msg = sendAttachments.status ? {
                 body: txt,
                 attachment: await images()}: txt;
@@ -157,7 +157,7 @@ module.exports.handleReply = async function({
         case 'infoCmds': {
             var data = global.client.commands.get($.data[(+args[0])-1]);
             if (typeof data != 'object') {
-                const txt = `[⚜️]➩ ${args[0]} không nằm trong số thứ tự menu`;
+                const txt = `[🐲]➩ ${args[0]} không nằm trong số thứ tự menu`;
                 const msg = sendAttachments.status ? {
                     body: txt,
                     attachment: await images()}: txt;
@@ -205,7 +205,7 @@ module.exports.handleReply = async function({
         })).data;
     };
     function infoCmds(a) {
-        return `[⚜️] ━━━━━━━ ${a.name} ━━━━━━━ [⚜️]\n\n➜ Phiên bản : ${a.version}\n➜ Quyền hạn : ${premssionTxt(a.hasPermssion)}\n➜ Tác giả : ${a.credits}\n➜ Mô tả : ${a.description}\n➜ Thuộc nhóm : ${a.commandCategory}\n➜ Cách dùng : ${a.usages}\n➜ Thời gian chờ : ${a.cooldowns} giây\n\n━━━━━━━━━━━━━━━━━━━━━\n[⚜️]=== 『 𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷 』 ===[⚜️]`;
+        return `[🐲] ━━━━━━━ ${a.name} ━━━━━━━ [🐲]\n\n➜ Phiên bản : ${a.version}\n➜ Quyền hạn : ${premssionTxt(a.hasPermssion)}\n➜ Tác giả : ${a.credits}\n➜ Mô tả : ${a.description}\n➜ Thuộc nhóm : ${a.commandCategory}\n➜ Cách dùng : ${a.usages}\n➜ Thời gian chờ : ${a.cooldowns} giây\n\n━━━━━━━━━━━━━━━━━━━━━\n[🐲]=== 『 🌸𝓑𝓸𝓽 𝓓𝓻𝓪𝓰𝓸𝓷🌸  』 ===[🐲]`;
     };
     function premssionTxt(a) {
         return a == 0 ? 'Thành Viên': a == 1 ? 'Quản Trị Viên Nhóm': a == 2 ? 'Người Điều Hành Bot': 'ADMINBOT';

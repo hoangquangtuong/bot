@@ -1,45 +1,37 @@
-/*module.exports.config = {
-    name: "imgur",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "cc",
-    description: "",
-    commandCategory: "Game",
-    usages: "[reply]",
-    cooldowns: 5,
-    dependencies: {
-  "axios": "",}
-};
-
-module.exports.run = async ({ api, event }) => {
-const axios = global.nodemodule['axios'];  
-var linkanh = event.messageReply.attachments[0].url || args.join(" ");
-    if(!linkanh) return api.sendMessage('Vui lòng reply hoặc nhập link 1 hình ảnh!!!', event.threadID, event.messageID)
-const res = await axios.get(`https://Ryanair-Soucre-Api.chauminhtri2022.repl.co/imgur?link=${encodeURIComponent(linkanh)}`);    
-var img = res.data.uploaded.image;
-    return api.sendMessage(`${img}`, event.threadID, event.messageID);
-    
-}*/
-
 module.exports.config = {
-    name: "imgur",
-    version: "1.0.0",
+    name: 'imgur',
+    version: '1.1.1',
     hasPermssion: 0,
-    credits: "cc",
-    description: "",
-    commandCategory: "Tiện ích",
-    usages: "[reply]",
-    cooldowns: 5,
+    credits: 'DC-Nam',
+    description: 'Imgur lấy link ảnh hoặc video!',
+    commandCategory: 'Tiện ích',
+    usages: 'Reply [ảnh | video]',
     dependencies: {
-  "axios": "",}
+        'image-downloader': '',
+        'tslib': '',
+        'imgur': '',
+        'request': ''
+    }
+};
+const {ImgurClient} = require('imgur');
+const {image} = require('image-downloader');
+const {createReadStream, unlinkSync} = require('fs-extra');
+const {get} = require('request');
+module.exports.run = async function({ api, event }){
+  try {
+    const client = new ImgurClient({ clientId: 'd191da1e2b3ede' + 8});
+    if (event.type != 'message_reply') return api.sendMessage(`⚡ Phản hồi ảnh hoặc video!`, event.threadID, event.messageID);
+    const arr = [];
+    for (const {url} of event.messageReply.attachments) {
+    const dest = `${__dirname}/${get(url).uri.pathname.replace(/\/|-|_/g, '')}`;
+    await image({ url, dest });
+    const res = await client.upload({ image: createReadStream(dest), type: 'stream' });
+     arr.push(res.data.link);
+     unlinkSync(dest);
+    };
+    api.sendMessage(arr.join('\n'), event.threadID, event.messageID);
+  } catch(e){
+     api.sendMessage(e, event.threadID, event.messageID); 
+  };
 };
 
-module.exports.run = async ({ api, event }) => {
-const axios = global.nodemodule['axios'];  
-var linkanh = event.messageReply.attachments[0].url || args.join(" ");
-    if(!linkanh) return api.sendMessage('Vui lòng reply hoặc nhập link 1 hình ảnh!!!', event.threadID, event.messageID)
-const res = await axios.get(`https://api-dien.28nguyen-thanht.repl.co/imgur?link=${encodeURIComponent(linkanh)}`);    
-var img = res.data.uploaded.image;
-    return api.sendMessage(`${img}`, event.threadID, event.messageID);
-    
-  }

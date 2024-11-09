@@ -12,9 +12,6 @@ module.exports = function({ sequelize, Sequelize }) {
         name: {
             type: Sequelize.STRING
         },
-        gender: {
-            type: Sequelize.STRING
-        },
 		data: {
 			type: Sequelize.JSON
 		}

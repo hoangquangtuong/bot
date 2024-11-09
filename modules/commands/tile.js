@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: "Jukie~",
     description: "Xem tỉ lệ hợp đôi giữa 2 người",
-    commandCategory: "Tình yêu",
+    commandCategory: "game",
     usages: "[tag]",
     cooldowns: 5,
     dependencies: {
@@ -14,12 +14,12 @@ module.exports.config = {
 }
 
   module.exports.run = async function({ api, args, Users, event}) {
-    const axios=global["nodemodule"]["axios"];
+  const axios=global["nodemodule"]["axios"];
   const request=global["nodemodule"]["request"];
   const fs=global["nodemodule"]["fs-extra"];
   var mention=Object["keys"](event["mentions"])[0];
 
-  if(!mention){return api["sendMessage"]("[👉]➜ Cần phải tag 1 người bạn muốn xem tỉ lệ hợp nhau",event["threadID"])};
+  if(!mention){return api["sendMessage"]("Cần phải tag 1 người bạn muốn xem tỉ lệ hợp nhau",event["threadID"])};
   var name=( await Users["getData"](mention))["name"];
   var namee=( await Users["getData"](event["senderID"]))["name"];
   var tle=Math["floor"](Math["random"]()* 101);
@@ -35,6 +35,6 @@ module.exports.config = {
   
   var imglove=[];imglove["push"](fs["createReadStream"](__dirname+ "/cache/avt2.png"));
   imglove["push"](fs["createReadStream"](__dirname+ "/cache/avt.png"));
-  var msg={body:`${"[❤️]➜ Tỉ lệ hợp đôi giữa "}${namee}${" v "}${name}${" l "}${tle}${"% "}`,mentions:arraytag,attachment:imglove};
+  var msg={body:`${"💟Tỉ lệ hợp đi giữa "}${namee}${" v "}${name}${" l "}${tle}${"% "}`,mentions:arraytag,attachment:imglove};
   return api["sendMessage"](msg,event["threadID"],event["messageID"])
         }

@@ -1,39 +1,26 @@
-
-   module.exports.config = {
-	name: "lyrics",
-    version: "1.0.0", 
-	hasPermssion: 0,
-	credits: "manhG",
-	description: "công cụ tìm lời bài hát", 
-	commandCategory: "Công cụ",
-	usages: "[artist, title]",
-	cooldowns: 5,
+ module.exports.config = {
+    name: "lyrics",
+    version: "1.0.0",
+    hasPermssion: 0,
+    credits: "làm gì có cre",
+    description: "tải lời bài hát",
+    commandCategory: "tiện ích",
+    usages: "[text]",
+    cooldowns: 0,
     dependencies: {
-        "lyrics-finder":""
+        "axios":"",
+        "fs-extra":""
     }
-};
-module.exports.run = async function ({ api, args, event }) {
-   const { threadID, messageID } = event;
-  const axios = require('axios');
-	const request = require('request');
-	const fs = require("fs");
-    const lyricsFinder = require('lyrics-finder');
-    if (!args[0]) return api.sendMessage('Vui lòng trả lời tin nhắn này kèm theo tên bài hát bạn cần tìm lời bài hát !!',
-        threadID, (error, info) => {
-            global.client.handleReply.push({
-                name: "lyrics",
-                messageID: info.messageID,
-                author: event.senderID,
-            })
-        }, event.messageID)
-    let lyrics = await lyricsFinder(args.join(" ")) || "Không thể tìm thấy lời bài hát này !!";
-    return api.sendMessage(lyrics, threadID, messageID);
-}
+ };
+module.exports.run = async function({ api, event, args, Currencies, utils }) {
+const axios = global.nodemodule['axios'];  
+const fs = global.nodemodule["fs-extra"];
+if (!args.join("") != " " ){ return api.sendMessage("Bạn phải nhập tên bài hát!!", event.threadID, event.messageID);}
+var text = args[0];
+    //const res = await axios.get(`https://nguyenmanh.name.vn/api/lyrics?query=${text}&apikey=pNKvedtJ`);
+//var a = res.data.result;
 
-module.exports.handleReply = async function({ api, event, handleReply, getText }) {
-    const { threadID, messageID } = event
-    if (event.senderID != handleReply.author) return
-    const lyricsFinder = require('lyrics-finder');
-    let lyrics = await lyricsFinder(event.body) || "Not Found!";
-    return api.sendMessage(lyrics, threadID, messageID);
+  const res = await axios.get(`https://ScrAPI.tuanvudev2.repl.co/lyrics?ten=${text}`);
+var a = res.data.lyricsFinder;
+return api.sendMessage(`${a}`,event.threadID, event.messageID); 
 }

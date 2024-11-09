@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: 'DC-Nam',
     description: 'Tự động gửi tin nhắn theo giờ đã cài!',
-    commandCategory: 'ADMIN',
+    commandCategory: 'admin',
     usages: '[]',
     cooldowns: 3
 };
@@ -18,11 +18,23 @@ const nam = [{
 },
 {
     timer: '6:00:00 AM',
-    message: ['Chúc mọi người buổi sáng vui vẻ😉', 'Buổi sáng đầy năng lượng nhaa các bạn😙']
+    message: ['Chúc mọi người buổi sáng vui vẻ😉', 'Buổi sáng đầy năng lượng nhaa các bạn😙', 'Chúc mn buổi sáng vui vẻ ❤️']
 },
+  {
+    timer: '12:00:00 PM',
+    message: ['Chúc mọi người buổi trưa vui vẻ😋', 'Chúc mọi người bữa trưa ngon miệng😋']
+},           
+      {
+    timer: '11:00:00 AM',
+    message: ['Cả sáng mệt mỏi rùi nghỉ ngơi nạp năng lượng nào!!😴']
+},               
+   {
+    timer: '10:00:00 AM',
+    message: ['Nấu cơm nhớ bật nút nha mọi người 😙']
+},          
 {
-    timer: '11:30:00 AM',
-    message: ['Chúc mọi người buổi trưa vui vẻ😋', 'Cả sáng mệt mỏi rùi nghỉ ngơi nạp năng lượng nào!!😴']
+    timer: '5:00:00 PM',
+    message: ['Chúc mọi người buổi chiều tà vui vẻ🥰']
 }];
 module.exports.onLoad = o => setInterval(() => {
     const r = a => a[Math.floor(Math.random()*a.length)];

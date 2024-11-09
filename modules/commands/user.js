@@ -1,10 +1,10 @@
 module.exports.config = {
 	name: "user",
 	version: "1.0.5",
-	hasPermssion: 3,
+	hasPermssion: 2,
 	credits: "Mirai Team",
 	description: "Cấm hoặc gỡ cấm người dùng",
-	commandCategory: "Hệ thống admin-bot",
+	commandCategory: "admin",
 	usages: "[unban/ban/search] [ID or text]",
 	cooldowns: 5
 };
@@ -15,26 +15,26 @@ module.exports.languages = {
 		"at": "vào lúc",
 		"allCommand": "toàn bộ lệnh",
 		"commandList": "những lệnh",
-		"banSuccess": "[ Ban User ]➜ Đã xử lý thành công yêu cầu cấm người dùng: %1",
-		"unbanSuccess": "[ Unban User ]➜ Đã xử lý thành công yêu cầu gỡ cấm người dùng %1",
-		"banCommandSuccess": "[ banCommand User ]➜ Đã xử lý thành công yêu cầu cấm lệnh đối với người dùng: %1",
-		"unbanCommandSuccess": "[ UnbanCommand User ]➜ Đã xử lý thành công yêu cầu gỡ cấm %1 đối với người dùng: %2",
+		"banSuccess": "[📌 𝐁𝐚𝐧 𝐔𝐬𝐞𝐫 💸] 𝐕𝐮̛̀𝐚 𝐱𝐮̛̉ 𝐥𝐲́ 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐜𝐚̂́𝐦 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠: %1",
+		"unbanSuccess": "[🎀 𝐔𝐧𝐛𝐚𝐧 𝐔𝐬𝐞𝐫 💎] 𝐕𝐮̛̀𝐚 𝐱𝐮̛̉ 𝐥𝐲́ 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 %1",
+		"banCommandSuccess": "[🔰 𝐁𝐚𝐧𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐔𝐬𝐞𝐫 🔰] 𝐕𝐮̛̀𝐚 𝐱𝐮̛̉ 𝐥𝐲́ 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐜𝐚̂́𝐦 𝐥𝐞̣̂𝐧𝐡 𝐫𝐢𝐞̂𝐧𝐠 𝐯𝐨̛́𝐢 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠: %1",
+		"unbanCommandSuccess": "[🍑 𝐔𝐧𝐛𝐚𝐧𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐔𝐬𝐞𝐫 🎲] 𝐕𝐮̛̀𝐚 𝐱𝐮̛̉ 𝐥𝐲́ 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 %1 𝐫𝐢𝐞̂𝐧𝐠 𝐯𝐨̛́𝐢 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠: %2",
 		"errorReponse": "%1 Không thể hoàn tất công việc bạn yêu cầu",
 		"IDNotFound": "%1 ID người dùng bạn nhập không tồn tại trong cơ sở dữ liệu",
-		"existBan": "[ Ban User ]➜ Người dùng %1 đã bị ban từ trước %2 %3",
-		"notExistBan": "[ Unban User ]➜ Người dùng bạn nhập chưa từng bị cấm sử dụng bot",
+		"existBan": "[📌 𝐁𝐚𝐧 𝐔𝐬𝐞𝐫 💸]] 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 %1 𝐯𝐚̂̃𝐧 𝐜𝐨̀𝐧 𝐛𝐢̣ 𝐛𝐚𝐧 𝐭𝐮̛̀ 𝐭𝐫𝐮̛𝐨̛́𝐜 %2 %3",
+		"notExistBan": "[🎀 𝐔𝐧𝐛𝐚𝐧 𝐔𝐬𝐞𝐫 💎] 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐛𝐚̣𝐧 𝐧𝐡𝐚̣̂𝐩 𝐜𝐡𝐮̛𝐚 𝐭𝐮̛̀𝐧𝐠 𝐛𝐢̣ 𝐜𝐚̂́𝐦 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠 𝐛𝐨𝐭",
 		"missingCommandInput": "%1 Phần command cần cấm không được để trống!",
-		"notExistBanCommand": "[ UnbanCommand User ]➜ Hiện tại ID người dùng bạn nhập chưa từng bị cấm sử dụng lệnh",
+		"notExistBanCommand": "[🍑 𝐔𝐧𝐛𝐚𝐧𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐔𝐬𝐞𝐫 🎲] 𝐇𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐈𝐃 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐛𝐚̣𝐧 𝐧𝐡𝐚̣̂𝐩 𝐜𝐡𝐮̛𝐚 𝐭𝐮̛̀𝐧𝐠 𝐛𝐢̣ 𝐜𝐚̂́𝐦 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠 𝐥𝐞̣̂𝐧𝐡",
 
-		"returnBan": "[ Ban User ]➜ Hiện tại bạn đang yêu cầu cấm người dùng:\n- ID và tên người dùng cần cấm: %1%2\n\n[⚜️]➜ Reaction tin nhắn này để xác thực",
-		"returnUnban": "[ Unban User ]➜ Hiện tại bạn đang yêu cầu gỡ cấm người dùng:\n- ID và tên người dùng cần gỡ cấm: %1\n\n[⚜️]➜ Reaction tin nhắn này để xác thực",
-		"returnBanCommand": "[ banCommand User ]➜ Hiện tại bạn đang yêu cầu cấm sử dụng lệnh đối với người dùng:\n - ID và tên người dùng cần cấm: %1\n- Các lệnh cần cấm: %2\n\n[⚜️]➜ Reaction tin nhắn này để xác thực",
-		"returnUnbanCommand": "[ UnbanCommand User ]➜ Hiện tại bạn đang yêu cầu gỡ cấm sử dụng lệnh đối với với người dùng:\n - ID và tên người dùng cần gỡ cấm lệnh: %1\n- Các lệnh cần gỡ cấm: %2\n\n[⚜️]➜ Reaction tin nhắn này để xác thực",
+		"returnBan": "[📌 𝐁𝐚𝐧 𝐔𝐬𝐞𝐫 💸] 𝐇𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐛𝐚̣𝐧 𝐯𝐮̛̀𝐚 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐜𝐡𝐨 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐧𝐚̀𝐲 𝐯𝐞̂̀ 𝐯𝐨̛́𝐢 𝐜𝐚́𝐭 𝐛𝐮̣𝐢 📵:\n- 𝐈𝐃 𝐯𝐚̀ 𝐭𝐞̂𝐧 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐜𝐚̂̀𝐧 𝐜𝐚̂́𝐦 💈: %1%2\n\n❮ 𝐑𝐞𝐚𝐜𝐭𝐢𝐨𝐧 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐱𝐚́𝐜 𝐧𝐡𝐚̣̂𝐧 𝐭𝐡𝐢 𝐡𝐚̀𝐧𝐡 𝐚́𝐧 ❯",
+		"returnUnban": "[🎀 𝐔𝐧𝐛𝐚𝐧 𝐔𝐬𝐞𝐫 💎] 𝐇𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐛𝐚̣𝐧 𝐯𝐮̛̀𝐚 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐜𝐡𝐨 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐧𝐚̀𝐲 𝐦𝐨̣̂𝐭 𝐤𝐡𝐨𝐚𝐧 𝐡𝐨̂̀𝐧𝐠 𝐯𝐞̂̀ 𝐡𝐨𝐚̀ 𝐧𝐡𝐚̣̂𝐩 𝐯𝐨̛́𝐢 𝐱𝐚̃ 𝐡𝐨̣̂𝐢❗:\n- 𝐈𝐃 𝐯𝐚̀ 𝐭𝐞̂𝐧 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐜𝐚̂̀𝐧 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 💌: %1\n\n❮ 𝐑𝐞𝐚𝐜𝐭𝐢𝐨𝐧 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐱𝐚́𝐜 𝐧𝐡𝐚̣̂𝐧 𝐛𝐚̃𝐢 𝐛𝐨̉ 𝐭𝐡𝐢 𝐡𝐚̀𝐧𝐡 𝐚́𝐧 ❯",
+		"returnBanCommand": "[🔰 𝐁𝐚𝐧𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐔𝐬𝐞𝐫 🔰] 𝐇𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐛𝐚̣𝐧 𝐯𝐮̛̀𝐚 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐜𝐚̂́𝐦 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠 𝐥𝐞̣̂𝐧𝐡 𝐫𝐢𝐞̂𝐧𝐠 𝐯𝐨̛́𝐢 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 🔒:\n - 𝐈𝐃 𝐯𝐚̀ 𝐭𝐞̂𝐧 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐜𝐚̂̀𝐧 𝐜𝐚̂́𝐦 📌: %1\n- 𝐂𝐚́𝐜 𝐥𝐞̣̂𝐧𝐡 𝐜𝐚̂̀𝐧 𝐜𝐚̂́𝐦 🛠: %2\n\n❮ 𝐑𝐞𝐚𝐜𝐭𝐢𝐨𝐧 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐱𝐚́𝐜 𝐧𝐡𝐚̣̂𝐧 𝐭𝐡𝐢 𝐡𝐚̀𝐧𝐡 𝐚́𝐧 ❯",
+		"returnUnbanCommand": "[🍑 𝐔𝐧𝐛𝐚𝐧𝐂𝐨𝐦𝐦𝐚𝐧𝐝 𝐔𝐬𝐞𝐫 🎲] 𝐇𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐛𝐚̣𝐧 𝐯𝐮̛̀𝐚 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 𝐬𝐮̛̉ 𝐝𝐮̣𝐧𝐠 𝐥𝐞̣̂𝐧𝐡 𝐫𝐢𝐞̂𝐧𝐠 𝐯𝐨̛́𝐢 𝐯𝐨̛́𝐢 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 🎀:\n - 𝐈𝐃 𝐯𝐚̀ 𝐭𝐞̂𝐧 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐝𝐮̀𝐧𝐠 𝐜𝐚̂̀𝐧 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 𝐥𝐞̣̂𝐧𝐡 🔗: %1\n- 𝐂𝐚́𝐜 𝐥𝐞̣̂𝐧𝐡 𝐜𝐚̂̀𝐧 𝐠𝐨̛̃ 𝐜𝐚̂́𝐦 📜: %2\n\n❮ 𝐑𝐞𝐚𝐜𝐭𝐢𝐨𝐧 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐱𝐚́𝐜 𝐧𝐡𝐚̣̂𝐧 𝐛𝐚̃𝐢 𝐛𝐨̉ 𝐭𝐡𝐢 𝐡𝐚̀𝐧𝐡 𝐚́𝐧 ❯",
 	
-		"returnResult": "[⚜️]➜ Đây là kết quả phù hợp: \n",
-		"returnNull": "[⚜️]➜ Không tìm thấy kết quả dựa vào tìm kiếm của bạn!",
+		"returnResult": "Đây là kết quả phù hợp: \n",
+		"returnNull": "Không tìm thấy kết quả dựa vào tìm kiếm của bạn!",
 		"returnList": "[ User List ]\nHiện tại đang có %1 người dùng bị ban, dưới đây là %2 người dùng\n\n%3",
-		"returnInfo": "[ Info User ]➜ Đây là một sô thông tin về người dùng bạn cần tìm:\n- ID và tên của người dùng: %1n- Có bị ban?: %2 %3 %4\n- Bị ban lệnh?: %5"
+		"returnInfo": "[ Info User ] Đây là một sô thông tin về người dùng bạn cần tìm:\n- ID và tên của người dùng: %1n- Có bị ban?: %2 %3 %4\n- Bị ban lệnh?: %5"
 	},
 	"en": {
 		"reason": "Reason",
@@ -76,7 +76,6 @@ module.exports.handleReaction = async ({ event, api, Users, handleReaction, getT
 	switch (type) {
 		case "ban": {
 			try {
-				if(event.type == "message_reply") { targetID = event.messageReply.senderID }
 				let data = (await Users.getData(targetID)).data || {};
 				data.banned = true;
 				data.reason = reason || null;
@@ -91,7 +90,6 @@ module.exports.handleReaction = async ({ event, api, Users, handleReaction, getT
 
 		case "unban": {
 			try {
-				if(event.type == "message_reply") { targetID = event.messageReply.senderID }
 				let data = (await Users.getData(targetID)).data || {};
 				data.banned = false;
 				data.reason = null;
@@ -147,7 +145,6 @@ module.exports.run = async ({ event, api, args, Users, getText }) => {
 	switch (type) {
 		case "ban":
 		case "-b": {
-			if(event.type == "message_reply") { targetID = event.messageReply.senderID }
 			if (!global.data.allUserID.includes(targetID)) return api.sendMessage(getText("IDNotFound", "[ Ban User ]"), threadID, messageID);
 			if (global.data.userBanned.has(targetID)) {
 				const { reason, dateAdded } = global.data.userBanned.get(targetID) || {};
@@ -170,7 +167,6 @@ module.exports.run = async ({ event, api, args, Users, getText }) => {
 
 		case "unban":
 		case "-ub": {
-			if(event.type == "message_reply") { targetID = event.messageReply.senderID }
 			if (!global.data.allUserID.includes(targetID)) return api.sendMessage(getText("IDNotFound", "[ Unban User ]"), threadID, messageID);
 			if (!global.data.userBanned.has(targetID)) return api.sendMessage(getText("notExistBan"), threadID, messageID);
 			const nameTarget = global.data.userName.get(targetID) || await Users.getNameUser(targetID);
@@ -272,7 +268,6 @@ module.exports.run = async ({ event, api, args, Users, getText }) => {
 
 		case "info":
 		case "-i": {
-			if(event.type == "message_reply") { targetID = event.messageReply.senderID }
 			if (!global.data.allUserID.includes(targetID)) return api.sendMessage(getText("IDNotFound", "[ Info User ]"), threadID, messageID);
 			if (global.data.commandBanned.has(targetID)) { var commandBanned = global.data.commandBanned.get(targetID) || [] };
 			if (global.data.userBanned.has(targetID)) { var { reason, dateAdded } = global.data.userBanned.get(targetID) || {} };

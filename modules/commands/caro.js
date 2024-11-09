@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: 'JRT',
     description: 'game cờ caro 5x5',
-    commandCategory: 'Game',
+    commandCategory: 'game',
     usages: '@tag',
     cooldowns: 5,
     dependencies: {

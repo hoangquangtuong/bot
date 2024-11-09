@@ -2,24 +2,24 @@ module.exports.config = {
 	name: "weather",
 	version: "1.0.1",
 	hasPermssion: 0,
-	credits: "JRT",
+	credits: "Mirai Team",
 	description: "Xem thông tin thời tiết tại khu vực",
-	commandCategory: "Tin tức",
-	usages: "weather [Location]",
+	commandCategory: "tiện ích",
+	usages: "[Location]",
 	cooldowns: 5,
 	dependencies: {
 		"moment-timezone": "",
 		"request": ""
 	},
 	envConfig: {
-		"OPEN_WEATHER": "196ac91264f90df6590b46309556229f"
+		"OPEN_WEATHER": "081c82065cfee62cb7988ddf90914bdd"
 	}
 };
 
 module.exports.languages = {
 	"vi": {
-		"locationNotExist": "[⚜️]➜ Địa điểm %1 không tồn tại!",
-		"returnResult": "[🌡]➜ Nhiệt độ: %1°C\n[🌡]➜ Nhiệt độ cơ thể cảm nhận được: %2°C\n[☁️]➜ Cảnh quan hiện tại: %3\n[💦]➜ Độ ẩm: %4%\n[💨]➜ Tốc độ gió: %5km/h\n[🌅]➜ Mặt trời mọc vào lúc: %6\n[🌄]➜ Mặt trời lặn vào lúc: %7\n"
+		"locationNotExist": "Địa điểm %1 không tồn tại!",
+		"returnResult": "🌡 Nhiệt độ: %1°C\n🌡 Nhiệt độ cơ thể cảm nhận được: %2°C\n☁️ Cảnh quan hiện tại: %3\n💦 Độ ẩm: %4%\n💨 Tốc độ gió: %5km/h\n🌅 Mặt trời mọc vào lúc: %6\n🌄 Mặt trời lặn vào lúc: %7\n"
 	},
 	"en": {
 		"locationNotExist": "Can't find %1.",

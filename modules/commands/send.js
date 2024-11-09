@@ -25,8 +25,8 @@ module.exports.run = async({ api,
     if (!args[1] && atm == "nofile") return api.sendMessage(`!! 𝐁𝐚̣𝐧 𝐂𝐡𝐮̛𝐚 𝐍𝐡𝐚̣̂𝐩 𝐍𝐨̣̂𝐢 𝐃𝐮𝐧𝐠`, tid, mid);
     var msg = `» 𝐓𝐡𝐨̂𝐧𝐠 𝐁𝐚́𝐨 𝐓𝐮̛̀ 𝐀𝐝𝐦𝐢𝐧 « \n→ 𝐍𝐨̛𝐢 𝐆𝐮̛̉𝐢: ${event.isGroup == true ? '𝐍𝐡𝐨́𝐦 ' + global.data.threadInfo.get(event.threadID).threadName: '𝐓𝐮̛̀ 𝐂𝐮𝐨̣̂𝐜 𝐓𝐫𝐨̀ 𝐂𝐡𝐮𝐲𝐞̣̂𝐧 𝐑𝐢𝐞̂𝐧𝐠 𝐕𝐨̛́𝐢 𝐁𝐨𝐭'}\n→ 𝐀𝐝𝐦𝐢𝐧: ${(await Users.getData(sid)).name}
 → 𝐓𝐢𝐦𝐞: ${fullTime()}
-━━━━━━━━━━━━
-→ 𝐍𝐨̣̂𝐢 𝐃𝐮𝐧𝐠: \n${content}\n━━━━━━━━━━━━\n ━━━━━━━━━━━━
+▰▱▰▱▰▱▰▱▰▱▰▱▰▰ 
+→ 𝐍𝐨̣̂𝐢 𝐃𝐮𝐧𝐠: \n${content}\n▰▱▰▱▰▱▰▱▰▱▰▱▰▰\n▰▱▰▱▰▱▰▱▰▱▰▱▰▰ 
 → 𝐑𝐞𝐩𝐥𝐲 𝐓𝐢𝐧 𝐍𝐡𝐚̆́𝐧 𝐍𝐚̀𝐲 𝐍𝐞̂́𝐮 𝐌𝐮𝐨̂́𝐧 𝐏𝐡𝐚̉𝐧 𝐕𝐞̂̀ 𝐀𝐝𝐦𝐢𝐧\n➩ 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐆𝐮̛̉𝐢: https://www.facebook.com/${event.senderID}`
     const uwu = atm == "nofile" ? msg : {
         body: msg,
@@ -54,7 +54,7 @@ module.exports.handleReply = async({ api, event, handleReply: h, Users, Threads 
     switch (h.type) {
         case "userReply": {
             const atm = atms.length != 0 ? atms : "nofile";
-            var msg = `📩 𝐏𝐡𝐚̉𝐧 𝐡𝐨̂̀𝐢 𝐭𝐮̛̀ 𝐔𝐬𝐞𝐫: ${(await Users.getData(sid)).name}\n🎀 𝐍𝐡𝐨́𝐦: ${(await Threads.getData(tid)).threadInfo.threadName}\n⏱ 𝐓𝐢𝐦𝐞: ${fullTime()}\n\n📝 𝐍𝐨̣̂𝐢 𝐝𝐮𝐧𝐠: ${atm == "nofile" ? body : "𝐂𝐡𝐢̉ 𝐜𝐨́ 𝐭𝐞̣̂𝐩 𝐭𝐨̛́𝐢 𝐛𝐚̣𝐧"}\n\n» 𝐑𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐦𝐮𝐨̂́𝐧 𝐩𝐡𝐚̉𝐧 𝐡𝐨̂̀𝐢 𝐭𝐨̛́𝐢 𝐔𝐬𝐞𝐫 💬\n➩ 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐆𝐮̛̉𝐢: https://www.facebook.com/${event.senderID}${event.senderID}`
+            var msg = `📩 𝐏𝐡𝐚̉𝐧 𝐡𝐨̂̀𝐢 𝐭𝐮̛̀ 𝐔𝐬𝐞𝐫: ${(await Users.getData(sid)).name}\n🎀 𝐍𝐡𝐨́𝐦: ${(await Threads.getData(tid)).threadInfo.threadName}\n⏱ 𝐓𝐢𝐦𝐞: ${fullTime()}\n\n📝 𝐍𝐨̣̂𝐢 𝐝𝐮𝐧𝐠: ${atm == "nofile" ? body : "𝐂𝐡𝐢̉ 𝐜𝐨́ 𝐭𝐞̣̂𝐩 𝐭𝐨̛́𝐢 𝐛𝐚̣𝐧"}\n\n» 𝐑𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐧𝐞̂́𝐮 𝐦𝐮𝐨̂́𝐧 𝐩𝐡𝐚̉𝐧 𝐡𝐨̂̀𝐢 𝐭𝐨̛́𝐢 𝐔𝐬𝐞𝐫 💬\n➩ 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐆𝐮̛̉𝐢: https://www.facebook.com/${event.senderID}`
             const uwu = atm == "nofile" ? msg : {
                 body: msg,
                 attachment: await DownLoad(atm)

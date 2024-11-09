@@ -1,8 +1,8 @@
 {
     "name": "Dragon",
-    "version": "1.1.2",
-    "description": "A simple Facebook Messenger Bot made by me(hoangquangtuong) and my brother SpermLord.",
-    "main": "Dragon.js",
+    "version": "1.2.14",
+    "description": "A simple Facebook Messenger Bot made by me(Dragon) and my brother SpermLord.",
+    "main": "mirai.js",
     "scripts": {
         "start": "node index",
         "login": "node login",
@@ -10,9 +10,9 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/D-Jukie/miraiv2.git"
+        "url": "git+https://github.com/hoangquangtuong/bot.git"
     },
-    "author": "hoangquangtuong",
+    "author": "Dragon",
     "license": "GPL-3.0",
     "dependencies": {
         "@ffmpeg-installer/ffmpeg": "^1.1.0",

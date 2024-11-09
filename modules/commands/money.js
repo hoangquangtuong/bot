@@ -4,7 +4,7 @@ module.exports.config = {
 	hasPermssion: 0,
 	credits: "Mirai Team",//mod by ARAXY XD
 	description: "Kiểm tra số tiền của bản thân hoặc người được tag",
-	commandCategory: "Tài chính",
+	commandCategory: "game",
 	usages: "[Tag]",
 	cooldowns: 5
 };
@@ -13,13 +13,13 @@ module.exports.run = async function({ api, event, args, Currencies, Users }) {
 	const { threadID, messageID, senderID, mentions } = event;
   const fs = require('fs');
 const axios = require('axios')
- if(!fs.existsSync(__dirname+'/cache/SplineSans-Medium.ttf')) { 
+ if(!fs.existsSync(__dirname+'/bot/SplineSans-Medium.ttf')) { 
       let getfont = (await axios.get(`https://drive.google.com/u/0/uc?id=102B8O3_0vTn_zla13wzSzMa-vdTZOCmp&export=download`, { responseType: "arraybuffer" })).data;
-       fs.writeFileSync(__dirname+"/cache/SplineSans-Medium.ttf", Buffer.from(getfont, "utf-8"));
+       fs.writeFileSync(__dirname+"/bot/SplineSans-Medium.ttf", Buffer.from(getfont, "utf-8"));
     };
-    if(!fs.existsSync(__dirname+'/cache/SplineSans.ttf')) { 
+    if(!fs.existsSync(__dirname+'/bot/SplineSans.ttf')) { 
       let getfont2 = (await axios.get(`https://drive.google.com/u/0/uc?id=1--V7DANKLsUx57zg8nLD4b5aiPfHcmwD&export=download`, { responseType: "arraybuffer" })).data;
-       fs.writeFileSync(__dirname+"/cache/SplineSans.ttf", Buffer.from(getfont2, "utf-8"));
+       fs.writeFileSync(__dirname+"/bot/SplineSans.ttf", Buffer.from(getfont2, "utf-8"));
     };
 if (event.type == "message_reply") {
     var uid = event.messageReply.senderID;
@@ -49,10 +49,10 @@ var argss = `${money}`;
     let ctx = canvas.getContext("2d");
     const Canvas = global.nodemodule["canvas"];
     ctx.drawImage(bgBase, 0, 0, canvas.width, canvas.height);
-    Canvas.registerFont(__dirname+`/cache/SplineSans-Medium.ttf`, {
+    Canvas.registerFont(__dirname+`/bot/SplineSans-Medium.ttf`, {
         family: "SplineSans-Medium"
     });
-    Canvas.registerFont(__dirname+`/cache/SplineSans.ttf`, {
+    Canvas.registerFont(__dirname+`/bot/SplineSans.ttf`, {
         family: "SplineSans"
     });
     ctx.font = "50px SplineSans-Medium";
@@ -61,7 +61,7 @@ var argss = `${money}`;
     ctx.fillText('' + argss.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ', 530, 359);
     const imageBuffer = canvas.toBuffer();
     fs.writeFileSync(path, imageBuffer);
-       var msg =  {body: `[⚜️] Số tiền của bạn ${name} đây\n[⚜️] Số tiền của bạn đang có là ${money}`, attachment: fs.createReadStream(path)
+       var msg =  {body: `𝗠𝗼𝗻𝗲𝘆 \n━━━━━━━ \n 𝗧𝗮̀𝗶 𝗞𝗵𝗼𝗮̉𝗻 𝗖𝘂̉𝗮  ${name} \n━━━━━━━━━━━━━━━━━ \n𝗗𝗮𝗻𝗴 𝗖𝗼̀𝗻 𝗟𝗮̀ ${money}`, attachment: fs.createReadStream(path)
     }
    return api.sendMessage(msg,  threadID, async (error, info) => {
     fs.unlinkSync(path),

@@ -1,48 +1,51 @@
 module.exports.config = {
     name: "sim",
-    version: "4.3.6",
+    version: "1.0.0",
     hasPermssion: 0,
-    credits: "ProcodeMew",
-    description: "Chat cùng sim",
-    commandCategory: "Dạy - trò chuyện cùng sim",
+    credits: "ManhG",
+    description: "Chat cùng con simsimi dễ thương nhất",
+    commandCategory: "tiện ích",
     usages: "[args]",
-    cooldowns: 5,
+    cooldowns: 2,
     dependencies: {
         axios: ""
+    },
+    envConfig: {
+        APIKEY: "chaoemnha"
     }
 }
-
-
 async function simsimi(a, b, c) {
-    const d = global.nodemodule.axios, g = (a) => encodeURIComponent(a);
+    const axios = require("axios"),
+        { APIKEY } = global.configModule.sim,
+        g = (a) => encodeURIComponent(a);
     try {
-        var { data: j } = await d({ url: `https://api.simsimi.net/v2/?text=${g(a)}&lc=vn`, method: "GET" });
+        var { data: j } = await axios({ url: `https://Api-Quangbao.tuanvudev2.repl.co/sim?type=ask&ask=${g(a)}`, method: "GET" });
         return { error: !1, data: j }
     } catch (p) {
         return { error: !0, data: {} }
     }
 }
-module.exports.onLoad = async function () {
-    "undefined" == typeof global && (global = {}), "undefined" == typeof global.simsimi && (global.simsimi = new Map);
+module.exports.onLoad = async function() {
+    "undefined" == typeof global.manhG && (global.manhG = {}), "undefined" == typeof global.manhG.simsimi && (global.manhG.simsimi = new Map);
 };
-module.exports.handleEvent = async function ({ api: b, event: a }) {
-    const { threadID: c, messageID: d, senderID: e, body: f } = a, g = (e) => b.sendMessage(e, c, d);
-    if (global.simsimi.has(c)) {
-        if (e == b.getCurrentUserID() || "" == f || d == global.simsimi.get(c)) return;
-        var { data: h, error: i } = await simsimi(f, b, a);
-        return !0 == i ? void 0 : !1 == h.success ? g(h.error) : g(h.success)
+module.exports.handleEvent = async function({ api, event }) {
+    const { threadID, messageID, senderID, body } = event, g = (senderID) => api.sendMessage(senderID, threadID, messageID);
+    if (global.manhG.simsimi.has(threadID)) {
+        if (senderID == api.getCurrentUserID() || "" == body || messageID == global.manhG.simsimi.get(threadID)) return;
+        var { data, error } = await simsimi(body, api, event);
+        return !0 == error ? void 0 : !1 == data.answer ? g(data.error) : g(data.answer)
     }
 }
-module.exports.run = async function ({ api: b, event: a, args: c }) {
-    const { threadID: d, messageID: e } = a, f = (c) => b.sendMessage(c, d, e);
-    if (0 == c.length) return f("B\u1EA1n ch\u01B0a nh\u1EADp tin nh\u1EAFn");
-    switch (c[0]) {
+module.exports.run = async function({ api, event, args }) {
+    const { threadID, messageID } = event, body = (args) => api.sendMessage(args, threadID, messageID);
+    if (0 == args.length) return body("[ 𝐒𝐈𝐌 ] - Bạn chưa nhập tin nhắn\n→ Dùng sim [on/off] để bật hoặc tắt simsimi!");
+    switch (args[0]) {
         case "on":
-            return global.simsimi.has(d) ? f("B\u1EA1n ch\u01B0a t\u1EAFt JRT.") : (global.simsimi.set(d, e), f("\u0110\xE3 b\u1EADt sim th\xE0nh c\xF4ng."));
+            return global.manhG.simsimi.has(threadID) ? body("[ 𝐒𝐈𝐌 ] - Bật gì tận 2 lần hả em.") : (global.manhG.simsimi.set(threadID, messageID), body("[ 𝐒𝐈𝐌 ] - Bật sim thành công."));
         case "off":
-            return global.simsimi.has(d) ? (global.simsimi.delete(d), f("\u0110\xE3 t\u1EAFt sim th\xE0nh c\xF4ng.")) : f("B\u1EA1n ch\u01B0a b\u1EADt sim.");
+            return global.manhG.simsimi.has(threadID) ? (global.manhG.simsimi.delete(threadID), body("[ 𝐒𝐈𝐌 ] - Tắt sim thành công.")) : body("[ 𝐒𝐈𝐌 ] - Tao đang phấn khởi tắt cái qq.");
         default:
-            var { data: g, error: h } = await simsimi(c.join(" "), b, a);
-            return !0 == h ? void 0 : !1 == g.success ? f(g.error) : f(g.success);
+            var { data, error } = await simsimi(args.join(" "), api, event);
+            return !0 == data ? void 0 : !1 == data.answer ? body(data.error) : body(data.answer);
     }
 };

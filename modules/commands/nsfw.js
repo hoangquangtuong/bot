@@ -1,11 +1,11 @@
 module.exports.config = {
-    name: "nsfw",
-    version: "1.0.0",
-    hasPermssion: 3,
-    credits: "Mirai Team",
-    description: "Bật tắt quyền sử dụng các lệnh NSFW",
-    commandCategory: "Hệ thống admin-bot",
-    cooldowns: 5,
+	name: "nsfw",
+	version: "1.0.0",
+	hasPermssion: 1,
+	credits: "Mirai Team",
+	description: "Bật tắt quyền sử dụng các lệnh NSFW",
+	commandCategory: "tiện ích",
+	cooldowns: 5,
 };
 
 module.exports.languages = {

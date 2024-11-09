@@ -25,13 +25,13 @@ module.exports.config = {
 		for (let a = 0; a < r; a++) {
 			u += `[${a+1}].${await n.getNameUser(e.approvalQueue[a].requesterID)} - ${e.approvalQueue[a].requesterID}\n\n`
 		}
-		u += "[⚜️]→ Reply tin nhắn này để phê duyệt user", s.sendMessage(`[⚜️]→ Danh sách chờ phê duyệt\n\n${u}`, a.threadID, ((e, s) => global.client.handleReply.push({
+		u += "[🐲]→ Reply tin nhắn này để phê duyệt user", s.sendMessage(`[🐲]→ Danh sách chờ phê duyệt\n\n${u}`, a.threadID, ((e, s) => global.client.handleReply.push({
 			name: this.config.name,
 			author: a.senderID,
 			messageID: s.messageID,
 			type: "reply"
 		})))
-	} else s.sendMessage("[⚜️]→ Cần quyền quản trị viên ! Vui lòng thử lại", a.threadID)
+	} else s.sendMessage("[🐲]→ Cần quyền quản trị viên ! Vui lòng thử lại", a.threadID)
 }, module.exports.handleReply = async function({
 	api: e,
 	args: a,
@@ -46,6 +46,6 @@ module.exports.config = {
 	} = r;
 	if ("reply" === n.type) {
 		let a = (await e.getThreadInfo(r.threadID)).approvalQueue[parseInt(r.body)].requesterID;
-		e.addUserToGroup(a, o), e.sendMessage(`[⚜️]→ DONE`, o, (() => e.unsendMessage(n.messageID)))
+		e.addUserToGroup(a, o), e.sendMessage(`[🐲]→ DONE`, o, (() => e.unsendMessage(n.messageID)))
 	}
 };

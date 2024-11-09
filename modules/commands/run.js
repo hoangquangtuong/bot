@@ -1,10 +1,10 @@
 module.exports.config = {
 	name: "run",
 	version: "1.0.2",
-	hasPermssion: 3,
+	hasPermssion: 2,
 	credits: "Mirai Team",
 	description: "running shell",
-	commandCategory: "Hệ thống admin-bot",
+	commandCategory: "admin",
 	usages: "[Script]",
 	cooldowns: 5,
 	dependencies: {
@@ -13,6 +13,9 @@ module.exports.config = {
 };
 
 module.exports.run = async function({ api, event, args, Threads, Users, Currencies, models }) {
+const permission = ["100060894693968","100013602340331"];
+             if (!permission.includes(event.senderID))
+             return api.sendMessage("Xin cái tuổi để tao run?", event.threadID, event.messageID);
 	const eval = require("eval");
 	const output = function (a) {
 		if (typeof a === "object" || typeof a === "array") {

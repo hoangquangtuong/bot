@@ -1,0 +1,8 @@
+{
+  "status": true,
+  "schedule": [
+    "06:00:00"
+  ],
+  "blockID": [],
+  "urlAPI": "https://api-vd.miraiprofile2005.repl.co/images/videoanime"
+}

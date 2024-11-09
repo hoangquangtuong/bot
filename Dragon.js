@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////////
 
 const { readdirSync, readFileSync, writeFileSync, existsSync, unlinkSync, rm } = require("fs-extra");
-var log = require("./utils/log");
+var log = require("./utils/log.js");
 const { join, resolve } = require("path");
 const chalkAnimation = require('chalkercli');
 const { execSync } = require('child_process');
@@ -76,7 +76,7 @@ global.data = new Object({
 
 
 
-global.utils = require("./utils");
+global.utils = require("./utils/index.js");
 
 global.nodemodule = new Object();
 
@@ -142,7 +142,7 @@ try {
 }
 catch { return logger.loader("Không thể khởi tạo config !", "error") }
 
-const { Sequelize, sequelize } = require("./includes/database");
+const { Sequelize, sequelize } = require("./includes/database/index.js");
 
 writeFileSync(global.client.configPath + ".temp", JSON.stringify(global.config, null, 4), 'utf8');
 
@@ -424,14 +424,13 @@ function onBot({ models: botModel }) {
                     }
                 }
             }()
-         // logger.loader(global.getText('mirai', 'finishLoadModule', global.client.commands.size, global.client.events.size)) 
         logger.loader('=== ' + (Date.now() - global.client.timeStart) + 'ms ===')
         writeFileSync(global.client['configPath'], JSON['stringify'](global.config, null, 4), 'utf8') 
         unlinkSync(global['client']['configPath'] + '.temp');        
         const listenerData = {};
         listenerData.api = loginApiData; 
         listenerData.models = botModel;
-        const listener = require('./includes/listen')(listenerData);
+        const listener = require('./includes/listen.js')(listenerData);
 
         function listenerCallback(error, message) {
             if (error) return logger(global.getText('mirai', 'handleListenError', JSON.stringify(error)), 'error');
@@ -448,22 +447,6 @@ function onBot({ models: botModel }) {
       
         if (!global.checkBan) logger(global.getText('mirai', 'warningSourceCode'), '[ GLOBAL BAN ]');
         global.client.api = loginApiData
-        // setInterval(async function () {
-        //     // global.handleListen.stopListening(),
-        //     global.checkBan = ![],
-        //     setTimeout(function () {
-        //         return global.handleListen = loginApiData.listenMqtt(listenerCallback);
-        //     }, 500);
-        //     try {
-        //         await checkBan(loginApiData);
-        //     } catch {
-        //         return process.exit(0);
-        //     };
-        //     if (!global.checkBan) logger(global.getText('mirai', 'warningSourceCode'), '[ GLOBAL BAN ]');
-        //     global.config.autoClean && (global.data.threadInfo.clear(), global.client.handleReply = global.client.handleReaction = {});
-        //     if (global.config.DeveloperMode == !![]) 
-        //         return logger(global.getText('mirai', 'refreshListen'), '[ DEV MODE ]');
-        // }, 600000);
     });
 }
 //////////////////////////////////////////////
@@ -476,7 +459,7 @@ function onBot({ models: botModel }) {
         const authentication = {};
         authentication.Sequelize = Sequelize;
         authentication.sequelize = sequelize;
-        const models = require('./includes/database/model')(authentication);
+        const models = require('./includes/database/model.js')(authentication);
         logger(global.getText('mirai', 'successConnectDatabase'), '「 DATABASE 」');
         const botData = {};
         botData.models = models
@@ -486,7 +469,3 @@ function onBot({ models: botModel }) {
    
 })();
 process.on('unhandledRejection', (err, p) => {});
-
-
-//THIZ BOT WAS MADE BY ME(CATALIZCS) AND MY BROTHER SPERMLORD - DO NOT STEAL MY CODE (つ ͡ ° ͜ʖ ͡° )つ ✄ ╰⋃╯
-//Hi

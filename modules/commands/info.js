@@ -1,78 +1,82 @@
 module.exports.config = {
-    name: "info",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "D-Jukie",
-    description: "Xem thông tin của người dùng facebook",
-    commandCategory: "Thông tin",
-    usages: "info [reply/tag/id]",
-    cooldowns: 3
-    
+	name: "info",
+	version: "1.0.0",
+	hasPermssion: 0,
+	credits: "Horizon & đuợc mod bởi Mr.ben theo sự chỉ dẫn nhiệt tình của DKhang",
+	description: "Lấy thông tin người dùng dạng canvas",
+	commandCategory: "Tiện ích",
+	usages: "getInfo",
+	cooldowns: 5
 };
-module.exports.run = async({api,event,args}) => {
-    const fs = global.nodemodule["fs-extra"];
-    const request = global.nodemodule["request"];
-    const axios = global.nodemodule['axios'];  
-
-    if(!args[0]){
-    if(event.type == "message_reply") { uid = event.messageReply.senderID }
-    else uid = event.senderID;
-   const res = await axios.get(`https://www.nguyenmanh.name.vn/api/fbInfo?id=${uid}&apikey=ogDIVInu`);  
-    var gender = res.data.result.gender == 'male' ? "Nam" : res.data.result.gender == 'female' ? "Nữ" : "Giới tính mà cũng không biết á?";
-    var birthday = res.data.result.birthday ? `${res.data.result.birthday}` : "Bạn sinh vào ngày 30-2- năm không nhớ à!!!";
-    var love = res.data.result.love ? `${res.data.result.love}` : "Vẫn đang F.A sml à???"
-    var website = res.data.result.website ? `${res.data.result.website}` : "Hiện vẫn chưa có website"
-    var about = res.data.result.about ? `${res.data.result.about}` : "Bản thân bạn không có gì để nói à???" 
-    var quotes = res.data.result.quotes ? `${res.data.result.quotes}` : "Cuộc đời bạn không có nổi 1 câu trích dẫn à???"  
-    var relationship = res.data.result.relationship ? `${res.data.result.relationship}` : "Chưa có người yêu mà!!!!"
-    var location = res.data.result.location ? `${res.data.result.location}` : "Bạn hiện không ở trên Trái Đất!!!"
-	var hometown = res.data.result.hometown ? `${res.data.result.hometown}` : "Quê ở đâu mà còn không biết à?"
-    var url_profile = res.data.result.profileUrl  ? `${res.data.result.profileUrl}` : `${url_profile}`
-    var callback = () => api.sendMessage({body:`=== 『𝑻𝒉𝒐̂𝒏𝒈 𝑻𝒊𝒏』 ===\n\n[👤]→ Tên: ${res.data.result.name}\n[🔎]→ UID: ${uid}\n[👀]→ Follow: ${res.data.result.follow}\n[👭]→ Giới tính: ${gender}\n[🎉]→ Sinh Nhật: ${birthday}\n[💌]→ Tên duyên phận: ${love}\n[❤️]→ Mối quan hệ: ${relationship}\n[🏡]→ Sống tại: ${location}\n[🌏]→ Đến từ: ${hometown}\n[👉]→ Introduce myself:\n${about}\n[📝]→ Trích dẫn:\n${quotes}\n[🌐]→ Website: ${website}\n[📌]→ URL cá nhân: ${url_profile}`,
-        attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID,
-        () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID); 
-    return request(encodeURI(`https://graph.facebook.com/${uid}/picture?height=1500&width=1500&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',
-        () => callback());
-   }
-
-    else {
-    if (args.join().indexOf('@') !== -1){
-    var mentions = Object.keys(event.mentions)
-    const res = await axios.get(`https://nguyenmanh.name.vn/api/fbInfo?id=${mentions}&apikey=ogDIVInu`);  
-   var gender = res.data.result.gender == 'male' ? "Nam" : res.data.result.gender == 'female' ? "Nữ" : "Giới tính mà cũng không biết á?";
-    var birthday = res.data.result.birthday ? `${res.data.result.birthday}` : "Bạn sinh vào ngày 30-2- năm không nhớ à!!!";
-    var love = res.data.result.love ? `${res.data.result.love}` : "Vẫn đang F.A sml à???"
-    var website = res.data.result.website ? `${res.data.result.website}` : "Hiện vẫn chưa có website"
-    var about = res.data.result.about ? `${res.data.result.about}` : "Bản thân bạn không có gì để nói à???" 
-    var quotes = res.data.result.quotes ? `${res.data.result.quotes}` : "Cuộc đời bạn không có nổi 1 câu trích dẫn à???"  
-    var relationship = res.data.result.relationship ? `${res.data.result.relationship}` : "Chưa có người yêu mà!!!!"
-    var location = res.data.result.location ? `${res.data.result.location}` : "Bạn hiện không ở trên Trái Đất!!!"
-	var hometown = res.data.result.hometown ? `${res.data.result.hometown}` : "Quê ở đâu mà còn không biết à?"
-    var url_profile = res.data.result.profileUrl  ? `${res.data.result.profileUrl}` : `${url_profile}`
-    var callback = () => api.sendMessage({body:`=== 『𝑻𝒉𝒐̂𝒏𝒈 𝑻𝒊𝒏』 ===\n\n[👤]→ Tên: ${res.data.result.name}\n[🔎]→ UID: ${uid}\n[👀]→ Follow: ${res.data.result.follow}\n[👭]→ Giới tính: ${gender}\n[🎉]→ Sinh Nhật: ${birthday}\n[💌]→ Tên duyên phận: ${love}\n[❤️]→ Mối quan hệ: ${relationship}\n[🏡]→ Sống tại: ${location}\n[🌏]→ Đến từ: ${hometown}\n[👉]→ Introduce myself:\n${about}\n[📝]→ Trích dẫn:\n${quotes}\n[🌐]→ Website: ${website}\n[📌]→ URL cá nhân: ${url_profile}`,
-        attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID,
-        () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID); 
-    return request(encodeURI(`https://graph.facebook.com/${mentions}/picture?height=1500&width=1500&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',
-        () => callback());
+module.exports.circle = async (image) => {
+  const jimp = global.nodemodule["jimp"];
+  image = await jimp.read(image);
+  image.circle();
+  return await image.getBufferAsync("image/png");
     }
-    else {
-      var res_ID = await api.getUID(args[0])
-    const res = await axios.get(`https://www.nguyenmanh.name.vn/api/fbInfo?id=${res_ID}&apikey=ogDIVInu`);  
-  var gender = res.data.result.gender == 'male' ? "Nam" : res.data.result.gender == 'female' ? "Nữ" : "Giới tính mà cũng không biết á?";
-    var birthday = res.data.result.birthday ? `${res.data.result.birthday}` : "Bạn sinh vào ngày 30-2- năm không nhớ à!!!";
-    var love = res.data.result.love ? `${res.data.result.love}` : "Vẫn đang F.A sml à???"
-    var website = res.data.result.website ? `${res.data.result.website}` : "Hiện vẫn chưa có website"
-    var about = res.data.result.about ? `${res.data.result.about}` : "Bản thân bạn không có gì để nói à???" 
-    var quotes = res.data.result.quotes ? `${res.data.result.quotes}` : "Cuộc đời bạn không có nổi 1 câu trích dẫn à???"  
-    var relationship = res.data.result.relationship ? `${res.data.result.relationship}` : "Chưa có người yêu mà!!!!"
-    var location = res.data.result.location ? `${res.data.result.location}` : "Bạn hiện không ở trên Trái Đất!!!"
-	var hometown = res.data.result.hometown ? `${res.data.result.hometown}` : "Quê ở đâu mà còn không biết à?"
-    var url_profile = res.data.result.profileUrl  ? `${res.data.result.profileUrl}` : `${url_profile}`
-    var callback = () => api.sendMessage({body:`=== 『𝑻𝒉𝒐̂𝒏𝒈 𝑻𝒊𝒏』 ===\n\n[👤]→ Tên: ${res.data.result.name}\n[🔎]→ UID: ${uid}\n[👀]→ Follow: ${res.data.result.follow}\n[👭]→ Giới tính: ${gender}\n[🎉]→ Sinh Nhật: ${birthday}\n[💌]→ Tên duyên phận: ${love}\n[❤️]→ Mối quan hệ: ${relationship}\n[🏡]→ Sống tại: ${location}\n[🌏]→ Đến từ: ${hometown}\n[👉]→ Introduce myself:\n${about}\n[📝]→ Trích dẫn:\n${quotes}\n[🌐]→ Website: ${website}\n[📌]→ URL cá nhân: ${url_profile}`,
-        attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID,
-        () => fs.unlinkSync(__dirname + "/cache/1.png"),event.messageID); 
-    return request(encodeURI(`https://graph.facebook.com/${res_ID}/picture?height=1500&width=1500&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`)).pipe(fs.createWriteStream(__dirname+'/cache/1.png')).on('close',
-        () => callback());
-    }
-  }
-}
+module.exports.run =async function({ api, event,args,client }) {  
+        const { loadImage, createCanvas , registerFont} = require("canvas");
+  const { threadID, senderID, type, messageReply } = event;  
+  const fs = global.nodemodule["fs-extra"];
+  const axios = global.nodemodule["axios"];
+
+let pathImg = __dirname + "/cache/tan.png";
+  let pathAvt1 = __dirname + "/cache/Avtmot.png";
+  if (type == "message_reply") uid = messageReply.senderID;
+  else uid = senderID;
+ var cc = await api.getUserInfoV5(uid);
+  //console.log(cc[0].o0.data.messaging_actors[0])
+  var name = cc[0].o0.data.messaging_actors[0].name;
+  var gender = cc[0].o0.data.messaging_actors[0].gender;
+  var id = cc[0].o0.data.messaging_actors[0].id;
+  var url = cc[0].o0.data.messaging_actors[0].url;
+  var username = cc[0].o0.data.messaging_actors[0].username;
+  var shortname = cc[0].o0.data.messaging_actors[0].short_name;
+  var friend = cc[0].o0.data.messaging_actors[0].is_viewer_friend; 
+  var cv = cc[0].o0.data.messaging_actors[0].work_info; 
+  var mess = cc[0].o0.data.messaging_actors[0].is_messenger_user; 
+  var chucvu = cc[0].o0.data.messaging_actors[0].is_employee; 
+  var block = cc[0].o0.data.messaging_actors[0].is_message_blocked_biewer;
+
+  var background = ["https://i.imgur.com/Vblq0gn.jpg"];
+    var rd = background[Math.floor(Math.random() * background.length)];
+    let tân = (
+    await axios.get(`https://graph.facebook.com/${uid}/picture?width=720&height=720&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`,
+      { responseType: "arraybuffer" }
+    )
+  ).data;
+  fs.writeFileSync(pathAvt1, Buffer.from(tân, "utf-8"));
+  ben = await this.circle(pathAvt1);
+  let getbackground = (
+    await axios.get(`${rd}`, {
+      responseType: "arraybuffer",
+    })
+  ).data;
+  fs.writeFileSync(pathImg, Buffer.from(getbackground, "utf-8"));
+  let font = (await axios.get(`https://github.com/hanakuUwU/font/raw/main/CaviarDreams.ttf`, { responseType: "arraybuffer" })).data;
+      fs.writeFileSync(__dirname + `/bot/CaviarDreams.ttf`, Buffer.from(font, "utf-8"));
+  let baseImage = await loadImage(pathImg);
+    let baseAvt1 = await loadImage(ben);
+    let canvas = createCanvas(baseImage.width, baseImage.height);
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(baseAvt1, 150, 115, 170, 170);
+registerFont(__dirname + `/bot/CaviarDreams.ttf`, {
+family: "time"
+    });
+    ctx.textAlign = "start";
+    ctx.fillStyle = "#FF0000";
+    ctx.font = "26px time"; ctx.fillText(`Tên: ${shortname}\nUsername:\n${username == "" ? "không dùng" : username}\nGender: ${gender == "MALE" ? "Trai" : "gái"}`, 470, 135)
+ctx.restore();
+    ctx.save();
+    ctx.beginPath(); 
+    const imageBuffer = canvas.toBuffer();
+    fs.writeFileSync(pathImg, imageBuffer);
+    fs.removeSync(pathAvt1);
+  return api.sendMessage({
+    body: `====[𝐈𝐍𝐅𝐎𝐁𝐎𝐓]====\n👤Tên: ${name}\n👁Tên chính: ${shortname}\n🤳Username: ${username == "" ? "không dùng" : username}\n👀Giới tính: ${gender == "MALE" ? "Trai" : "Nữ"}\n🏷Uid: ${id}\nLinkFB: ${url}\n🤝Bạn bè: ${friend == true ? "Đã kết bạn với bot" : "Chưa kết bạn với bot"}\n👋${mess == true ? "Đã nhắn với bot" : "chưa nhắn tin với bot"}\n🙄${block == true ? "Đã chặn tin nhắn bot" : "Không chặn tin nhắn bot"}\n🗺Công việc: ${cv == null ? "không có" : cv}\n💌Chức vụ: ${chucvu == null ? "Không có" : chucvu}`, attachment: fs.createReadStream(pathImg) }, event.threadID, () => fs.unlinkSync(pathImg));
+} 
+//test xem,no đc, z đc rồi ha 
+// is_viewer_friend: xem danh sách bb, sao nx ah
+// làm như bth, lấy typename ko, nó bị lỗi replytest
+//var callback = () => senblabla,  còn đó ko....

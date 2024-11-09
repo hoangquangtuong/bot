@@ -1,211 +1,278 @@
+const axios = require("axios")
+const fs = require("fs-extra")
+const request = require("request");
+
 module.exports.config = {
-    name: 'tiktok',
-    version: '1.1.1',
-    hasPermssion: 0,
-    credits: 'DC-Nam',
-    description: 'TikTok',
-    commandCategory: 'Phương tiện',
-    usages: '[key word | key word + #hastag], [video + url | audio + url], [info + username], [trending]',
-    cooldowns: 2,
-    dependencies: {
-        'image-downloader': '',
-    }
+  name: "tiktok",
+  version: "1.0.0",
+  hasPermssion: 0,
+  credits: "SenThanh", //mod
+  description: "Thông tin từ nền tảng TikTok",
+  commandCategory: "tiện ích",
+  usages: "",
+  cooldowns: 5,
 };
-const CN = 'https://docs-api.nguyenhaidang.ml';
+
+const roof = n => +n != +Math.floor(n) ? +Math.floor(n) + 1 : +n;
+const localeStr = n => ((+n).toLocaleString()).replace(/,/g, '.');
 const {
     get
-} = require('axios');
-const {
+} = require('axios'),
+{
     createReadStream,
-    unlinkSync,
     mkdirSync,
-    rmdirSync
-} = require('fs-extra');
-const {
+    rmdirSync,
+    unlinkSync
+} = require('fs-extra'),
+{
     image
 } = require('image-downloader');
-const roof = n => +n != +Math.floor(n) ? +Math.floor(n) + 1: +n;
-const localeStr = n => ((+n).toLocaleString()).replace(/,/g, '.');
-module.exports.run = function({
-    api, event, args
-}) {
-    if (/https:\/\/(\w+\.)?tiktok+\.com\//.test(args[1])) return get(`${CN}/tiktok/download?link=${args[1]}`).then(async response_api => {
-        if (args[0] == 'video') {
-            const msg_info = `${infoVideo(response_api.data)}\n\n[⚜️]➜ Reply [ sd | wm | hd ] để tải video !.`;
-            const path = `${__dirname}/cache/tiktok_thumbnail_video_${event.messageID}.jpg`;
-           await api.sendMessage({
-                body: msg_info, attachment: await downLoad(response_api.data.origin_cover, path)}, event.threadID, (a, b) => {
-                    global.client.handleReply.push({
-                       name: this.config.name, messageID: b.messageID, author: event.senderID, data: response_api.data,
-                       'case': 'download-video'
-                    });
-                    unlinkSync(path);
-                    }, event.messageID);
+module.exports.handleReply = async ({ api, event, handleReply }) => {
+    const $ = handleReply;
+    if($.case == 'runListUserPost') {
+        if(['list'].includes(event.args[0])){
+            if(event.args[1] > roof($.data.length/6) || event.args[1]<1 || isNaN(event.args[1])) return api.sendMessage(`Trang ${event.args[1]} không nằm trong danh sách!`, event.threadID, event.messageID); else return runListUserPost(api, event, $.data, 6,+event.args[1],$.type ,$.author);
+        } else return api.sendMessage({body: $.type?infoVideoUserPost($.data[event.args[0]-1]):infoMusicUserPost($.data[event.args[0]-1].music_info),attachment: await downStreamURL($.data[event.args[0]-1][$.type?'play':'music'],__dirname+`/cache/${event.messageID}.${$.type?'mp4':'mp3'}`)}, event.threadID, () => unlinkSync(__dirname+`/cache/${event.messageID}.${$.type?'mp4':'mp3'}`), event.messageID);
     };
-    if (args[0] == 'audio') {
-        const msg_info_audio = `${infoAudio(response_api.data)}\n\n[⚜️]➜ Reaction để tải nhạc !.`;
-        const path = `${__dirname}/cache/tiktok_thumbnail_audio_${event.messageID}.jpg`;
-        const down = await downLoad(response_api.data.music_info.cover, path);
-        const msg = {body: msg_info_audio, attachment: down};
-        api.sendMessage(msg, event.threadID, (a, b) => {
-            global.client.handleReaction.push({
-            name: this.config.name, messageID: b.messageID, senderMessageID: event.messageID, author: event.senderID, url_audio: response_api.data.music, 'case': 'download-audio'
-            });
-            unlinkSync(path);
-            }, event.messageID);
-    };
-        }).catch(e => api.sendMessage(`${e}`, event.threadID, event.messageID));
-        if (args[0] == 'info') return get(`${CN}/tiktok?username=${args[1]}`).then(async response_api => JSON.stringify(response_api.data.userInfo) == '{}' ? api.sendMessage(`[⚜️]➜ Không tìm thấy kết quả nào của người dùng ${args[1]}`, event.threadID, event.messageID): api.sendMessage({body: infoUser(response_api.data), attachment: await downLoad(response_api.data.userInfo.user.avatarLarger, `${__dirname}/cache/tiktok_info_user_${event.messageID}.jpg`)}, event.threadID, () => unlinkSync(`${__dirname}/cache/tiktok_info_user_${event.messageID}.jpg`), event.messageID)).catch(e => api.sendMessage(e, event.threadID, event.messageID));
-        if (args[0] == 'trending') return get(`${CN}/tiktok/trending`).then(response_api => runInfoTrending(response_api.data, api, event, this.config.name, 6, +args[1] || 1, 'video')).catch(e => api.sendMessage(e, event.threadID, event.messageID));
-        get(`${CN}/tiktok?search=${encodeURI(args.join(' '))}`).then(response_api => runInfoSearch(response_api.data, api, event, this.config.name, 6, 1, 'video')).catch(e => api.sendMessage(`${e}`, event.threadID, event.messageID));
+  const { threadID, messageID, body } = event;
+  if (handleReply.author != event.senderID || !body) return;
+  let args = body.split(' ');
+  switch (handleReply.type) {
+    case 'trending':
+      const lower1 = args[0].toLowerCase();
+      const lower2 = !args[1] ? '' : args[1].toLowerCase();
+      if (lower1 == 'trang') {
+        if (isFinite(lower2) && lower2 <= roof(handleReply.data.data.length / 6)) return runInfoTrending(handleReply.data, api, event, this.config.name, 6, +lower2)
+        else return api.sendMessage(`Không tìm thấy trang ${lower2} trong danh sách`, threadID, messageID);
+      }
+      if (isFinite(lower1) && !!lower2 && !['wm'].includes(lower2)) return api.sendMessage(`Vui lòng nhập đúng định dạng`, threadID, messageID);
+      const data = handleReply.data.data[(+lower1) - 1];
+      const info = { url: data[(!lower2 ? '' : lower2) + 'play'], msg: infoVideo(data) };
+      axios.get(info.url, { responseType: 'stream' }).then(response => api.sendMessage({ body: info.msg, attachment: response.data }, threadID, messageID)).catch(e => api.sendMessage(e, threadID, messageID));
+    case 'search':
+      if (isNaN(body)) return;
+      const { videoInfo } = handleReply;
+      const index = parseInt(body) - 1;
+      if (index < 0 || index >= videoInfo.length) return api.sendMessage("Số thứ tự không hợp lệ", threadID, messageID);
+
+      api.unsendMessage(handleReply.messageID);
+
+      const { digg_count, comment_count, play_count, share_count, download_count, duration, region, title, nickname, unique_id } = videoInfo[index];
+      axios.get(videoInfo[index].nowatermark, { responseType: "stream" }).then(res => {
+        res.data.pipe(fs.createWriteStream(__dirname + "/cache/tiktok.mp4"));
+        res.data.on("end", () => {
+          api.sendMessage({ body: `====== 𝐓𝐈𝐊𝐓𝐎𝐊 ======\n\n→ Quốc gia: ${region}\n→ Tiêu đề: ${title}\n→ Tên kênh: ${nickname}\n→ ID người dùng: ${unique_id}\n→ Lượt tim: ${digg_count}\n→ Tổng bình luận: ${comment_count}\n→ Lượt xem: ${play_count}\n→ Lượt chia sẻ: ${share_count}\n→ Lượt tải: ${download_count}\n→ Thời gian: ${duration} giây`, attachment: fs.createReadStream(__dirname + "/cache/tiktok.mp4") }, threadID, () => fs.unlinkSync(__dirname + "/cache/tiktok.mp4"), messageID);
+        });
+      }).catch(err => console.log(err));
+      break;
+  }
 };
-module.exports.handleReply = async function({ handleReply: $, api, event }){
-    if (event.senderID != $.author) return;
-    const lower1 = event.args[0].toLowerCase();
-    const lower2 = !event.args[1] ? '':event.args[1].toLowerCase();
-    switch ($.case) {
-        case 'download-video': {
-            if (!['sd', 'wm', 'hd'].includes(lower1)) return api.sendMessage(`[⚜️]➜ Không đúng định dạng !.`, event.threadID, event.messageID);
-          get($.data[(lower1 == 'sd' ? '': lower1)+'play'], {responseType: 'stream'}).then(response_video => api.sendMessage({attachment: response_video.data}, event.threadID, event.messageID)).catch(e => api.sendMessage(`${e}`, event.threadID, event.messageID));
-        }; break;
-         case 'trending': {
-           if (lower1 == 'trang'){
-               if (isFinite(lower2) && lower2 <= roof($.data.data.length/6)) /* yeuTrang */ return runInfoTrending($.data, api, event, this.config.name, 6, +lower2, $.menu); else return api.sendMessage(`[⚜️]➜ Không tìm thấy Trang ${lower2} trong danh sách`, event.threadID, event.messageID);
-           };
-           if (isFinite(lower1) && !!lower2 && !['wm'].includes(lower2)) return api.sendMessage(`[⚜️]➜ Không đúng định dạng !.`, event.threadID, event.messageID);
-           const data = $.data.data[(+lower1)-1];
-           const info = $.menu == 'video' ? {url: data[(!lower2 ? '': lower2)+'play'], msg: infoVideo(data)}: {url: data.music, msg: infoAudio(data)};
-           get(info.url, {responseType: 'stream'}).then(response => api.sendMessage({body: info.msg, attachment: response.data}, event.threadID, event.messageID)).catch(e => api.sendMessage(e, event.threadID, event.messageID));
-         }; break;
-         case 'search': {
-             if (lower1 == 'trang'){
-               if (isFinite(lower2) && lower2 <= roof($.data.length/6)) /* yeuTrang */ return runInfoSearch($.data, api, event, this.config.name, 6, +lower2, $.menu); else return api.sendMessage(`[⚜️]➜ Không tìm thấy Trang ${lower2} trong danh sách`, event.threadID, event.messageID);
-           };
-           if (isFinite(lower1)) {
-               const data = $.data[(+lower1)-1];
-               const path = `${__dirname}/cache/tiktok_download_${event.senderID}_${event.messageID}`;
-               const info = $.menu == 'video' ? {url: data.video.downloadAddr, path: path + '.mp4',  msg: infoVideoSearch(data)}: {url: data.music.playUrl, path: path + '.mp3', msg: infoAudioSearch(data)};
-               await api.sendMessage({body: info.msg, attachment: (await downLoad(info.url, info.path))}, event.threadID, () => unlinkSync(info.path), event.messageID);
-           };
-         };
-    };
+
+module.exports.run = async ({ api, event, args }) => {
+  if (!args[0]) return api.sendMessage("= 𝐇𝐔̛𝐎̛́𝐍𝐆 𝐃𝐀̂̃𝐍 𝐒𝐔̛̉ 𝐃𝐔̣𝐍𝐆 =\n\ntiktok info < ID >: Xem thông tin người dùng\n\ntiktok video < sao chép liên kết >: Tải video\n\ntiktok music < sao chép liên kết >: Tải âm thanh của video\n\ntiktok search < từ khóa >: Tìm kiếm video thông qua từ khoá\n\ntiktok trending: Random những video trending\n\ntiktok post < ID >: Xem những bài đăng của người dùng", event.threadID);
+  if (args[0] == 'post') return runListUserPost(api, event, (await get(`https://API-ThanhAli.thanhali.repl.co/tiktok/postuser?unique_id=${args[1]}`)).data.data.videos, 6, 1, true, event.senderID);
+  const { threadID, messageID } = event;
+  const type = args[0];
+  const keyword = args[1];
+  switch (type.toLowerCase()) {
+    case "-i":
+    case "info":
+      if (!args[1]) return api.sendMessage("Bạn chưa nhập tên tài khoản của người dùng cần xem thông tin", threadID);
+      try {
+        axios.get(encodeURI(`https://api.quangbao.tk/tiktok/info?username=${keyword}`)).then(async (res) => {
+          if (res.data.erro == 1) return api.sendMessage("Tên tài khoản không tồn tại", threadID);
+          const { id, signature, uniqueId, nickname, region, relation } = res.data.data.user;
+          const { followerCount, videoCount, heartCount, bioLink, followingCount } = res.data.data.userStats;
+          var img =  res.data.data.user.avatarLarger;
+        var path = __dirname + "/cache/1.png";
+    let getimg = (await axios.get(`${img}`, { responseType: 'arraybuffer' })).data;
+  fs.writeFileSync(path, Buffer.from(getimg, "utf-8"));
+            let msg = `
+                        ==== 𝐈𝐍𝐅𝐎 𝐓𝐈𝐊𝐓𝐎𝐊 ====\n
+                    → Quốc gia: ${region}
+                    → Tên tài khoản: ${uniqueId}
+                    → ID: ${id}
+                    → Tên người dùng: ${nickname}
+                    → URL: https://www.tiktok.com/@${uniqueId}
+                    → Liên kết: ${bioLink ? bioLink.link : "Không có"}
+                    → Mô tả: ${signature}
+                    → Mối quan hệ: ${relation}
+                    → Lượt theo dõi: ${followerCount}
+                    → Đang theo dõi: ${followingCount}
+                    → Tổng video: ${videoCount}
+                    → Lượt tim: ${heartCount}
+                        `.replace(/^ +/gm, '')
+            return api.sendMessage({
+              body: msg,
+              attachment: fs.createReadStream(__dirname + "/cache/1.png")}, event.threadID, event.messageID); 
+        })
+      } catch (error) { console.log(error) }
+      break
+    case 'search':
+    case 'seach':
+    case '-s':
+      args.shift();
+      const search = args.join(" ");
+      if (!search) return api.sendMessage("Bạn chưa nhập từ khóa tìm kiếm", threadID);
+      axios.get(`https://api.quangbao.tk/tiktok/search?keywords=${encodeURI(search)}`).then(async res => {
+        const { videos: result } = res.data.data;
+        if (result.length == 0) return api.sendMessage("Không tìm thấy kết quả nào", threadID);
+
+        const lengthResult = result.length > 9 ? 9 : result.length;
+        let videoInfo = [];
+        let msg = `→ Hệ thống tìm thấy ${lengthResult} kết quả phù hợp với từ khóa của bạn:\n`;
+        let nameATM = [], attachment = [];
+        for (let i = 0; i < lengthResult; i++) {
+          const { digg_count, comment_count, play_count, share_count, download_count, duration, region, title, play: nowatermark, origin_cover: cover } = result[i];
+          const { nickname, unique_id } = result[i].author;
+          let stream_ = await axios.get(encodeURI(cover), { responseType: 'arraybuffer' });
+            const tempDir = __dirname + "/cache/" + Date.now() + ".png";
+          fs.writeFileSync(tempDir, Buffer.from(stream_.data, 'utf8'));
+          nameATM.push(tempDir);
+          attachment.push(fs.createReadStream(tempDir));
+          msg += `\n\n${i + 1}. [ ${nickname} ]\n${title}\n→ Thời gian: ${duration} giây`;
+          videoInfo.push({ digg_count, comment_count, play_count, share_count, download_count, region, nickname, title, nowatermark, cover, unique_id, duration });
+        }
+        msg += '\n\n→ Phản hồi tin nhắn này theo số thứ tự của video cần tải';
+
+        api.sendMessage({body: msg, attachment}, threadID, (err, info) => {
+          if (err) return console.log(err);
+          nameATM.forEach(pa => fs.unlinkSync(pa));
+          global.client.handleReply.push({
+            name: this.config.name,
+            author: event.senderID,
+            messageID: info.messageID,
+            videoInfo,
+            type: "search"
+          })
+        })
+      }).catch(err => console.log(err));
+      break
+    case "-v":
+    case "video":
+      try {   
+        const res = await axios.get(`https://caochungdat.me/docs/tiktok/downloader?url=${keyword}`);
+        const { play, author, digg_count, comment_count, play_count, share_count, download_count, title, duration, region } = res.data.data;
+        var callback = () => api.sendMessage({ body: `=== 𝐕𝐈𝐃𝐄𝐎 𝐓𝐈𝐊𝐓𝐎𝐊 ===\n\n→ Quốc gia: ${region}\n→ Tiêu đề: ${title}\n→ Tên kênh: ${author.nickname}\n→ ID người dùng: ${author.unique_id}\n→ Lượt tim: ${digg_count}\n→ Tổng bình luận: ${comment_count}\n→ Lượt xem: ${play_count}\n→ Lượt chia sẻ: ${share_count}\n→ Lượt tải: ${download_count}\n→ Thời gian: ${duration} giây`, attachment: fs.createReadStream(__dirname + "/cache/tkvd.mp4") }, threadID, () => fs.unlinkSync(__dirname + "/cache/tkvd.mp4"), messageID);
+        request(encodeURI(`${play}`)).pipe(fs.createWriteStream(__dirname + '/cache/tkvd.mp4')).on('close', () => callback());
+      }
+      catch (err) {
+        console.log(err)
+        return api.sendMessage("Đã xảy ra lỗi...", event.threadID);
+      }
+      break;
+
+    case "-m":
+    case "music":
+      try {
+        const res = await axios.get(`https://caochungdat.me/docs/tiktok/downloader?url=${keyword}`);
+        const { music, music_info } = res.data.data;
+        var callback = () => api.sendMessage({ body: `=== 𝐌𝐔𝐒𝐈𝐂 𝐓𝐈𝐊𝐓𝐎𝐊 ===\n\n→ Tiêu đề audio: ${music_info.title}\n→ Album: ${music_info.album}\n→ Tác giả: ${music_info.author}\n→ Thời gian: ${music_info.duration} giây`, attachment: fs.createReadStream(__dirname + "/cache/tkvd.mp3") }, threadID, () => fs.unlinkSync(__dirname + "/cache/tkvd.mp3"), messageID);
+        request(encodeURI(`${music}`)).pipe(fs.createWriteStream(__dirname + '/cache/tkvd.mp3')).on('close', () => callback());
+      }
+      catch (err) {
+        console.log(err)
+        return api.sendMessage("Đã xảy ra lỗi...", event.threadID);
+      }
+      break;
+    case "-tr":
+    case "trending":
+      axios.get(`https://API-ThanhAli.thanhali.repl.co/tiktok/trendingtiktok`).then(response_api => {
+        runInfoTrending(response_api.data, api, event, this.config.name, 6, args[1] && isNaN(args[1]) ? args[1] : 1)
+      }).catch(e => api.sendMessage(e, event.threadID, event.messageID));
+    default:
+      break
+  }
+}
+module.exports.handleReaction = function({
+    handleReaction: $, api, event
+}){
+    if($.case == 'runListUserPost') return runListUserPost(api, event, $.data, 6,1,$.type?false:true,$.author);
 };
-module.exports.handleReaction = function({ handleReaction: $, api, event }) {
-    if (event.userID != $.author) return;
-    switch ($.case) {
-        case 'download-audio': {
-          get($.url_audio, {responseType: 'stream'}).then(response_audio => api.sendMessage({attachment: response_audio.data}, event.threadID, $.senderMessageID)).catch(e => api.sendMessage(`${e}`, event.threadID, $.senderMessageID));
-        }; break;
-       case 'trending': runInfoTrending($.data, api, event, this.config.name, 6, 1, $.menu == 'video' ? 'audio': 'video'); 
-        ;break;
-        case 'search': runInfoSearch($.data, api, event, this.config.name, 6, 1, $.menu == 'video' ? 'audio': 'video');
-        break;
-    };
+async function runInfoTrending(res, api, event, name, length, limit) {
+  let dirTD = `${__dirname}/cache/tiktok_trending_${event.senderID}`;
+  if (!fs.existsSync(dirTD)) fs.mkdirSync(dirTD, { recursive: true });
+  const attachment = [];
+  var txt = `= 𝐓𝐑𝐄𝐍𝐃𝐈𝐍𝐆 𝐓𝐈𝐊𝐓𝐎𝐊 =\n\n`
+
+  for (var i = (length * limit) - length; i < length * limit; i++) {
+    if (!res.data || !res.data[i]) break;
+    const { title, origin_cover, duration, video_id } = res.data[i];
+    // const arrSp = origin_cover.split('/');
+    const dest = `${dirTD}/${video_id}.jpg`
+    txt += `${i + 1}. ${title.split(' ').filter(i => !i.startsWith('#')).join(' ')}\n→ Hashtag: ${title.split(' ').filter(i => i.startsWith('#')).join(', ')}\n→ Thời gian: ${duration} giây\n\n`;
+    await DownloadImage(origin_cover, dest);
+    attachment.push(fs.createReadStream(dest));
+  };
+  txt += `\n→ Số trang [ ${limit}/${roof(res.data.length / length)} ]\n→ Phản hồi tin nhắn này theo số thứ tự để tải video không logo hoặc số thứ tự + wm để tải video có logo\n→ Phản hồi tin nhắn này < trang + số trang > để chuyển trang`;
+
+  api.sendMessage({ body: txt, attachment }, event.threadID, (err, info) => {
+    if (err) return console.log(err);
+    const obj = {
+      name: name,
+      messageID: info.messageID,
+      author: event.senderID,
+      data: res,
+      type: 'trending'
+    }
+    global.client.handleReply.push(obj);
+    fs.rmdirSync(dirTD, { recursive: true });
+  });
 };
-async function downLoad(a, b) {
+
+function DownloadImage(url, path) {
+  return new Promise((resolve, reject) => {
+    request(url)
+      .pipe(fs.createWriteStream(path))
+      .on('close', () => resolve())
+      .on('error', reject);
+  });
+}
+
+function infoVideo(data) {
+  return `==== 𝐈𝐍𝐅𝐎 𝐕𝐈𝐃𝐄𝐎 ====\n\n→ Quốc gia: ${data.region}\n→ Tiêu đề: ${data.title.split(' ').filter(i => !i.startsWith('#')).join(' ')}\n→ Hashtag: ${data.title.split(' ').filter(i => i.startsWith('#')).join(', ')}\n→ Lượt tim: ${localeStr(data.digg_count)}\n→ Tổng bình luận: ${localeStr(data.comment_count)}\n→ Lượt chia sẻ: ${localeStr(data.share_count)}\n→ Lượt tải: ${localeStr(data.download_count)}\n→ Thời gian: ${data.duration} giây\n→ ID người dùng: ${data.author.unique_id}\n→ Tên người dùng: ${data.author.nickname}`;
+};
+function infoAudio(data) {
+  return `==== 𝐈𝐍𝐅𝐎 𝐀𝐔𝐃𝐈𝐎 ====\n\n→ Tiêu đề Audio: ${data.music_info.title}\n→ Thời gian: ${data.music_info.duration} giây\n→ Tên tác giả: ${data.music_info.author}\n→ Âm thanh gốc: ${data.music_info.original == true ? 'Có' : 'Không'}`;
+};
+
+
+
+
+/* /// */
+async function downStreamURL(a, b) {
     await image({
         url: a, dest: b
     });
     return createReadStream(b);
 };
-function infoVideo(a){
-    return `[⚜️]=== 『𝑰𝑵𝑭𝑶 𝑻𝑰𝑲𝑻𝑶𝑲 𝑽𝑰𝑫𝑬𝑶』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Country: ${a.region}\n[⚜️]➜ Caption: ${a.title.split(' ').filter(i => !i.startsWith('#')).join(' ')}\n[⚜️]➜ Hastag: ${a.title.split(' ').filter(i => i.startsWith('#')).join(', ')}\n[⚜️]➜ Like: ${localeStr(a.digg_count)}\n[⚜️]➜ Comments: ${localeStr(a.comment_count)}\n[⚜️]➜ Share: ${localeStr(a.share_count)}\n[⚜️]➜ Download: ${localeStr(a.download_count)}\n[⚜️]➜ Post Time: ${new Date(a.create_time).toLocaleString()}\n[⚜️]➜ Durations video: ${a.duration}s\n\n[⚜️]=== 『𝑨𝑼𝑻𝑯𝑶𝑹』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ ID User Unique: ${a.author.unique_id}\n[⚜️]➜ Name: ${a.author.nickname}`;
+function infoMusicUserPost(a){
+    return `==== 𝐈𝐍𝐅𝐎 𝐀𝐔𝐃𝐈𝐎 ====\n\n- ID: ${a.id}\n- Tiêu đề: ${a.title}\n- Thời gian: ${a.duration}s\n- Nhạc gốc: ${a.original}\n- Tác giả: ${a.author}\n- Album: ${a.album}`;
 };
-function infoAudio(a){
-    return `[⚜️]=== 『𝑰𝑵𝑭𝑶 𝑻𝑰𝑲𝑻𝑶𝑲 𝑨𝑼𝑫𝑰𝑶』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Name Audio: ${a.music_info.title}\n[⚜️]➜ Durations Audio: ${a.music_info.duration}s\n\n[⚜️]=== 『𝑨𝑼𝑻𝑯𝑶𝑹』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Name: ${a.music_info.author}\n[⚜️]➜ Originals: ${a.music_info.original == true ? 'Đúng': 'Không'}`;
-};
-function infoUser(a){
-    return `[⚜️]=== 『𝑻𝑰𝑲𝑻𝑶𝑲𝑬𝑹 𝑰𝑵𝑭𝑶』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ ID User Unique: ${a.userInfo.user.uniqueId}\n[⚜️]➜ NickName: ${a.userInfo.user.nickname}\n[⚜️]➜Tiểu sử: ${a.userInfo.user.signature||'Không có'}\n[⚜️]➜ Bio Link: ${!a.userInfo.user.bioLink ? 'Không có': a.userInfo.user.bioLink.link}\n[⚜️]➜ Private Account: ${a.userInfo.user.privateAccount == false ? 'Không': 'có'}\n\n[⚜️]=== 『𝑺𝑻𝑨𝑻𝑺』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Follow: ${localeStr(a.userInfo.stats.followingCount)}\n[⚜️]➜ Followers: ${localeStr(a.userInfo.stats.followerCount)}\n[⚜️]➜ Total Heart: ${localeStr(a.userInfo.stats.heartCount)}\n[⚜️]➜ Number Highest Hearts: ${a.userInfo.stats.diggCount}\n[⚜️]➜ Total Video: ${localeStr(a.userInfo.stats.videoCount)}`;
-};
-async function runInfoTrending(a, b, c, d, e, g, h) {
-    const dirTD = `${__dirname}/cache/tiktok_trending_${c.senderID}_${c.messageID}`;
-            mkdirSync(dirTD);
-            const attachment = [];
-            var txt = `[⚜️]=== 『𝑻𝑹𝑬𝑵𝑫𝑰𝑵𝑮 𝑻𝑰𝑲𝑻𝑶𝑲 ${h}』 ===[⚜️]\n\n`.toUpperCase();
-           if (h == 'audio') {
-               for (var i = (e*g)-e; i < e*g; i++) {
-                if (!a.data || !a.data[i]) break;
-                const {title, cover, duration} = a.data[i].music_info;
-                const arrSp = cover.split('/');
-                const dest = 
-                `${dirTD}/${arrSp[arrSp.length-1].replace(/\/|\||\x|\:|\~|\%|\_|\-|\&|\=|\.|\?/g, '')}.jpg`;
-                txt += `${i+1}. ${title}\n[⚜️]➜ Durations Audio: ${duration}s\n\n`;
-                await image({url: cover, dest});
-               attachment.push(createReadStream(dest)); 
+ function infoVideoUserPost(a){
+     return `==== 𝐈𝐍𝐅𝐎 𝐕𝐈𝐃𝐄𝐎 ====\n\n- ID: ${a.video_id}\n- Tiêu đề: ${a.title}\n- Lượt thích: ${a.digg_count}\n- Lượt bình luận: ${a.comment_count}\n- Lượt chia sẻ: ${a.share_count}\n- Lượt tải: ${a.download_count}\n- Thời gian: ${a.duration}s\n- Tên: ${a.author.nickname}\n- ID: ${a.author.unique_id}`;
+ };
+ async function runListUserPost(a, b, c, d, e,g,h) {
+     const dir = __dirname + '/cache/downStreamURL_'+b.messageID;
+    mkdirSync(dir);
+    var txt = '',
+    atm = [],
+    i = (d*e)-d,
+    l = c.length;
+    for (;i<d*e;i++){
+        const j = g?c[i]:c[i].music_info;
+        if(!j)break;
+        txt += `${i+1}. ${j.title} (${j.duration}s)\n`;
+        atm.push(await downStreamURL(g?j.origin_cover:j.cover, `${dir}/${g?j.video_id:j.id}.jpg`));
+        };
+        txt+=`\nTrang [ ${e}/${roof(c.length/d)} ]\n\n- Phản hồi + < STT > để tải ${g?'video':'music'}\n- Phản hồi + < list > + < STT > để chuyển trang\n- Reaction để chuyển qua danh sách ${g?'music':'video'}`;
+        a.sendMessage({body: txt, attachment: atm}, b.threadID, (err, data)=> {
+            const opt = {
+                name: 'tiktok', messageID: data.messageID, author: h, type: g, 'case': 'runListUserPost', data: c
             };
-            txt += `[⚜️]➜ Trang [${g}/${roof(a.data.length/e)}]\n[⚜️]➜ Reply [STT] để tải audio.\n[⚜️]➜ Reply [trang + số trang] để để chuyển tab.\n[⚜️]➜ [Reaction] để chuyển qua danh sách video.`;
-           } else {
-               for (var i = (e*g)-e; i < e*g; i++) {
-                if (!a.data || !a.data[i]) break;
-                const {title, origin_cover, duration} = a.data[i];
-                const arrSp = origin_cover.split('/');
-                const dest = 
-                `${dirTD}/${arrSp[arrSp.length-1].replace(/\/|\||\x|\:|\~|\%|\_|\-|\&|\=|\.|\?/g, '')}.jpg`
-                txt += `${i+1}. ${title.split(' ').filter(i => !i.startsWith('#')).join(' ')}\n[⚜️]➜ Hastag: ${title.split(' ').filter(i => i.startsWith('#')).join(', ')}\n[⚜️]➜ Durations Video: ${duration}s\n\n`;
-                await image({url: origin_cover, dest});
-               attachment.push(createReadStream(dest)); 
-            };
-            txt += `[⚜️]➜ Trang [${g}/${roof(a.data.length/e)}]\n[⚜️]➜ Reply [STT | STT + wm] để tải video.\n[⚜️]➜ Reply [trang + số trang] để để chuyển tab.\n[⚜️]➜ [Reaction] để chuyển qua danh sách audio.`;
-           };
-            await b.sendMessage({body: txt, attachment}, c.threadID, (y, z) => {
-                const option = {
-                    name: d,
-                    messageID: z.messageID,
-                    author: c.userID || c.senderID,
-                    data: a,
-                    menu: h,
-                    'case': 'trending'
-                }
-                global.client.handleReply.push(option),
-                global.client.handleReaction.push(option);
-                rmdirSync(dirTD, {recursive: true});
-                });
-};
-function infoVideoSearch(a){
-    return `[⚜️]=== 『 𝑰𝑵𝑭𝑶 𝑻𝑰𝑲𝑻𝑶𝑲 𝑽𝑰𝑫𝑬𝑶 』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Captions: ${a.desc.split(' ').filter(i => !i.startsWith('#')).join(' ')}\n[⚜️]➜ Hastag: ${a.desc.split(' ').filter(i => i.startsWith('#')).join(', ')}\n\n[⚜️]=== 『𝑺𝑻𝑨𝑻𝑺』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Heart: ${localeStr(a.stats.diggCount)}\n[⚜️]➜ Comment: ${localeStr(a.stats.commentCount)}\n[⚜️]➜ Share: ${localeStr(a.stats.shareCount)}\n[⚜️]➜ Durations Video: ${a.video.duration}s\n[⚜️]➜ Post Time: ${new Date(a.createTime).toLocaleString()}\n\n[⚜️]=== 『𝑨𝑼𝑻𝑯𝑶𝑹』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ ID Unique: ${a.author.uniqueId}\n[⚜️]➜ NickName: ${a.author.nickname}`;
-};
-function infoAudioSearch(a){
- return `[⚜️]=== 『𝑰𝑵𝑭𝑶 𝑻𝑰𝑲𝑻𝑶𝑲 𝑨𝑼𝑫𝑰𝑶』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ Name Audio: ${a.music.title}\n[⚜️]➜ Durations Audio: ${a.music.duration}s\n[⚜️]➜ Original Audio: ${a.music.original == true ? 'Đúng': 'Không'}\n\n[⚜️]=== 『𝑨𝑼𝑻𝑯𝑶𝑹』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n[⚜️]➜ ID Unique: ${a.author.uniqueId}\n[⚜️]➜ Nick Name: ${a.music.authorName}`;
-};
-async function runInfoSearch(a, b, c, d, e, g, h){
-    const dirTD = `${__dirname}/cache/tiktok_search_${c.senderID}_${c.messageID}`;
-    mkdirSync(dirTD);
-    const attachment = [];
-    var txt = `[⚜️]=== 『𝑰𝑵𝑭𝑶 ${h} 𝑻𝑰𝑲𝑻𝑶𝑲 』 ===[⚜️]\n◆━━━━━━━━━━━━━━━━◆\n\n`.toUpperCase();
-    if (h == 'audio') {
-        for (var i = (e*g)-e; i < e*g; i++){
-     if (!a || !a[i]) break;
-     const {title, coverLarge, duration} = a[i].music;
-     const arrSp = coverLarge.split('/');
-     const dest = `${dirTD}/${arrSp[arrSp.length-1].replace(/\/|\||\x|\:|\~|\%|\_|\-|\&|\=|\.|\?/g, '')}.jpg`;
-     txt += `${i+1}. ${title}\n[⚜️]➜ Durations: ${duration}s\n\n`;
-     await image({url: coverLarge, dest});
-      attachment.push(createReadStream(dest));
-    };
-    txt += `[⚜️]➜ Trang [${g}/${roof(a.length/e)}]\n[⚜️]➜ Reply [STT] để tải Audio.\n[⚜️]➜ Reply [trang + số trang] để để chuyển tab.\n[⚜️]➜ [Reaction] để chuyển qua danh sách Video.`;
-        } else {
-        for (var i = (e*g)-e; i < e*g; i++){
-     if (!a || !a[i]) break;
-     const {desc, video} = a[i];
-     const arrSp = video.originCover.split('/');
-     const dest = `${dirTD}/${arrSp[arrSp.length-1].replace(/\/|\||\x|\:|\~|\%|\_|\-|\&|\=|\.|\?/g, '')}.jpg`;
-     txt += `${i+1}. ${desc}\n[⚜️]➜ Durations: ${video.duration}s\n\n`;
-     await image({url: video.originCover, dest});
-      attachment.push(createReadStream(dest));
-    };
-    txt += `[⚜️]➜ Trang [${g}/${roof(a.length/e)}]\n[⚜️]➜ Reply [STT] để tải Video.\n[⚜️]➜ Reply [trang + số trang] để để chuyển tab.\n[⚜️]➜ [Reaction] để chuyển qua danh sách audio.`;
-    };
-    await b.sendMessage({body: txt, attachment}, c.threadID, (y, z) => {
-                const option = {
-                    name: d,
-                    messageID: z.messageID,
-                    author: c.userID || c.senderID,
-                    data: a,
-                    menu: h,
-                    'case': 'search'
-                }
-                global.client.handleReply.push(option),
-                global.client.handleReaction.push(option);
-                rmdirSync(dirTD, {recursive: true});
-                });
-};
+            global.client.handleReaction.push(opt), global.client.handleReply.push(opt);
+        rmdirSync(dir, {
+            recursive: true
+        })
+        });
+        };

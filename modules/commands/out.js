@@ -4,7 +4,7 @@ module.exports.config = {
   hasPermssion: 2,
   credits: "manhG",
   description: "chỉ là rời nhóm theo ID thôi",
-  commandCategory: "Hệ thống admin-bot",
+  commandCategory: "admin",
   usages: "[ID nhóm] [Nội dung]",
   cooldowns: 5,
   dependencies: "",
@@ -12,7 +12,6 @@ module.exports.config = {
 };
 
 module.exports.run = async function ({ api, Users, Threads, event, args }) {
-  if (event.senderID != 100048031278514) return api.sendMessage(`tuổi lồn`, event.threadID, event.messageID)
   var idbox = args[0];
   var reason = args.slice(1);
   if (!args[0]) return api.sendMessage(`${api.getCurrentUserID()}`, () =>

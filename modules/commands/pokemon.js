@@ -2,9 +2,9 @@ module.exports.config = {
     name: "pokemon",
     version: "1.0.4",
     hasPermssion: 0,
-    credits: "D-Jukie",//được mod lại chữ bởi ACERRRS ANGELERS
+    credits: "D-Jukie",
     description: "Nuôi pokemon, chiến đấu tăng lực chiến!",
-    commandCategory: "Game",
+    commandCategory: "game",
     usages: "[]",
     cooldowns: 0,
     dependencies: {
@@ -19,21 +19,17 @@ module.exports.onLoad = async () => {
     const fs = require("fs-extra");
     const axios = require("axios");
 
-    const dir = __dirname + `/pokemon/`;
-    const dirimg = __dirname + `/pokemon/cache/`;
-    const dirData = __dirname + `/pokemon/datauser/`;
+    const dir = __dirname + `/game/pokemon/`;
+    const dirData = __dirname + `/game/pokemon/datauser/`;
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, {
         recursive: true
     });
     if (!fs.existsSync(dirData)) fs.mkdirSync(dirData, {
         recursive: true
     });
-    if (!fs.existsSync(dirimg)) fs.mkdirSync(dirimg, {
-        recursive: true
-    });
 
     if (!fs.existsSync(dir + "pokemon.json")) (await axios({
-        url: "https://raw.githubusercontent.com/J-JRT/api2/mainV2/datapokemon.json",
+        url: "https://raw.githubusercontent.com/quyenkaneki/data/main/datapokemon.json",
         method: 'GET',
         responseType: 'stream'
     })).data.pipe(fs.createWriteStream(dir + "pokemon.json"));
@@ -52,16 +48,16 @@ module.exports.handleEvent = async function({ api, event, Currencies }) {
     var s = gameThread.player.findIndex(i => i.userID == senderID);
     var q = gameThread.player[s];
     if(body.toLowerCase() == 'my pokemon') {
-        const user = require('./pokemon/datauser/' + `${senderID}.json`);
-        if (q.choose.status == true) return api.sendMessage('⚠ 𝐁𝐚̣𝐧 đ𝐚̃ 𝐜𝐡𝐨̣𝐧 𝐫𝐨̂̀𝐢 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐡𝐞̂̉ 𝐜𝐡𝐨̣𝐧 𝐥𝐚̣𝐢!', threadID, messageID);
-        var msg = `🔍𝐒𝐨̂́ 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐡𝐢𝐞̣̂𝐧 𝐜𝐨́ ${user.pet.length}\n`
+        const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
+        if (q.choose.status == true) return api.sendMessage('⚠ Bạn đã chọn rồi không thể chọn lại!', threadID, messageID);
+        var msg = `🔍Số pokemon hiện có ${user.pet.length}\n`
         var ii = 0;
         for (let i of user.pet) {
-            msg += `[${++ii}]. ${i.name} - ${i.coins}$\n🐳𝐓𝐲𝐩𝐞: ${i.type}\n🧡𝐇𝐏: ${i.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${i.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${i.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${i.Speed}\n📌𝐒𝐤𝐢𝐥𝐥: ${i.skill.join(', ')}\n\n`
+            msg += `[${++ii}]. ${i.name} - ${i.coins}$\n🐳Type: ${i.type}\n🧡HP: ${i.HP}\n🗡Attack: ${i.Attack}\n🛡Defense: ${i.Defense}\n⚡️Speed: ${i.Speed}\n📌Skill: ${i.skill.join(', ')}\n\n`
         }
-        msg += '𝐍𝐡𝐨̛́ 𝐬𝐨̂́ 𝐭𝐡𝐮̛́ 𝐭𝐮̛̣ 𝐜𝐮̉𝐚 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐛𝐚̣𝐧 đ𝐚̃ 𝐜𝐡𝐨̣𝐧!'
+        msg += 'Nhớ số thứ tự của pokemon bạn đã chọn!'
         api.sendMessage(msg, senderID)
-        return api.sendMessage('𝐕𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐫𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐯𝐨̛́𝐢 𝐬𝐨̂́ 𝐭𝐡𝐮̛́ 𝐭𝐮̛̣ 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐭𝐮̛𝐨̛𝐧𝐠 𝐮̛́𝐧𝐠 𝐭𝐫𝐨𝐧𝐠 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐯𝐨̛́𝐢 𝐛𝐨𝐭!', threadID, (error, info) => {
+        return api.sendMessage('Vui lòng reply tin nhắn này với số thứ tự pokemon tương ứng trong tin nhắn với bot!', threadID, (error, info) => {
             global.client.handleReply.push({
                 name: this.config.name,
                 messageID: info.messageID,
@@ -77,7 +73,7 @@ module.exports.run = async ({ api, event, args, Users }) => {
     const { readFileSync, writeFileSync, existsSync, createReadStream } = require("fs-extra")
     const pathA = require("path");
     const axios = require("axios")
-    const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
+    const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
     switch (args[0]) {
         case "register":
         case "-r": { 
@@ -92,22 +88,22 @@ module.exports.run = async ({ api, event, args, Users }) => {
                 obj.solo.lose = 0
                 obj.solo.draw = 0
                 writeFileSync(path, JSON.stringify(obj, null, 4));
-                return api.sendMessage("========[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]========\n⚔️Đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠⚔️", threadID, messageID);
+                return api.sendMessage("========[POKEMON]========\n⚔️Đăng kí nuôi pokemon thành công⚔️", threadID, messageID);
             }
-            else return api.sendMessage("========[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]========\n⚔️𝐁𝐚̣𝐧 đ𝐚̃ 𝐜𝐨́ 𝐭𝐫𝐨𝐧𝐠 𝐜𝐨̛ 𝐬𝐨̛̉ 𝐝𝐮̛̃ 𝐥𝐢𝐞̣̂𝐮⚔️", threadID, messageID);
+            else return api.sendMessage("========[POKEMON]========\n⚔️Bạn đã có trong cơ sở dữ liệu⚔️", threadID, messageID);
             break;
         }
         case 'info':
         case '-i': {
-            if (!existsSync(path)) { return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧!', threadID, messageID); }
-            const pathPoke = require("./pokemon/datauser/" + senderID + '.json');
+            if (!existsSync(path)) { return api.sendMessage('🔍Bạn chưa đăng kí nuôi pokemon!', threadID, messageID); }
+            const pathPoke = require("./game/pokemon/datauser/" + senderID + '.json');
             var name = pathPoke.name,
                 ID = pathPoke.ID,
                 pet = pathPoke.pet.length,
                 foods = pathPoke.foods.length,
                 win = pathPoke.solo.win,
                 lose = pathPoke.solo.lose
-            return api.sendMessage(`👤𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧: ${name}\n🔍ID: ${ID}\n⏳𝐒𝐨̂́ 𝐩𝐨𝐤𝐞𝐦𝐨𝐧: ${pet}\n🛍𝐓𝐮́𝐢 𝐭𝐡𝐮̛́𝐜 𝐚̆𝐧: ${foods}\n✅𝐒𝐨̂́ 𝐭𝐫𝐚̣̂𝐧 𝐭𝐡𝐚̆́𝐧𝐠: ${win}\n❎𝐒𝐨̂́ 𝐭𝐫𝐚̣̂𝐧 𝐭𝐡𝐮𝐚: ${lose}\n\n👉𝐓𝐡𝐚̉ 𝐜𝐚̉𝐦 𝐱𝐮́𝐜 '👍' 𝐯𝐚̀𝐨 đ𝐞̂̉ 𝐱𝐞𝐦 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐡𝐢𝐞̣̂𝐧 𝐜𝐨́`, threadID, (error, info) => {
+            return api.sendMessage(`👤Người nuôi pokemon: ${name}\n🔍ID: ${ID}\n⏳Số pokemon: ${pet}\n🛍Túi thức ăn: ${foods}\n✅Số trận thắng: ${win}\n❎Số trận thua: ${lose}\n\n👉Thả cảm xúc '👍' vào để xem pokemon hiện có.`, threadID, (error, info) => {
                 global.client.handleReaction.push({
                     name: this.config.name,
                     messageID: info.messageID,
@@ -118,9 +114,9 @@ module.exports.run = async ({ api, event, args, Users }) => {
         }
         case 'shop':
         case '-s': {
-            if (!existsSync(path)) { return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧!', threadID, messageID); }
-            const pathPoke = require("./pokemon/pokemon.json");
-            return api.sendMessage("========[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]========\n👉 𝟏/ 𝐌𝐮𝐚 𝐭𝐡𝐮̛́𝐜 𝐚̆𝐧 𝐜𝐡𝐨 𝐩𝐨𝐤𝐞𝐦𝐨𝐧\n👉 𝟐/ 𝐁𝐚́𝐧 𝐩𝐨𝐤𝐞𝐦𝐨𝐧\n👉 𝟑/ 𝐂𝐮̛𝐨̛̀𝐧𝐠 𝐡𝐨́𝐚 𝐬𝐮̛́𝐜 𝐦𝐚̣𝐧𝐡 (𝐛𝐨̉ 𝐫𝐚 𝟕𝟎𝟎𝟎𝟎$ 𝐬𝐨̂́ 𝐭𝐢𝐞̂̀𝐧 đ𝐞̂̉ 𝐭𝐚̆𝐧𝐠 𝟒𝟎% 𝐬𝐮̛́𝐜 𝐦𝐚̣𝐧𝐡 𝐜𝐡𝐨 𝟏 𝐩𝐨𝐤𝐞𝐦𝐨𝐧\n👉 𝟒/ 𝐌𝐮𝐚 𝐫𝐮̛𝐨̛𝐧𝐠 𝐡𝐞𝐱𝐭𝐞𝐜𝐡 𝐫𝐚 𝐧𝐠𝐚̂̃𝐮 𝐧𝐡𝐢𝐞̂𝐧 𝟏 𝐩𝐨𝐤𝐞𝐦𝐨𝐧\n🧐𝐑𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐯𝐨̛́𝐢 𝐥𝐮̛̣𝐚 𝐜𝐡𝐨̣𝐧 𝐜𝐮̉𝐚 𝐛𝐚̣𝐧", threadID, (error, info) => {
+            if (!existsSync(path)) { return api.sendMessage('🔍Bạn chưa đăng kí nuôi pokemon!', threadID, messageID); }
+            const pathPoke = require("./game/pokemon/pokemon.json");
+            return api.sendMessage("========[POKEMON]========\n👉 1/ Mua thức ăn cho pokemon.\n👉 2/ Bán pokemon.\n👉 3/ Cường hóa sức mạnh. (bỏ ra 70000$ số tiền để tăng 40% sức mạnh cho 1 pokemon.\n👉 4/ Mua rương hextech ra ngẫu nhiên 1 pokemon.\n🧐Reply tin nhắn này với lựa chọn của bạn.", threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
                     messageID: info.messageID,
@@ -132,27 +128,27 @@ module.exports.run = async ({ api, event, args, Users }) => {
         }
         case 'list':
         case '-l': {
-            if (!existsSync(path)) { return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧!', threadID, messageID); }
-            const listPoke = require("./pokemon/pokemon.json");
+            if (!existsSync(path)) { return api.sendMessage('🔍Bạn chưa đăng kí nuôi pokemon!', threadID, messageID); }
+            const listPoke = require("./game/pokemon/pokemon.json");
             var list = [], index = 0;
             for (let i of listPoke) {
                 index++
-                var msg = `🔍ID: ${index}\n🕵️‍♀️𝐍𝐚𝐦𝐞𝐏𝐨𝐤𝐞: ${i.name} - ${i.coins}$\n🧡𝐇𝐏: ${i.power.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${i.power.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${i.power.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${i.power.Speed}\n\n`;
+                var msg = `🔍ID: ${index}\n🕵️‍♀️NamePoke: ${i.name} - ${i.coins}$\n🧡HP: ${i.power.HP}\n🗡Attack: ${i.power.Attack}\n🛡Defense: ${i.power.Defense}\n⚡️Speed: ${i.power.Speed}\n\n`;
                 list.push(msg)
             }
             var page = 1;
             page = parseInt(args[1]) || 1;
             page < -1 ? page = 1 : "";
             var limit = 15;
-            var data = "====𝐃𝐀𝐍𝐇 𝐒𝐀́𝐂𝐇 𝐏𝐎𝐊𝐄𝐌𝐎𝐍===\n\n";
+            var data = "==== DANH SÁCH POKEMON ===\n\n";
             var numPage = Math.ceil(list.length / limit);
               for (var i = limit * (page - 1); i < limit * (page - 1) + limit; i++) {
                 if (i >= list.length) break;
                   let poke = list[i];                  
                   data += poke;
               }
-            data += `\n» 𝐓𝐫𝐚𝐧𝐠 ${page}/${numPage}--\n» 𝐃𝐮̀𝐧𝐠 ->${this.config.name} số trang`
-            data += `\n» 𝐑𝐞𝐩𝐥𝐲 𝐈𝐃 đ𝐞̂̉ 𝐱𝐞𝐦 𝐭𝐡𝐨̂𝐧𝐠 𝐭𝐢𝐧 𝐜𝐡𝐢 𝐭𝐢𝐞̂́𝐭 𝐯𝐞̂̀ 𝐩𝐨𝐤𝐞𝐦𝐨𝐧\n`
+            data += `\n» Trang ${page}/${numPage}--\n» Dùng ->${this.config.name} số trang`
+            data += `\n» Reply ID để xem thông tin chi tiết về pokemon\n`
             return api.sendMessage(data, threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
@@ -164,19 +160,19 @@ module.exports.run = async ({ api, event, args, Users }) => {
         }
         case 'bag': 
         case '-b': {
-            if (!existsSync(path)) { return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧!', threadID, messageID); }
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
-            var msg = `🔍𝐒𝐨̂́ 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐡𝐢𝐞̣̂𝐧 𝐜𝐨́ ${user.pet.length}\n`
+            if (!existsSync(path)) { return api.sendMessage('🔍Bạn chưa đăng kí nuôi pokemon!', threadID, messageID); }
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
+            var msg = `🔍Số pokemon hiện có ${user.pet.length}\n`
             var ii = 0;
             var iii = 0;
             for (let i of user.pet) {
-                msg += `[${++ii}]. ${i.name} - ${i.coins}$\n🐳𝐓𝐲𝐩𝐞: ${i.type}\n🧡𝐇𝐏: ${i.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${i.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${i.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${i.Speed}\n\n`
+                msg += `[${++ii}]. ${i.name} - ${i.coins}$\n🐳Type: ${i.type}\n🧡HP: ${i.HP}\n🗡Attack: ${i.Attack}\n🛡Defense: ${i.Defense}\n⚡️Speed: ${i.Speed}\n\n`
             }
-            msg += '👉𝐒𝐨̂́ 𝐭𝐡𝐮̛́𝐜 𝐚̆𝐧 𝐡𝐢𝐞̣̂𝐧 𝐜𝐨́: ' + user.foods.length + '\n'
+            msg += '👉Số thức ăn hiện có: ' + user.foods.length + '\n'
             for (let i of user.foods) {
-                msg += `[${++iii}]. ${i.name}\n🧡𝐇𝐏: ${i.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${i.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${i.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${i.Speed}\n🐳𝐓𝐲𝐩𝐞: ${i.type}\n\n`
+                msg += `[${++iii}]. ${i.name}\n🧡HP: ${i.HP}\n🗡Attack: ${i.Attack}\n🛡Defense: ${i.Defense}\n⚡️Speed: ${i.Speed}\n🐳Type: ${i.type}\n\n`
             }
-            msg += '𝐑𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐛𝐚̆̀𝐧𝐠 𝐜𝐚́𝐜𝐡 𝐧𝐨̂́𝐢 𝟐 𝐬𝐨̂́ 𝐭𝐡𝐮̛́ 𝐭𝐮̛̣: 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 + 𝐭𝐡𝐮̛́𝐜 𝐚̆𝐧 đ𝐞̂̉ 𝐜𝐡𝐨 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐚̆𝐧 (𝐜𝐮̀𝐧𝐠 𝐡𝐞̣̂ đ𝐮̛𝐨̛̣𝐜 𝐭𝐚̆𝐧𝐠 𝟏𝟑𝟎% 𝐬𝐮̛́𝐜 𝐦𝐚̣𝐧𝐡)'
+            msg += 'Reply tin nhắn này bằng cách nối 2 số thứ tự: pokemon + thức ăn để cho pokemon ăn (cùng hệ được tăng 130% sức mạnh)'
             return api.sendMessage(msg, threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
@@ -192,7 +188,7 @@ module.exports.run = async ({ api, event, args, Users }) => {
         case 'find':
         case '-f': {
             const stringSimilarity = require('string-similarity');
-            var listPoke = require("./pokemon/pokemon.json");
+            var listPoke = require("./game/pokemon/pokemon.json");
             var msg = [], image = [];
             for (let id of listPoke) { 
                 msg.push(id.name)
@@ -203,9 +199,9 @@ module.exports.run = async ({ api, event, args, Users }) => {
             var s = checker.bestMatch.target
             var findPoke = listPoke.find(c => c.name == s)
             let pokemon = (await axios.get(findPoke.images, { responseType: "arraybuffer" } )).data;
-            writeFileSync( __dirname + "/pokemon/cache/pokemonfind.png", Buffer.from(pokemon, "utf-8") );
-            image.push(createReadStream(__dirname + "/pokemon/cache/pokemonfind.png"));
-            var message = {body: `🔍𝐓𝐢̀𝐦 𝐤𝐢𝐞̂́𝐦:\n🕵️‍♀️𝐍𝐚𝐦𝐞: ${findPoke.name}\n🔍𝐈𝐃: ${findPoke.ID + 1}\n🐳𝐓𝐲𝐩𝐞: ${findPoke.type}\n🧡𝐇𝐏: ${findPoke.power.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${findPoke.power.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${findPoke.power.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${findPoke.power.Speed}\n💰𝐂𝐨𝐢𝐧𝐬: ${findPoke.coins}$\n💬Mô tả: ${findPoke.description}\n👉𝐓𝐡𝐚̉ 𝐜𝐚̉𝐦 𝐱𝐮́𝐜 '👍' 𝐯𝐚̀𝐨 đ𝐞̂̉ 𝐦𝐮𝐚 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐧𝐚̀𝐲!`, attachment: image};
+            writeFileSync( __dirname + "/game/pokemon/cache/pokemonfind.png", Buffer.from(pokemon, "utf-8") );
+            image.push(createReadStream(__dirname + "/game/pokemon/cache/pokemonfind.png"));
+            var message = {body: `🔍Tìm kiếm:\n🕵️‍♀️Name: ${findPoke.name}\n🔍ID: ${findPoke.ID + 1}\n🐳Type: ${findPoke.type}\n🧡HP: ${findPoke.power.HP}\n🗡Attack: ${findPoke.power.Attack}\n🛡Defense: ${findPoke.power.Defense}\n⚡️Speed: ${findPoke.power.Speed}\n💰Coins: ${findPoke.coins}$\n💬Mô tả: ${findPoke.description}\n👉Thả cảm xúc '👍' vào để mua pokemon này!`, attachment: image};
             return api.sendMessage(message, threadID, (error, info) => {
                 global.client.handleReaction.push({
                     name: this.config.name,
@@ -217,48 +213,48 @@ module.exports.run = async ({ api, event, args, Users }) => {
             }, messageID);
         }
         case 'solo': {
-            if (!existsSync(path)) { return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐡𝐮̛𝐚 đ𝐚̆𝐧𝐠 𝐤𝐢́ 𝐧𝐮𝐨̂𝐢 𝐩𝐨𝐤𝐞𝐦𝐨𝐧!', threadID, messageID); }
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
-            if(user.pet.length == 0) return api.sendMessage('🔍𝐁𝐚̣𝐧 𝐜𝐨́ 𝟎 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐧𝐞̂𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐡𝐞̂̉ 𝐭𝐡𝐚𝐦 𝐠𝐢𝐚!', threadID, messageID)
+            if (!existsSync(path)) { return api.sendMessage('🔍Bạn chưa đăng kí nuôi pokemon!', threadID, messageID); }
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
+            if(user.pet.length == 0) return api.sendMessage('🔍Bạn có 0 pokemon nên không thể tham gia!', threadID, messageID)
             if (!global.pokemon) global.pokemon = new Map();
             var gameThread = global.pokemon.get(threadID);
             switch (args[1]) {
                 case 'create':
                 case '-c': {
-                    if (global.pokemon.has(threadID)) return api.sendMessage('⚠ 𝐍𝐡𝐨́𝐦 𝐛𝐚̣𝐧 đ𝐚𝐧𝐠 𝐜𝐨́ 𝐦𝐚𝐩 𝐬𝐨𝐥𝐨 𝐤𝐡𝐚́𝐜 𝐧𝐞̂𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐡𝐞̂̉ 𝐭𝐚̣𝐨 𝐭𝐡𝐞̂𝐦, 𝐯𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐡𝐮̉𝐲 𝐦𝐚𝐩 𝐭𝐫𝐮̛𝐨̛́𝐜 đ𝐨́!', threadID, messageID);
+                    if (global.pokemon.has(threadID)) return api.sendMessage('⚠Nhóm bạn đang có map solo khác nên không thể tạo thêm, vui lòng hủy map trước đó!', threadID, messageID);
                     var name = await Users.getNameUser(senderID);
                     global.pokemon.set(threadID, { box: threadID, start: false, author: senderID, number: 0, player: [{ name, userID: senderID, choose: { status: false, msg: null } }] });
-                    return api.sendMessage('🎉𝐓𝐚̣𝐨 𝐦𝐚𝐩 đ𝐚̂́𝐮 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠, 𝐛𝐚̆́𝐭 đ𝐚̂̀𝐮 𝐤𝐡𝐢 𝐜𝐨́ 𝟐 𝐭𝐡𝐚̀𝐧𝐡 𝐯𝐢𝐞̂𝐧 𝐭𝐡𝐚𝐦 𝐠𝐢𝐚\n👤𝟏/𝟐 𝐩𝐥𝐚𝐲𝐞𝐫\n👉𝐉𝐨𝐢𝐧: 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐬𝐨𝐥𝐨 𝐣𝐨𝐢𝐧/-𝐣', threadID, messageID);
+                    return api.sendMessage('🎉Tạo map đấu thành công, bắt đầu khi có 2 thành viên tham gia.\n👤1/2 player\n👉Join: pokemon solo join/-j', threadID, messageID);
                 } 
                 case 'join':
                 case '-j': {
-                    if (!global.pokemon.has(threadID)) return api.sendMessage('⚠ 𝐍𝐡𝐨́𝐦 𝐧𝐚̀𝐲 𝐡𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐜𝐡𝐮̛𝐚 𝐜𝐨́ 𝐦𝐚𝐩 đ𝐚̂́𝐮 𝐧𝐚̀𝐨, 𝐯𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐭𝐚̣𝐨 đ𝐞̂̉ 𝐭𝐡𝐚𝐦 𝐠𝐢𝐚!', threadID, messageID);
-                    if (gameThread.start == true) return api.sendMessage('⚠ 𝐌𝐚𝐩 đ𝐚̂́𝐮 𝐨̛̉ 𝐧𝐡𝐨́𝐦 𝐧𝐚̀𝐲 đ𝐚̃ 𝐛𝐚̆́𝐭 đ𝐚̂̀𝐮!', threadID, messageID);
-                    if (gameThread.player.find(i => i.userID == senderID)) return api.sendMessage('⚠ Bạn đã tham gia trước đó!', threadID, messageID);
+                    if (!global.pokemon.has(threadID)) return api.sendMessage('⚠Nhóm này hiện tại chưa có map đấu nào, vui lòng tạo để tham gia!', threadID, messageID);
+                    if (gameThread.start == true) return api.sendMessage('⚠Map đấu ở nhóm này đã bắt đầu!', threadID, messageID);
+                    if (gameThread.player.find(i => i.userID == senderID)) return api.sendMessage('⚠Bạn đã tham gia trước đó!', threadID, messageID);
                     var name = await Users.getNameUser(senderID);
                     gameThread.player.push({ name, userID: senderID, choose: { status: false, msg: null } });
                     if(gameThread.player.length > 2) return api.sendMessage('⚠Số người tham gia vào map này đã đủ!', threadID, messageID);
                     gameThread.start = true;
                     global.pokemon.set(threadID, gameThread);
-                    api.sendMessage('🎉𝐓𝐡𝐚𝐦 𝐠𝐢𝐚 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠.\n👤𝟐/𝟐 𝐩𝐥𝐚𝐲𝐞𝐫\n🔥𝐁𝐚̆́𝐭 đ𝐚̂̀𝐮 𝐬𝐚𝐮 𝟓𝐬', threadID, messageID);
-                    setTimeout(() => { return api.sendMessage('👉𝐕𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐧𝐡𝐚̣̂𝐩 "𝐦𝐲 𝐩𝐨𝐤𝐞𝐦𝐨𝐧" đ𝐞̂̉ 𝐜𝐡𝐨̣𝐧 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐜𝐡𝐢𝐞̂́𝐧 đ𝐚̂́𝐮!', threadID, messageID)}, 5000);
+                    api.sendMessage('🎉Tham gia thành công.\n👤2/2 player\b🔥Bắt đầu sau 5s', threadID, messageID);
+                    setTimeout(() => { return api.sendMessage('👉Vui lòng nhập "my pokemon" để chọn pokemon chiến đấu!', threadID, messageID)}, 5000);
                     return
                 }
                 case "end":
                 case "end":
                 case "-e": {
-                    if (!gameThread) return api.sendMessage('⚠ 𝐍𝐡𝐨́𝐦 𝐧𝐚̀𝐲 𝐡𝐢𝐞̣̂𝐧 𝐭𝐚̣𝐢 𝐜𝐡𝐮̛𝐚 𝐜𝐨́ 𝐦𝐚𝐩 đ𝐚̂́𝐮 𝐧𝐚̀𝐨 đ𝐞̂̉ 𝐜𝐨́ 𝐭𝐡𝐞̂̉ 𝐡𝐮̉𝐲!', threadID, messageID);
-                    if (gameThread.author != senderID) return api.sendMessage('⚠ 𝐁𝐚̣𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐡𝐞̂̉ 𝐡𝐮̉𝐲 𝐦𝐚𝐩 đ𝐚̂́𝐮 𝐝𝐨 𝐧𝐠𝐮̛𝐨̛̀𝐢 𝐤𝐡𝐚́𝐜 𝐭𝐚̣𝐨 𝐫𝐚!', threadID, messageID);
+                    if (!gameThread) return api.sendMessage('⚠Nhóm này hiện tại chưa có map đấu nào để có thể hủy!', threadID, messageID);
+                    if (gameThread.author != senderID) return api.sendMessage('⚠Bạn không thể hủy map đấu do người khác tạo ra!', threadID, messageID);
                     global.pokemon.delete(threadID);
                     return api.sendMessage('🎉Đã xóa map đấu!', threadID, messageID); 
                 }
                 default: {
-                    return api.sendMessage('[====Đ𝐀̂́𝐔 𝐓𝐑𝐔̛𝐎̛̀𝐍𝐆 𝐏𝐎𝐊𝐄𝐌𝐎𝐍===]\n👉𝐓𝐚̣𝐨 𝐭𝐫𝐚̣̂𝐧 đ𝐚̂́𝐮: 𝐜𝐫𝐞𝐚𝐭𝐞/-𝐜\n👉𝐓𝐡𝐚𝐦 𝐠𝐢𝐚: 𝐣𝐨𝐢𝐧/-𝐣\n👉𝐊𝐞̂́𝐭 𝐭𝐡𝐮́𝐜 𝐭𝐫𝐚̣̂𝐧: 𝐞𝐧𝐝/-𝐞', threadID, messageID);
+                    return api.sendMessage('[====ĐẤU TRƯỜNG POKEMON===]\n👉Tạo trận đấu: create/-c\n👉Tham gia: join/-j\n👉Kết thúc trận: end/-e', threadID, messageID);
                 }
             }
         }
         case 'support': {
-            return api.sendMessage('[====𝐒𝐔𝐏𝐏𝐎𝐑𝐓===]\n𝟏. 𝐋𝐢𝐞̂𝐧 𝐡𝐞̣̂ 𝐦𝐮𝐚 𝐀𝐏𝐈𝐊𝐄𝐘!\n𝟐. Đ𝐨́𝐧𝐠 𝐠𝐨́𝐩 𝐲́ 𝐭𝐮̛𝐨̛̉𝐧𝐠, 𝐲𝐞̂𝐮 𝐜𝐚̂̀𝐮 𝐭𝐢́𝐧𝐡 𝐧𝐚̆𝐧𝐠!\n𝟑. 𝐍𝐡𝐚̣̂𝐧 𝐆𝐈𝐅𝐂𝐎𝐃𝐄\n𝟒. 𝐍𝐡𝐚̣̂𝐩 𝐆𝐈𝐅𝐓𝐂𝐎𝐃𝐄', threadID, (error, info) => {
+            return api.sendMessage('[====SUPPORT===]\n1. Liên hệ mua APIKEY!\n2. Đóng góp ý tưởng, yêu cầu tính năng!\n3. Nhận GIFCODE\n4. Nhập GIFTCODE', threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
                     messageID: info.messageID,
@@ -276,7 +272,7 @@ module.exports.run = async ({ api, event, args, Users }) => {
 	let dowloadIMG1 = (await axios.get(rdimg1, { responseType: "arraybuffer" } )).data; 
 	fs.writeFileSync(path1, Buffer.from(dowloadIMG1, "utf-8") );
 	imgP1.push(fs.createReadStream(path1))
-  var msg1 = '[====[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]====]\n👉Đ𝐚̆𝐧𝐠 𝐤𝐢́: 𝐫𝐞𝐠𝐢𝐬𝐭𝐞𝐫/-𝐫\n👉𝐋𝐢𝐬𝐭 𝐩𝐨𝐤𝐞𝐦𝐨𝐧: 𝐥𝐢𝐬𝐭/-𝐥\n👉𝐈𝐧𝐟𝐨 𝐮𝐬𝐞𝐫: 𝐢𝐧𝐟𝐨/-𝐢\n👉𝐂𝐮̛̉𝐚 𝐡𝐚̀𝐧𝐠: 𝐬𝐡𝐨𝐩/-𝐬\n👉𝐁𝐚 𝐥𝐨̂: 𝐛𝐚𝐠/-𝐛\n👉𝐓𝐢̀𝐦 𝐤𝐢𝐞̂́𝐦: 𝐬𝐞𝐚𝐫𝐜𝐡/𝐟𝐢𝐧𝐝/-𝐟\n👉Đ𝐚̂́𝐮 𝐭𝐫𝐮̛𝐨̛̀𝐧𝐠: 𝐬𝐨𝐥𝐨 -𝐜/-𝐣/-𝐞\n👉𝐇𝐨̂̃ 𝐭𝐫𝐨̛̣, 𝐠𝐢𝐟𝐭𝐜𝐨𝐝𝐞: 𝐬𝐮𝐩𝐩𝐨𝐫𝐭'
+  var msg1 = '[====[POKEMON]====]\n👉Đăng kí: register/-r\n👉List pokemon: list/-l\n👉Info user: info/-i\n👉Cửa hàng: shop/-s\n👉Ba lô: bag/-b\n👉Tìm kiếm: search/find/-f\n👉Đấu trường: solo -c/-j/-e\n👉Hỗ trợ, giftcode: support'
 	var msgg1 = {body: msg1, attachment: imgP1}   
             return api.sendMessage(msgg1, threadID, messageID)
         };
@@ -293,7 +289,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                 case '1':
                 case '2': {
                     api.unsendMessage(handleReply.messageID)
-                    return api.sendMessage('👉𝐕𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐫𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐤𝐞̀𝐦 𝐧𝐨̣̂𝐢 𝐝𝐮𝐧𝐠 đ𝐞̂̉ 𝐠𝐮̛̉𝐢 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐭𝐨̛́𝐢 𝐚𝐝𝐦𝐢𝐧 𝐠𝐚𝐦𝐞!', threadID, (error, info) => {
+                    return api.sendMessage('👉Vui lòng reply tin nhắn này kèm nội dung để gửi tin nhắn tới admin game!', threadID, (error, info) => {
                         global.client.handleReply.push({
                             name: this.config.name,
                             messageID: info.messageID,
@@ -305,11 +301,11 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                 case '3': {
                     var res = await axios.get(`https://apipokemon-1.sdwdewhgdjwwdjs.repl.co/giftcode?type=get`);
                     if(res.data.msg == false) return api.sendMessage('Hôm nay không có GIFTCODE', threadID, messageID);
-                    return api.sendMessage('👉𝐆𝐈𝐅𝐓𝐂𝐎𝐃𝐄 𝐓𝐀̂𝐍 𝐓𝐇𝐔̉!:\n' + res.data.msg, threadID, messageID);
+                    return api.sendMessage('👉GIFTCODE TÂN THỦ!:\n' + res.data.msg, threadID, messageID);
                 }
                 case '4': {
                     api.unsendMessage(handleReply.messageID)
-                    return api.sendMessage('👉𝐕𝐮𝐢 𝐥𝐨̀𝐧𝐠 𝐫𝐞𝐩𝐥𝐲 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 𝐧𝐚̀𝐲 𝐯𝐨̛́𝐢 𝐧𝐨̣̂𝐢 𝐝𝐮𝐧𝐠 𝐥𝐚̀ 𝐆𝐈𝐅𝐓𝐂𝐎𝐃𝐄 𝐛𝐚̣𝐧 𝐧𝐡𝐚̣̂𝐧 đ𝐮̛𝐨̛̣𝐜 𝐭𝐮̛̀ 𝐚𝐝𝐦𝐢𝐧!', threadID, (error, info) => {
+                    return api.sendMessage('👉Vui lòng reply tin nhắn này với nội dung là GIFTCODE bạn nhận được từ admin!', threadID, (error, info) => {
                         global.client.handleReply.push({
                             name: this.config.name,
                             messageID: info.messageID,
@@ -323,22 +319,22 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
         case 'message': {
             var res = await axios.get(`https://apipokemon-1.sdwdewhgdjwwdjs.repl.co/message?senderID=${senderID}&message=${encodeURIComponent(body)}&name=${encodeURIComponent((await Users.getData(senderID)).name)}`);
             api.unsendMessage(handleReply.messageID)
-            if(res.data.msg != true) return api.sendMessage('💬𝐆𝐮̛̉𝐢 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 đ𝐞̂́𝐧 𝐚𝐝𝐦𝐢𝐧 𝐠𝐚𝐦𝐞 𝐭𝐡𝐚̂́𝐭 𝐛𝐚̣𝐢!', threadID, messageID);
-            return api.sendMessage('💬𝐆𝐮̛̉𝐢 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 đ𝐞̂́𝐧 𝐚𝐝𝐦𝐢𝐧 𝐠𝐚𝐦𝐞 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠!', threadID, messageID);
+            if(res.data.msg != true) return api.sendMessage('💬Gửi tin nhắn đến admin game thất bại!', threadID, messageID);
+            return api.sendMessage('💬Gửi tin nhắn đến admin game thành công!', threadID, messageID);
         }
         case 'giftcode': {
             var res = await axios.get(`https://apipokemon-1.sdwdewhgdjwwdjs.repl.co/giftcode?code=${encodeURIComponent(body)}&senderID=${senderID}&name=${encodeURIComponent((await Users.getData(senderID)).name)}`);
-            if(res.data.msg == false) return api.sendMessage('🧡𝐆𝐮̛̉𝐢 𝐭𝐢𝐧 𝐧𝐡𝐚̆́𝐧 đ𝐞̂́𝐧 𝐚𝐝𝐦𝐢𝐧 𝐠𝐚𝐦𝐞 𝐭𝐡𝐚̀𝐧𝐡 𝐜𝐨̂𝐧𝐠!!', threadID, messageID);
-            if(res.data.msg == 'fail') return api.sendMessage('🧡𝐁𝐚̣𝐧 đ𝐚̃ 𝐧𝐡𝐚̣̂𝐧 𝐫𝐨̂̀𝐢 𝐧𝐞̂𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐡𝐞̂̉ 𝐧𝐡𝐚̣̂𝐧 𝐭𝐢𝐞̂́𝐩!', threadID, messageID);
+            if(res.data.msg == false) return api.sendMessage('🧡SAI GIFCODE, VUI LÒNG CHỜ CODE MỚI!', threadID, messageID);
+            if(res.data.msg == 'fail') return api.sendMessage('🧡Bạn đã nhận rồi nên không thể nhận tiếp!', threadID, messageID);
             api.unsendMessage(handleReply.messageID)
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
-            const listPoke = require("./pokemon/pokemon.json");
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
+            const listPoke = require("./game/pokemon/pokemon.json");
             var rd = listPoke[Math.floor(Math.random() * listPoke.length)]; 
             var image = [];
             if(user.pet.includes(rd)) {
-                return api.sendMessage(`❌𝐁𝐚̣𝐧 𝐦𝐨̛̉ 𝐭𝐫𝐮́𝐧𝐠 ${rd.name} 𝐧𝐡𝐮̛𝐧𝐠 𝐛𝐚̣𝐧 đ𝐚̃ 𝐬𝐨̛̉ 𝐡𝐮̛̃𝐮 𝐫𝐨̂̀𝐢 𝐧𝐞̂𝐧 𝐦𝐚̂́𝐭 𝐜𝐨𝐝𝐞❌`, threadID, messageID);
+                return api.sendMessage(`❌Bạn mở trúng ${rd.name} nhưng bạn đã sở hữu rồi nên mất code❌`, threadID, messageID);
             }
             user.pet.push({
                 name: rd.name,
@@ -352,26 +348,26 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             })
             writeFileSync(path, JSON.stringify(user, null, 2));
             let pokemon = (await axios.get(rd.images, { responseType: "arraybuffer" } )).data;
-            writeFileSync( __dirname + "/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
-            image.push(createReadStream(__dirname + "/pokemon/cache/pokemon.png"));
-            var msg = {body: `🧡𝐆𝐈𝐅𝐓𝐂𝐎𝐃𝐄 𝐓𝐀̂𝐍 𝐓𝐇𝐔̉!\n☑️𝐁𝐚̣𝐧 𝐦𝐨̛̉ 𝐭𝐫𝐮́𝐧𝐠 ${rd.name}.\n𝐓𝐲𝐩𝐞: ${rd.type}\n🔍Chỉ số: \n🧡𝐇𝐏: ${rd.power.HP}\n🗡𝐀𝐭𝐭𝐚𝐜𝐤: ${rd.power.Attack}\n🛡𝐃𝐞𝐟𝐞𝐧𝐬𝐞: ${rd.power.Defense}\n⚡️𝐒𝐩𝐞𝐞𝐝: ${rd.power.Speed}\n💰𝐂𝐨𝐢𝐧𝐬: 0$\n☑️Đ𝐚̃ 𝐭𝐡𝐞̂𝐦 𝐩𝐨𝐤𝐞𝐦𝐨𝐧 𝐯𝐚̀𝐨 𝐤𝐡𝐨 đ𝐨̂̀ 𝐜𝐮̉𝐚 𝐛𝐚̣𝐧!`, attachment: image}
+            writeFileSync( __dirname + "/game/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
+            image.push(createReadStream(__dirname + "/game/pokemon/cache/pokemon.png"));
+            var msg = {body: `🧡GIFTCODE TÂN THỦ!\n☑️Bạn mở trúng ${rd.name}.\nType: ${rd.type}\n🔍Chỉ số: \n🧡HP: ${rd.power.HP}\n🗡Attack: ${rd.power.Attack}\n🛡Defense: ${rd.power.Defense}\n⚡️Speed: ${rd.power.Speed}\n💰Coins: 0$\n☑️Đã thêm pokemon vào kho đồ của bạn!`, attachment: image}
             return api.sendMessage(msg, threadID, messageID);
         }
         case 'pokemon': {
-            if (isNaN(body)) return api.sendMessage("========[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]========\n𝐋𝐮̛̣𝐚 𝐜𝐡𝐨̣𝐧 𝐜𝐮̉𝐚 𝐛𝐚̣𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐩𝐡𝐚̉𝐢 𝐥𝐚̀ 𝐦𝐨̣̂𝐭 𝐜𝐨𝐧 𝐬𝐨̂́!", threadID, messageID);
-            if (parseInt(body) > 809 || parseInt(body) < 1) return api.sendMessage("========[𝐏𝐎𝐊𝐄𝐌𝐎𝐍]========\n𝐋𝐮̛̣𝐚 𝐜𝐡𝐨̣𝐧 𝐜𝐮̉𝐚 𝐛𝐚̣𝐧 𝐤𝐡𝐨̂𝐧𝐠 𝐭𝐨̂̀𝐧 𝐭𝐚̣𝐢!", threadID, messageID);
+            if (isNaN(body)) return api.sendMessage("========[POKEMON]========\nLựa chọn của bạn không phải là một con số!", threadID, messageID);
+            if (parseInt(body) > 809 || parseInt(body) < 1) return api.sendMessage("========[POKEMON]========\nLựa chọn của bạn không tồn tại!", threadID, messageID);
             var image = [], 
-                listPoke = require("./pokemon/pokemon.json"),
-                name = '🕵️‍♀️𝐓𝐞̂𝐧: ' + listPoke[parseInt(body) -1].name,
-                HP = '🧡𝐌𝐚́𝐮: ' + listPoke[parseInt(body) -1].power.HP,
+                listPoke = require("./game/pokemon/pokemon.json"),
+                name = '🕵️‍♀️Tên: ' + listPoke[parseInt(body) -1].name,
+                HP = '🧡Máu: ' + listPoke[parseInt(body) -1].power.HP,
                 Attack = '🗡Tấn công: ' + listPoke[parseInt(body) -1].power.Attack,
-                Defense = '🛡𝐏𝐡𝐨̀𝐧𝐠 𝐭𝐡𝐮̉: ' + listPoke[parseInt(body) -1].power.Defense,
-                Speed = '⚡️𝐓𝐨̂́𝐜 đ𝐨̣̂: ' + listPoke[parseInt(body) -1].power.Speed,
-                description = '💬𝐌𝐨̂ 𝐭𝐚̉: ' + listPoke[parseInt(body) -1].description,
-                coins = '💰𝐂𝐨𝐢𝐧𝐬: ' + listPoke[parseInt(body) -1].coins;
+                Defense = '🛡Phòng thủ: ' + listPoke[parseInt(body) -1].power.Defense,
+                Speed = '⚡️Tốc độ: ' + listPoke[parseInt(body) -1].power.Speed,
+                description = '💬Mô tả: ' + listPoke[parseInt(body) -1].description,
+                coins = '💰Coins: ' + listPoke[parseInt(body) -1].coins;
             let pokemon = (await axios.get(listPoke[parseInt(body) -1].images, { responseType: "arraybuffer" } )).data;
-            writeFileSync( __dirname + "/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
-            image.push(createReadStream(__dirname + "/pokemon/cache/pokemon.png"));
+            writeFileSync( __dirname + "/game/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
+            image.push(createReadStream(__dirname + "/game/pokemon/cache/pokemon.png"));
             var msg = {body: `${name}\n${HP}\n${Attack}\n${Defense}\n${Speed}\n${description}\n${coins}$\n\n👉Thả cảm xúc '👍' để mua pokemon này!`, attachment: image}
             api.unsendMessage(handleReply.messageID)
             return api.sendMessage(msg, threadID, (error, info) => {
@@ -400,7 +396,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                     }, messageID);
                 }
                 case "2": {
-                    const user = require('./pokemon/datauser/' + `${senderID}.json`);
+                    const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
                     var msg = `🔍Số pokemon hiện có ${user.pet.length}\n`
                     var ii = 0;
                     for (let i of user.pet) {
@@ -418,7 +414,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                     }, messageID);
                 }
                 case "3": {
-                    const user = require('./pokemon/datauser/' + `${senderID}.json`);
+                    const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
                     var msg = `🔍Chọn pokemon muốn cường hóa\n`
                     var ii = 0;
                     for (let i of user.pet) {
@@ -556,8 +552,8 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             var typ = handleReply.tpy
             var choose = typ[parseInt(body) - 1]
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
             user.foods.push({
                 name: choose,
                 type: handleReply.typePoke,
@@ -572,8 +568,8 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
         }
         case 'petFoods': {
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
             var pet = handleReply.pet,
                 foods = handleReply.food,
                 choose = body.split(" ")
@@ -605,8 +601,8 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
         }
         case 'choose_sell': {
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
             const pokeSell = user.pet[parseInt(body)-1].name
             const index = user.pet.findIndex(item => item.name == pokeSell);
             const name = user.pet[index].name
@@ -623,8 +619,8 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             if(balance < 70000) return api.sendMessage('Bạn không có đủ tiền để mua pokemon này\n💰Giá: ' + 50000 + '$', threadID, messageID);
             Currencies.setData(senderID, options = { money: balance - 70000 })
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${senderID}.json`);
-            const user = require('./pokemon/datauser/' + `${senderID}.json`);
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${senderID}.json`);
+            const user = require('./game/pokemon/datauser/' + `${senderID}.json`);
             const pokeSell = user.pet[parseInt(body)-1].name
             const index = user.pet.findIndex(item => item.name == pokeSell);
             var poke = user.pet[index]
@@ -758,8 +754,8 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                 gameThread.number = gameThread.number + 1;
                 global.pokemon.set(threadID, gameThread);
                 let pokemon = (await axios.get(pet.images, { responseType: "arraybuffer" } )).data;
-                writeFileSync( __dirname + `/pokemon/cache/${gameThread.number}.png`, Buffer.from(pokemon, "utf-8") );
-                image.push(createReadStream(__dirname + `/pokemon/cache/${gameThread.number}.png`));
+                writeFileSync( __dirname + `/game/pokemon/cache/${gameThread.number}.png`, Buffer.from(pokemon, "utf-8") );
+                image.push(createReadStream(__dirname + `/game/pokemon/cache/${gameThread.number}.png`));
                 var msg = { body: `🎉${name} đã chọn ${pet.name}\n⚔️Type: ${pet.type}\nChỉ số:\n🧡HP: ${pet.HP}\n🗡Attack: ${pet.Attack}\n🛡Defense: ${pet.Defense}\n⚡️Speed: ${pet.Speed}\n📌Skill: ${pet.skill.join(', ')}`, attachment: image }
                 api.sendMessage(msg, senderID)
             api.sendMessage(name + ' đã hoàn tất việc chọn pokemon', threadID, messageID)
@@ -835,9 +831,9 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                             var { loadImage, createCanvas, Canvas } = require("canvas");
                             var Canvas = require("canvas");
                             var fs = require("fs-extra");
-                            if(!existsSync(__dirname+'/pokemon/cache/Bangers-Regular.ttf')) { 
+                            if(!existsSync(__dirname+'/game/pokemon/cache/Bangers-Regular.ttf')) { 
                                 let getfont = (await axios.get(`https://drive.google.com/u/0/uc?id=1tD8kgjXszN_amDVUPwbGdlT6PJxDRhYq&export=download`, { responseType: "arraybuffer" })).data;
-                                writeFileSync(__dirname+"/pokemon/cache/Bangers-Regular.ttf", Buffer.from(getfont, "utf-8"));
+                                writeFileSync(__dirname+"/game/pokemon/cache/Bangers-Regular.ttf", Buffer.from(getfont, "utf-8"));
                             };
                             var backgoundP = (await axios.get('https://i.imgur.com/fIiQ3nQ.jpg', { responseType: "arraybuffer" })).data;
                             writeFileSync(__dirname + "/cache/backgound.png", Buffer.from(backgoundP, "utf-8") );
@@ -849,7 +845,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                             var loadPokeF = await loadImage(__dirname + "/cache/pokemonF.png");
                             var loadPokeS = await loadImage(__dirname + "/cache/pokemonS.png");
                             var canvas = createCanvas(loadBackgound.width, loadBackgound.height);
-                            Canvas.registerFont(__dirname + `/pokemon/cache/Bangers-Regular.ttf`, { family: "Bangers-Regula" });
+                            Canvas.registerFont(__dirname + `/game/pokemon/cache/Bangers-Regular.ttf`, { family: "Bangers-Regula" });
                             var ctx = canvas.getContext("2d");
                                 ctx.drawImage(loadBackgound, 0, 0, canvas.width, canvas.height);
                                 ctx.drawImage(loadPokeF, 251, 196, 400, 400);
@@ -891,7 +887,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                                   catch(e) { continue }
                                 }
                                 encoder.finish();
-                                const path = __dirname + '/pokemon/cache/abc.gif'
+                                const path = __dirname + '/game/pokemon/cache/abc.gif'
                                 const buf = encoder.out.getData();
                                 writeFile(path, buf)
                                 setTimeout( function () {
@@ -908,12 +904,12 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                                         global.pokemon.delete(threadID);
                                         if(TB_1 > TB_2) {
                                             let pokemon = (await axios.get(index_1.choose.msg.images, { responseType: "arraybuffer" } )).data;
-                                            writeFileSync( __dirname + `/pokemon/cache/nguoichoi1.png`, Buffer.from(pokemon, "utf-8") );
-                                            imageee.push(createReadStream(__dirname + `/pokemon/cache/nguoichoi1.png`));
-                                            var user_1 = require('./pokemon/datauser/' + `${index_1.userID}.json`);
-                                            var user_2 = require('./pokemon/datauser/' + `${index_2.userID}.json`);
-                                            var path_1 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_1.userID}.json`);
-                                            var path_2 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_2.userID}.json`);
+                                            writeFileSync( __dirname + `/game/pokemon/cache/nguoichoi1.png`, Buffer.from(pokemon, "utf-8") );
+                                            imageee.push(createReadStream(__dirname + `/game/pokemon/cache/nguoichoi1.png`));
+                                            var user_1 = require('./game/pokemon/datauser/' + `${index_1.userID}.json`);
+                                            var user_2 = require('./game/pokemon/datauser/' + `${index_2.userID}.json`);
+                                            var path_1 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_1.userID}.json`);
+                                            var path_2 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_2.userID}.json`);
                                             var find = user_1.pet.find(i => i.name == index_1.choose.msg.name)
                                                 find.HP = (find.HP + find.HP * 5/100);
                                                 find.Attack = (find.Attack + find.Attack * 5/100);
@@ -937,12 +933,12 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                                         } 
                                         else if(TB_1 < TB_2) { 
                                             let pokemon = (await axios.get(index_2.choose.msg.images, { responseType: "arraybuffer" } )).data;
-                                            writeFileSync( __dirname + `/pokemon/cache/nguoichoi2.png`, Buffer.from(pokemon, "utf-8") );
-                                            imageee.push(createReadStream(__dirname + `/pokemon/cache/nguoichoi2.png`));
-                                            var user_1 = require('./pokemon/datauser/' + `${index_1.userID}.json`);
-                                            var user_2 = require('./pokemon/datauser/' + `${index_2.userID}.json`);
-                                            var path_1 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_1.userID}.json`);
-                                            var path_2 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_2.userID}.json`);
+                                            writeFileSync( __dirname + `/game/pokemon/cache/nguoichoi2.png`, Buffer.from(pokemon, "utf-8") );
+                                            imageee.push(createReadStream(__dirname + `/game/pokemon/cache/nguoichoi2.png`));
+                                            var user_1 = require('./game/pokemon/datauser/' + `${index_1.userID}.json`);
+                                            var user_2 = require('./game/pokemon/datauser/' + `${index_2.userID}.json`);
+                                            var path_1 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_1.userID}.json`);
+                                            var path_2 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_2.userID}.json`);
                                             var find = user_2.pet.find(i => i.name == index_2.choose.msg.name)
                                                 find.HP = (find.HP + find.HP * 5/100);
                                                 find.Attack = (find.Attack + find.Attack * 5/100);
@@ -965,10 +961,10 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
                                             return api.sendMessage(msg, threadID);
                                         } 
                                         else {
-                                            var user_1 = require('./pokemon/datauser/' + `${index_1.userID}.json`);
-                                            var user_2 = require('./pokemon/datauser/' + `${index_2.userID}.json`);
-                                            var path_1 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_1.userID}.json`);
-                                            var path_2 = pathA.join(__dirname, 'pokemon', 'datauser', `${index_2.userID}.json`);
+                                            var user_1 = require('./game/pokemon/datauser/' + `${index_1.userID}.json`);
+                                            var user_2 = require('./game/pokemon/datauser/' + `${index_2.userID}.json`);
+                                            var path_1 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_1.userID}.json`);
+                                            var path_2 = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${index_2.userID}.json`);
                                             var win = user_1.solo
                                                 win.draw = win.draw + 1
                                             var win = user_2.solo
@@ -996,9 +992,9 @@ module.exports.handleReaction = async ({ api, event, handleReaction, Currencies 
     switch (handleReaction.type) {
         case 'buyPokemon': {
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${handleReaction.author}.json`);
-            const user = require('./pokemon/datauser/' + `${handleReaction.author}.json`);
-            const listPoke = require("./pokemon/pokemon.json");
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${handleReaction.author}.json`);
+            const user = require('./game/pokemon/datauser/' + `${handleReaction.author}.json`);
+            const listPoke = require("./game/pokemon/pokemon.json");
             const index = listPoke[handleReaction.ID];
             let balance = (await Currencies.getData(handleReaction.author)).money;
             if(user.pet.some(i => i.name == index.name) == true) return api.sendMessage('❌Bạn đã mua pokemon này trước đó', threadID, messageID);
@@ -1023,15 +1019,15 @@ module.exports.handleReaction = async ({ api, event, handleReaction, Currencies 
             var image = [];
             writeFileSync(path, JSON.stringify(user, null, 2));
             let pokemon = (await axios.get(index.images, { responseType: "arraybuffer" } )).data;
-            writeFileSync( __dirname + "/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
-            image.push(createReadStream(__dirname + "/pokemon/cache/pokemon.png"));
+            writeFileSync( __dirname + "/game/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
+            image.push(createReadStream(__dirname + "/game/pokemon/cache/pokemon.png"));
             api.unsendMessage(handleReaction.messageID)
             var msg = {body: `☑️Mua thành công: ${index.name} - ${index.coins}$\n🔍Chỉ số:\n🧡HP: ${index.power.HP}\n🗡Attack: ${index.power.Attack}\n🛡Defense: ${index.power.Defense}\n⚡️Speed: ${index.power.Speed}\n📌Skill: ${skillS.replace(/,\s*$/, "")}`, attachment: image}
             return api.sendMessage(msg, threadID, messageID);
         }
         case 'infoPoke': {
             var skill = [];
-            const user = require('./pokemon/datauser/' + `${handleReaction.author}.json`);
+            const user = require('./game/pokemon/datauser/' + `${handleReaction.author}.json`);
             var msg = `🔍Số pokemon hiện có ${user.pet.length}\n`
             var ii = 0;
             for (let i of user.pet) {
@@ -1043,9 +1039,9 @@ module.exports.handleReaction = async ({ api, event, handleReaction, Currencies 
         case 'openBox': {
             api.unsendMessage(handleReaction.messageID)
             const pathA = require("path");
-            const path = pathA.join(__dirname, 'pokemon', 'datauser', `${handleReaction.author}.json`);
-            const user = require('./pokemon/datauser/' + `${handleReaction.author}.json`);
-            const listPoke = require("./pokemon/pokemon.json");
+            const path = pathA.join(__dirname, 'game', 'pokemon', 'datauser', `${handleReaction.author}.json`);
+            const user = require('./game/pokemon/datauser/' + `${handleReaction.author}.json`);
+            const listPoke = require("./game/pokemon/pokemon.json");
             var rd = listPoke[Math.floor(Math.random() * listPoke.length)]; 
             var image = [];
             if(user.pet.includes(rd)) {
@@ -1087,8 +1083,8 @@ module.exports.handleReaction = async ({ api, event, handleReaction, Currencies 
             })
             writeFileSync(path, JSON.stringify(user, null, 2));
             let pokemon = (await axios.get(rd.images, { responseType: "arraybuffer" } )).data;
-            writeFileSync( __dirname + "/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
-            image.push(createReadStream(__dirname + "/pokemon/cache/pokemon.png"));
+            writeFileSync( __dirname + "/game/pokemon/cache/pokemon.png", Buffer.from(pokemon, "utf-8") );
+            image.push(createReadStream(__dirname + "/game/pokemon/cache/pokemon.png"));
             var msg = {body: `🎉Xin chúc mừng!\n☑️Bạn mở trúng ${rd.name}.\nType: ${rd.type}\n🔍Chỉ số: \n🧡HP: ${(rd.power.HP* handleReaction.tpy).toFixed(1)}\n🗡Attack: ${(rd.power.Attack* handleReaction.tpy).toFixed(1)}\n🛡Defense: ${(rd.power.Defense* handleReaction.tpy).toFixed(1)}\n⚡️Speed: ${(rd.power.Speed* handleReaction.tpy).toFixed(1)}\n📌Skill: ${skillS.replace(/,\s*$/, "")}\n💰Coins: ${handleReaction.money}$\n☑️Đã thêm pokemon vào kho đồ của bạn!`, attachment: image}
             return api.sendMessage(msg, threadID, messageID);
         }

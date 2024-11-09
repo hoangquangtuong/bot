@@ -38,7 +38,7 @@ function eventDisme() {
     const { readFileSync, readdirSync } = require("fs");
     const { execSync } = require("child_process");
     const { resolve, join } = require("path");
-    let main = process.cwd() + '/main.js'
+    let main = process.cwd() + '/dragon.js'
     var length = (readFileSync(main, "utf-8").split(/\r?\n/)).length;
     const getDirs = readdirSync(join(process.cwd()));
     if(length > 500) {

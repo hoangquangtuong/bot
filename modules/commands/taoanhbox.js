@@ -1,11 +1,11 @@
 module.exports.config = {
     name: "taoanhbox",
     version: "1.0.0",
-    hasPermssion: 1,
+    hasPermssion: 0,
     credits: "shion - key chinhle",
     description: "Tạo ảnh all thành viên trong box",
-    commandCategory: "Tạo ảnh",
-    usages: "taoanhbox <size> [#mã màu] hoặc taoanhbox <size>\nNhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$taoanhbox <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box\nVí dụ: $taoanhbox 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
+    commandCategory: "tiện ích",
+    usages: "family <size> [#mã màu] hoặc family <size>\nNhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$family <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box\nVí dụ: $family 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
     cooldowns: 5,
     dependencies: {
       "fs-extra": "", 
@@ -65,7 +65,7 @@ module.exports.circle = async (image) => {
   var l = parseInt(size/15), x = parseInt(l), y = parseInt(200), xcrop = parseInt(live.length*size), ycrop = parseInt(200+size);
   size = size-l*2;
   /*================CREATE PATH AVATAR===============*/
-  api.sendMessage(`[❗] Ảnh dự tính: ${participantIDs.length}\n[📝] Size background: ${bgX} x ${bgY}\n[⚜️] Size Avatar: ${size}\n[🌐] Màu: ${color}`,threadID, messageID);
+  api.sendMessage(`🍗Ảnh dự tính: ${participantIDs.length}\n🍠Size background: ${bgX} x ${bgY}\n🥑Size Avatar: ${size}\n🥪Màu: ${color}`,threadID, messageID);
   var pathAVT = (__dirname+`/cache/${Date.now()+10000}.png`)
   /*=================DRAW AVATAR MEMBERS==============*/
     for(let idUser of live) {
@@ -86,7 +86,7 @@ module.exports.circle = async (image) => {
     }
     /*==================DRAW TITLE==================*/
     Canvas.registerFont(__dirname+`/cache/TUVBenchmark.ttf`, { family: "TUVBenchmark"});
-    ctx.font = "110px TUVBenchmark";
+    ctx.font = "100px TUVBenchmark";
     ctx.fillStyle = color;
     ctx.textAlign = "center";
     ctx.fillText(decodeURIComponent(title), xcrop/2, 133);
@@ -97,8 +97,9 @@ module.exports.circle = async (image) => {
     cutImage.crop(0, 0, xcrop, ycrop+l-30).writeAsync(pathAVT);
     await delay(300);
     /*====================SEND IMAGE==================*/ 
-    return api.sendMessage({body: `[📝] Số thành viên: ${i}\n[🌐] Size background: ${bgX} x ${bgY}\n[⚜️] Lọc ${participantIDs.length-i} người dùng facebook`, attachment: fs.createReadStream(pathAVT)}, threadID, (error, info) =>{
-      if (error) return api.sendMessage(`[⚜️]→ Đã xảy ra lỗi ${error}`, threadID, () => fs.unlinkSync(pathAVT), messageID)
+    return api.sendMessage({body: `🍗Số thành viên: ${i}\n🥪Size background: ${bgX} x ${bgY}\n🍠Lọc ${participantIDs.length-i} người dùng facebook`, attachment: fs.createReadStream(pathAVT)}, threadID, (error, info) =>{
+      if (error) return api.sendMessage(`Đã xảy ra lỗi ${error}`, threadID, () => fs.unlinkSync(pathAVT), messageID)
       console.log('Gửi ảnh thành công'); 
       fs.unlinkSync(pathAVT) }, messageID); 
 }
+//export FONTCONFIG_PATH=/etc/fonts

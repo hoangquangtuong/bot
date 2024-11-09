@@ -38,9 +38,9 @@ module.exports = function ({ api }) {
                 if (get_minutes_of_time(new Date(timestemp * 1000), new Date()) <= 1) {
                     var msg = "" + 
                         "=== [🔔 𝗡𝗢𝗧𝗜𝗙𝗜𝗖𝗔𝗧𝗜𝗢𝗡 🔔] ===" +
-                        "\n\n[⏱️]→ 𝗧𝗶𝗺𝗲: " + time + 
-                        "\n[💬]→ 𝗠𝗲𝘀𝘀𝗮𝗴𝗲: " + body +
-                        "\n[🔗]→ 𝗟𝗶𝗻𝗸:\n" + link
+                        "\n⏱️ 𝗧𝗶𝗺𝗲: " + time + 
+                        "\n💬 𝗠𝗲𝘀𝘀𝗮𝗴𝗲: " + body +
+                        "\n🔗 𝗟𝗶𝗻𝗸: " + link
                     api.sendMessage(msg, global.config.ADMINBOT[0])
                 }
             }

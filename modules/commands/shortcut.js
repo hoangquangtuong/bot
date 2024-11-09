@@ -1,11 +1,11 @@
 module.exports.config = {
 	name: "shortcut",
 	version: "1.0.0",
-	hasPermssion: 1,
-	credits: "JRT",
+	hasPermssion: 0,
+	credits: "CatalizCS",
 	description: "Phiên bản xịn hơn của short",
-	commandCategory: "Nhóm",
-    usages: "[all/delete/empty]",
+	commandCategory: "tiện ích",
+    usages: "[gif/all/delete/empty]",
 	cooldowns: 5,
 	dependencies: {
 		"fs-extra": "",
@@ -18,11 +18,13 @@ module.exports.onLoad = function () {
     const { resolve } = global.nodemodule["path"];
     const path = resolve(__dirname, "cache", "shortcutdata.json");
     const pathGif = resolve(__dirname, "cache", "shortcutGif");
+  const pathImg = resolve(__dirname, "cache", "shortcutGif");
 
     if (!global.moduleData.shortcut) global.moduleData.shortcut = new Map();
 
     if (!existsSync(path)) writeFileSync(path, JSON.stringify([]), "utf-8");
     if (!existsSync(pathGif)) mkdirSync(pathGif, { recursive: true });
+  if (!existsSync(pathImg)) mkdirSync(pathImg, { recursive: true });
 
     const data = JSON.parse(readFileSync(path, "utf-8"));
 
@@ -88,7 +90,7 @@ module.exports.handleReply = async function ({ event, api, handleReply }) {
             api.unsendMessage(handleReply.messageID);
             return api.sendMessage("「Shortcut」Reply tin nhắn này để nhập tệp đính kèm(url có thể download) hoặc nếu không cần bạn có thể reply tin nhắn này và nhập 's'", threadID, function (error, info) {
                 return global.client.handleReply.push({
-                    type: "requireGif",
+                    type: "gif",
                     name,
                     author: senderID,
                     messageID: info.messageID,
@@ -97,7 +99,7 @@ module.exports.handleReply = async function ({ event, api, handleReply }) {
                 });
             }, messageID);
         }
-        case "requireGif": {
+        case "gif": {
             const id = global.utils.randomString(10);
             if (body.match(/(http(s?):)([/|.|\w|\s|-])*\.(?:gif|GIF)/g)) {
                 const pathGif = resolve(__dirname, "cache", "shortcutGif", `${id}.gif`);
@@ -179,7 +181,7 @@ module.exports.run = function ({ event, api, args }) {
                     if (existsSync(path)) existPath = true;
                     array.push(`${n++}/ ${single.input} => ${single.output} (${(existPath) ? "YES" : "NO"})`);
                 }
-                return api.sendMessage(`「Shortcut」Dưới đây là toàn bộ shortcut nhóm có:\n[stt]/ [Input] => [Output] (exist gif)\n\n${array.join("\n")}`, threadID, messageID);
+                return api.sendMessage(`「Shortcut」Dưới đây là toàn bộ shortcut nhóm có:\n[stt]/ [Input] => [Output] (exist gif)\n\n${array.join("\n")}\n`, threadID, messageID);
             }
         }
 
@@ -194,6 +196,4 @@ module.exports.run = function ({ event, api, args }) {
             }, messageID);
         }
     }
-
-    
 }

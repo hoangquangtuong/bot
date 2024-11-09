@@ -1,11 +1,11 @@
 module.exports.config = {
     name: "family",
-    version: "1.0.0",
+    version: "1.0.1",
     hasPermssion: 0,
     credits: "NTKhang",
     description: "Tạo ảnh all thành viên trong box",
-    commandCategory: "Tạo ảnh",
-    usages: "family <size> [#mã màu] hoặc family <size>\nNhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$family <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box\nVí dụ: $family 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
+    commandCategory: "tiện ích",
+    usages: "<size> [#mã màu] hoặc family <size>\nNhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$family <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box\nVí dụ: $family 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
     cooldowns: 5,
     dependencies: {
       "fs-extra": "", 
@@ -21,27 +21,28 @@ module.exports.config = {
 module.exports.run = async ({ event, api, args }) => {
   var TOKEN = "6628568379%7Cc1e620fa708a1d5696fb991c1bde5662";
   try {
+    if(global.client.family == true) return api.sendMessage("Hệ thống đang xử lý yêu cầu từ box khác, vui lòng quay lại sau", event.threadID, event.messageID);
     global.client.family = true;
-    var timestart = Date.now();
-    const fs = global.nodemodule["fs-extra"];
-    const axios = global.nodemodule["axios"];
-    const { threadID, messageID } = event;
-    const request = global.nodemodule["request"];
-    const superfetch=global.nodemodule["node-superfetch"];
-    if(!fs.existsSync(__dirname+'/cache/fontfamily.ttf')) {
-      let getfont = (await axios.get(`https://drive.google.com/uc?id=1q0FPVuJ-Lq7-tvOYH0ILgbjrX1boW7KW&export=download`, { responseType: "arraybuffer" })).data;
-       fs.writeFileSync(__dirname+"/cache/fontfamily.ttf", Buffer.from(getfont, "utf-8"));
-    };
-    
-    if(!args[0] || isNaN(args[0]) == true || args[0] == "help") {
-      if(!fs.existsSync(__dirname+"/cache/hexcolor.png")) {
-       let getimg = (await axios.get(`https://www.htlvietnam.com/images/bai-viet/code-mau/bang-ma-mau-02.jpg`, { responseType: "arraybuffer" })).data;
+	  var timestart = Date.now();
+	  const fs = global.nodemodule["fs-extra"];
+	  const axios = global.nodemodule["axios"];
+	  const { threadID, messageID } = event;
+	  const request = global.nodemodule["request"];
+	  const superfetch=global.nodemodule["node-superfetch"];
+	  if(!fs.existsSync(__dirname+'/bot/fontfamily.ttf')) {
+	    let getfont = (await axios.get(`https://drive.google.com/u/0/uc?id=1jv4ludBd7hWuEiOs13kR0JXljCxkOYUl&export=download`, { responseType: "arraybuffer" })).data;
+       fs.writeFileSync(__dirname+"/bot/fontfamily.ttf", Buffer.from(getfont, "utf-8"));
+	  };
+	  
+	  if(!args[0] || isNaN(args[0]) == true || args[0] == "help") {
+	    if(!fs.existsSync(__dirname+"/cache/hexcolor.png")) {
+	     let getimg = (await axios.get(`https://www.htlvietnam.com/images/bai-viet/code-mau/bang-ma-mau-02.jpg`, { responseType: "arraybuffer" })).data;
        fs.writeFileSync(__dirname+"/cache/hexcolor.png", Buffer.from(getimg, "utf-8"));
-      }
-      global.client.family = false;
-    return api.sendMessage({body: "[⚜️]→ Nhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$family <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box nếu ko điền\nVí dụ: $family 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
-    attachment: fs.createReadStream(__dirname+"/cache/hexcolor.png")}, threadID, messageID);
-    };
+	    }
+	    global.client.family = false;
+		return api.sendMessage({body: "Nhập size avatar thành viên thích hợp và mã màu cho chữ (mặc định là đen) theo cú pháp:\n$family <size> <mã màu> <title>\nTrong đó:\n•size: Size mỗi avatar thành viên\n•mã màu: mã màu dạng hex\n•title: tiêu đề ảnh, mặc định là tên box nếu ko điền\nVí dụ: $family 200 #ffffff Anh em một nhà\nNếu chọn size = 0 thì sẽ tự chỉnh size, nếu không điền title thì title sẽ là tên box",
+		attachment: fs.createReadStream(__dirname+"/cache/hexcolor.png")}, threadID, messageID);
+	  };
     
     
     const jimp = global.nodemodule["jimp"];
@@ -55,7 +56,7 @@ module.exports.run = async ({ event, api, args }) => {
     for(let qtv of arrob) {
       arrad.push(qtv.id)
     };
-    const background = await Canvas.loadImage("https://i.ibb.co/QvG4LTw/image.png");
+    const background = await Canvas.loadImage("https://i.imgur.com/5AaxqG6.jpg");
     
     var idtv = threadInfo.participantIDs;
   
@@ -86,15 +87,15 @@ module.exports.run = async ({ event, api, args }) => {
     
     var color = args[1];
     if(!color || !color.includes("#")) {
-      color = "#FFFFFF";
+      color = "#000000";
       autocolor = true;
     };
         if(s > ybground || s > xbground) {
           global.client.family = false;
           return api.sendMessage(`Size avatar phải nhỏ hơn size background\nSize background: X: ${xbground}, Y: ${ybground}`, threadID, messageID);
         }
-        api.sendMessage(`[🔢] Số ảnh dự tính: ${idtv.length}\n[🆒] Size background: ${xbground} x ${ybground}\n[🆕] Size mỗi avatar: ${s}${mode}\n[#️⃣] Màu: ${color}\n[⏳] Đang xử lý request của bạn, quá trình này có thể mất đến 5p để hoàn tất...`,threadID, messageID);
-    var loadkhung = await Canvas.loadImage("https://i.ibb.co/H41cdDM/1624768781720.png");//("https://s1.uphinh.org/2021/06/24/1624551553171.png");
+        api.sendMessage(`💚 𝗦𝗼̂́ 𝗮̉𝗻𝗵 𝗱𝘂̛̣ 𝘁𝗶́𝗻𝗵: ${idtv.length}\n💜 𝗦𝗶𝘇𝗲 𝗯𝗮𝗰𝗸𝗴𝗿𝗼𝘂𝗻𝗱: ${xbground} x ${ybground}\n❤️ 𝗦𝗶𝘇𝗲 𝗺𝗼̂̃𝗶 𝗮𝘃𝗮𝘁𝗮𝗿: ${s}${mode}\n🧡 𝗠𝗮̀𝘂: ${color}\n❤️‍🔥𝗕𝗼𝘁 𝘁𝗿𝗼𝗻𝗴 𝗾𝘂𝗮́ 𝘁𝗿𝗶̀𝗻𝗵 𝘅𝘂̛̉ 𝗹𝘆́ 𝗿𝗲𝗾𝘂𝗲𝘀𝘁 𝗰𝘂̉𝗮 𝗯𝗮̣𝗻, 𝗾𝘂𝗮́ 𝘁𝗿𝗶̀𝗻𝗵 𝗻𝗮̀𝘆 𝗰𝗼́ 𝘁𝗵𝗲̂̉ 𝗺𝗮̂́𝘁 𝘁𝗼̛́𝗶 𝟱𝗽 𝗵𝗼𝗮̀𝗻 𝘁𝗮̂́𝘁...`,threadID, messageID);
+    var loadkhung = await Canvas.loadImage("https://i.ibb.co/sqJwkY9/neon-frame-transparent-background-16-700x700-1.png");//("https://s1.uphinh.org/2021/06/24/1624551553171.png");
     var title = args.slice(2).join(" ") || threadInfo.name;
     var path_alltv = __dirname+`/cache/alltv${threadID}${Date.now()}.png`;
     function delay(ms) {
@@ -108,10 +109,10 @@ module.exports.run = async ({ event, api, args }) => {
     //======FOR LOOP DRAW AVATAR=====//
     
     for(let id of idtv) {
-      console.log(dem, chalk.green("FAMILY: ")+"đang vẽ avt của id "+id);
+      console.log(dem, chalk.green("FAMILY: ")+"Vẽ "+id);
         try {
-          var avatar = await superfetch.get(`https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=${TOKEN}`);
-          if(avatar.url.includes(".gif")) {throw Error};
+        	var avatar = await superfetch.get(`https://graph.facebook.com/${id}/picture?width=512&height=512&access_token=${TOKEN}`);
+        	if(avatar.url.includes(".gif")) {throw Error};
         }
         catch(e) {
             ngdung += 1;
@@ -120,9 +121,9 @@ module.exports.run = async ({ event, api, args }) => {
 
         if(x+s > xbground) {
           xcrop = x;
-          x += (-x)+l;
-          y += s+l;
-          ycrop += s+l;
+        	x += (-x)+l;
+        	y += s+l;
+        	ycrop += s+l;
         };
         
         if(ycrop > ybground) {
@@ -140,15 +141,15 @@ module.exports.run = async ({ event, api, args }) => {
         if(arrad.includes(id)) {
         ctx.drawImage(loadkhung, x, y, s, s);
         };
-        console.log(chalk.green("Family: ")+"Đã vẽ avt của id "+id);
+        console.log(chalk.green("Family: ")+"Vẽ "+id);
         dem++;
         img.onerror = err => { throw err };
         x += parseInt(s+l);
     };
    Canvas.registerFont(__dirname+"/cache/fontfamily.ttf", {
-        family: "Dancing Script"
+        family: "Manrope"
     });
-    ctx.font = "110px Dancing Script";
+    ctx.font = "100px Manrope";
     ctx.fillStyle = color;
     ctx.textAlign = "center";
     ctx.fillText(title, xcrop/2, 133);
@@ -164,7 +165,7 @@ module.exports.run = async ({ event, api, args }) => {
       imagecut.crop(0, 0, xcrop, ycrop+l-30).writeAsync(path_alltv);
       console.log("Đã cắt xong ảnh và lưu vào cache");
       await delay(200);
-       api.sendMessage({body: `[⚜️] Số ảnh: ${dem} (Đã lọc ${ngdung} Người dùng facebook)\n[🆒] Size background: ${xbground} x ${ybground}\n[🆕] Size mỗi avatar: ${s}${mode}\n[⏱️] Thời gian xử lý: ${Math.floor((Date.now()-timestart)/1000)} giây`,
+       api.sendMessage({body: `🍓 𝗦𝗼̂́ 𝗮̉𝗻𝗵: ${dem} (𝗟𝗼̣𝗰 𝗵𝗼𝗮̀𝗻 𝘁𝗮̂́𝘁 ${ngdung} 𝗡𝗴𝘂̛𝗼̛̀𝗶 𝗱𝘂̀𝗻𝗴 𝗳𝗮𝗰𝗲𝗯𝗼𝗼𝗸)\n🍇 𝗦𝗶𝘇𝗲 𝗯𝗮𝗰𝗸𝗴𝗿𝗼𝘂𝗻𝗱: ${xbground} x ${ybground}\n🍊 𝗦𝗶𝘇𝗲 𝗺𝗼̂̃𝗶 𝗮𝘃𝗮𝘁𝗮𝗿: ${s}${mode}\n🍩 𝗧𝗵𝗼̛̀𝗶 𝗴𝗶𝗮𝗻 𝘅𝘂̛̉ 𝗹𝘆́: ${Math.floor((Date.now()-timestart)/1000)} 𝗴𝗶𝗮̂𝘆`,
           attachment: fs.createReadStream(path_alltv, { 'highWaterMark': 128 * 1024 })
        }, threadID, (e, info) => {
          if(e) {
@@ -178,11 +179,11 @@ module.exports.run = async ({ event, api, args }) => {
       console.log(e.stack);
       fs.writeFileSync(path_alltv, canvas.toBuffer());
        api.sendMessage({
-        body: `[⚜️]→ Đã xảy ra lỗi Auto cut\n[🟦] Số ảnh: ${dem}\n(Đã lọc ${ngdung} Người dùng facebook)\n[🆒] Size background: ${xbground} x ${ybground}\n[🆕] Size mỗi avatar: ${s}${mode}\n[⏱️] Thời gian xử lý: ${Math.floor((Date.now()-timestart)/1000)} giây`,
+        body: `Đã xảy ra lỗi Auto cut\n🍓 𝗦𝗼̂́ 𝗮̉𝗻𝗵: ${dem} (𝗟𝗼̣𝗰 𝗵𝗼𝗮̀𝗻 𝘁𝗮̂́𝘁 ${ngdung} 𝗡𝗴𝘂̛𝗼̛̀𝗶 𝗱𝘂̀𝗻𝗴 𝗳𝗮𝗰𝗲𝗯𝗼𝗼𝗸)\n🍇 𝗦𝗶𝘇𝗲 𝗯𝗮𝗰𝗸𝗴𝗿𝗼𝘂𝗻𝗱: ${xbground} x ${ybground}\n🍊 𝗦𝗶𝘇𝗲 𝗺𝗼̂̃𝗶 𝗮𝘃𝗮𝘁𝗮𝗿: ${s}${mode}\n🍩 𝗧𝗵𝗼̛̀𝗶 𝗴𝗶𝗮𝗻 𝘅𝘂̛̉ 𝗹𝘆́: ${Math.floor((Date.now()-timestart)/1000)} 𝗴𝗶𝗮̂𝘆`,
             attachment: fs.createReadStream(path_alltv, { 'highWaterMark': 128 * 1024 })
          }, threadID, (e, info) => {
            if(e) {
-              api.sendMessage("[⚜️]→ Đã xảy ra lỗi, vui lòng thử lại sau", threadID, messageID);
+              api.sendMessage("Đã xảy ra lỗi, vui lòng thử lại sau", threadID, messageID);
            };
            fs.unlinkSync(path_alltv);
          }, messageID);

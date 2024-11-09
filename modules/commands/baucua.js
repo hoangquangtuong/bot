@@ -1,174 +1,159 @@
-module.exports.config = {
-	name: "baucua",
-	version: "1.1.4",
-	hasPermssion: 0,
-	credits: "DungUwU",
-	description: "baucua nhiều người",
-	commandCategory: "Game",
-	usages: "[create/leave/start]\n[nai/bầu/gà/tôm/cua/cá]",
-	dependencies: {
-		"fs": "",
-		"axios": ""
-	},
-	cooldowns: 3
-};
+ var request = require("request");const { readdirSync, readFileSync, writeFileSync, existsSync, copySync, createWriteStream, createReadStream } = require("fs-extra");
+    module.exports.config = {
+        name: "baucua",
+        version: "1.0.0",
+        hasPermssion: 0,
+        credits: "Horizon Lucius Synthesis I",
+        description: "Game bầu cua có đặt cược",
+        commandCategory: "game",
+        usages: "<[gà/tôm/bầu/cua/cá/nai] hoặc[🐓/🦞/🍐/🦀/🐬/🦌]> <Số tiền cược (lưu ý phải trên 100$)>",
+        cooldowns: 2
+    };
 
-module.exports.languages = {
-	"vi": {
-        "missingInput": "Số tiền đặt cược kh��ng được để trống hoặc là số âm",
-        "wrongInput": "Nhập liệu không hợp lệ?",
-        "moneyBetNotEnough": "Số tiền bạn đặt lớn hơn hoặc bằng số dư của bạn!",
-        "limitBet": "Số coin đặt không được dưới 50$!",
-        "alreadyHave": "Đang có 1 ván bầu cua diễn ra ở nhóm này!",
-        "alreadyBet": "Bạn đã cược vào đây từ trước.",
-        "createSuccess": "[ BAUCUA ] Tạo thành công, dùng:\nĐể tham gia đặt cược, dùng:\n%1%2 [nai/bầu/gà/tôm/cua/cá] tiền_cược\n(có thể đặt nhiều con cùng lúc)",
-        "noGame": "[ BAUCUA ] Nhóm của bạn không có ván bầu cua nào đang diễn ra cả!",
-        "betSuccess": "Đặt thành công %1 đô vào %2",
-        "notJoined": "Bạn chưa tham gia bầu cua ở nhóm này!",
-        "outSuccess": "Đã rời ván bầu cua thành công, bạn sẽ được hoàn tiền!",
-        "shaking": "Đang lắc...",
-        "final": " => [  KẾT QUẢ  ] <=",
-        "notAuthor": "Bạn khồng phải chủ phòng.",
-        "unknown": "Câu lệnh không hợp lệ, để xem cách dùng, sử dụng: %1help %2",
-        "noPlayer": "Hiện không có người đặt cược",
-        "closed": "Đã đóng ván bầu cua!"
-	}
-}
+    module.exports.onLoad = async function () {
+        if (!existsSync(__dirname + '/cache/ga.jpg')) {
+            request('https://i.imgur.com/Vz17qhg.jpg').pipe(createWriteStream(__dirname + '/cache/ga.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/tom.jpg')) {
+            request('https://i.imgur.com/Ep0MukF.jpg').pipe(createWriteStream(__dirname + '/cache/tom.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/bau.jpg')) {
+            request('https://i.imgur.com/Qp3StfB.jpg').pipe(createWriteStream(__dirname + '/cache/bau.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/cua.jpg')) {
+            request('https://i.imgur.com/J5MPPMW.jpg').pipe(createWriteStream(__dirname + '/cache/cua.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/ca.jpg')) {
+            request('https://i.imgur.com/JNQr0qI.jpg').pipe(createWriteStream(__dirname + '/cache/ca.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/nai.jpg')) {
+            request('https://i.imgur.com/UYhUZf8.jpg').pipe(createWriteStream(__dirname + '/cache/nai.jpg'));
+        }
+        if (!existsSync(__dirname + '/cache/baucua.gif')) {
+            request('https://i.imgur.com/dlrQjRL.gif').pipe(createWriteStream(__dirname + '/cache/baucua.gif'));
+        }
+    };
 
-module.exports.onLoad = async () => {
-	const fs = require("fs");
-	await require('axios').get("https://raw.githubusercontent.com/J-JRT/version/mainV2/version.json").then(res => {
-		if (res.data["baucua_x022"] != this.config.version) console.log("=== BAUCUA ĐÃ CÓ PHIÊN BẢN MỚI, LIÊN HỆ J-JRT ĐỂ ĐƯỢC CẬP NHẬT ===");
-	})
-	let path = __dirname + '/baucua/';
-	if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true });
-	await require("axios").get("https://raw.githubusercontent.com/J-JRT/baucua/mainV2/data_baucua.json").then(async (res) => {
-		for (let e in res.data) {
-			if (fs.existsSync(path + e)) continue;
-			await fs.writeFileSync(path + e, res.data[e], 'base64');
-		}
-	});
-	if (!global.client.baucua) global.client.baucua = {};
-	console.log("=== Momo: 0399259628 ===");
-};
-
-
-module.exports.run = async function({ api, event, args, getText, Users, Currencies }) {
-	if (!global.client.baucua) global.client.baucua = {};
-	const { senderID, messageID, threadID } = event;
-	const { increaseMoney, decreaseMoney, getData } = Currencies;
-    const moneyUser = (await getData(senderID)).money;
-	const sendC = (msg, callback) => api.sendMessage(msg, threadID, callback, messageID);
-	const sendTC = (msg, callback) => api.sendMessage(msg, threadID, callback);
-	const sendT = (msg) => sendTC(msg, () => {});
-	const send = (msg) => sendC(msg, () => {});
-	const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
-	const prefix = (threadSetting.hasOwnProperty("PREFIX")) ? threadSetting.PREFIX : global.config.PREFIX;
-	switch(args[0]) {
-		case "create": {
-			if (threadID in global.client.baucua) send(getText("alreadyHave"));
-			else sendTC(getText("createSuccess", prefix, this.config.name), () => {
-				global.client.baucua[threadID] = {
-					players: 0,
-					data: {},
-					status: "pending",
-					author: senderID
-				};
-			});
-			return;
-		};
-		case "leave": {
-			if (!global.client.baucua[threadID]) return send(getText("noGame"));
-			if (!global.client.baucua[threadID].data[senderID]) return send(getText("notJoined"));
-			else {
-				global.client.baucua[threadID].players--;
-				global.client.baucua[threadID].data[senderID].forEach(async (e) => {
-					await increaseMoney(senderID, e.bet);
-				})
-				delete global.client.baucua[threadID].data[senderID];
-				send(getText("outSuccess"));
-			}
-			return;
-		};
-		case "start": {
-			if (!global.client.baucua[threadID]) return send(getText("noGame"));
-			if (global.client.baucua[threadID].author != senderID) return send(getText("notAuthor"));
-			if (global.client.baucua[threadID].players == 0) return send(getText("noPlayer"));
-			sendTC(getText("shaking"), (err, info) => setTimeout(() => api.unsendMessage(info.messageID), 3000));
-			await new Promise(resolve => setTimeout(resolve, 3000));
-			let sixC = ["nai","bầu","gà","tôm","cua","cá"];
-			let sixE = ["🦌","🍐","🐓","🦐","🦀","🐟"];
-			let _1st = Math.floor(Math.random() * 6);
-			let _2nd = Math.floor(Math.random() * 6);
-			let _3rd = Math.floor(Math.random() * 6);
-			let ketqua = [sixC[_1st], sixC[_2nd], sixC[_3rd]];
-			let name = "", win = 0, lose = 0;
-			let bcatm = [];
-			for (e of ketqua) {
-				let imgStream = require("fs").createReadStream(__dirname + `/baucua/${e}.jpg`);
-				bcatm.push(imgStream);
-			}
-			let msg = "";
-			for (i in global.client.baucua[threadID].data) {
-				name = await Users.getNameUser(i) || "Player";
-				msg += `\n${name}: `;
-				global.client.baucua[threadID].data[i].forEach(async (e) => {
-					if (!ketqua.includes(e.name)) lose += e.bet;
-					else {
-						let count = 1;
-						ketqua.forEach(t => {
-							if (t == e.name) count++;
-						})
-						win += e.bet*(count-1);
-						await increaseMoney(i, e.bet*count);
-					}
-				});
-				msg += (win - lose >= 0) ? " +" : " ";
-				msg += `${win - lose}$`;
-				win = 0, lose = 0;
-			}
-			sendTC({
-				body: getText("final"),
-				attachment: bcatm
-			}, () => sendTC(msg, () => delete global.client.baucua[threadID]));
-			return;
-		};
-		case "end": {
-			if (!global.client.baucua[threadID]) return send(getText("noGame"));
-			if (global.client.baucua[threadID].author != senderID) return send(getText("notAuthor"));
-			sendTC(getText("closed"), () => delete global.client.baucua[threadID]);
-		}
-		default: {
-			if (!["nai","bầu","bau","gà","ga","tôm","tom","cua","cá","ca"].includes(args[0])) return send(getText("unknown", prefix, this.config.name));
-			if (!global.client.baucua[threadID]) return send(getText("noGame"));
-			if (args.length < 2) return send(getText("wrongInput"));
-			moneyBet = parseInt(args[1]);
-		    if (isNaN(moneyBet) || moneyBet <= 0) return send(getText("missingInput"));
-			if (moneyBet > moneyUser) return send(getText("moneyBetNotEnough"));
-			if (moneyBet < 50) return send(getText("limitBet"));
-			if (threadID in global.client.baucua) {
-				if (global.client.baucua[threadID].status == "pending") {
-					let luachon = args[0].toLowerCase();
-					if (!["nai","bầu","bau","gà","ga","tôm","tom","cua","cá","ca"].includes(luachon)) return send(getText("wrongInput"));
-					if (["bầu","bau"].includes(luachon)) luachon = "bầu";
-					if (["gà","ga"].includes(luachon)) luachon = "gà";
-					if (["tôm","tom"].includes(luachon)) luachon = "tôm";
-					if (["cá","ca"].includes(luachon)) luachon = "cá";
-					if (!global.client.baucua[threadID].data[senderID]) {
-						global.client.baucua[threadID].players++;
-						global.client.baucua[threadID].data[senderID] = [];
-					};
-					if (global.client.baucua[threadID].data[senderID] && global.client.baucua[threadID].data[senderID].find(e => e.name == luachon)) return send(getText("alreadyBet"));
-					sendC(getText("betSuccess", moneyBet, luachon), () => {
-						decreaseMoney(senderID, moneyBet);
-						global.client.baucua[threadID].data[senderID].push({
-							name: luachon,
-							bet: moneyBet
-						})
-					});
-				}
-			}
-			return;
-		}
-	}
-}
+    async function get(one,two,three) {
+        var x1;
+            switch (one) {
+                case "ga": x1 = "🐓";
+                    break;
+                case "tom": x1 = '🦞';
+                    break;
+                case "bau": x1 = '🍐';
+                    break;
+                case "cua": x1 = '🦀';
+                    break;
+                case "ca": x1 = '🐬';
+                    break;
+                case "nai":x1 = '🦌';
+            }
+        var x2;
+            switch (two) {
+                case "ga": x2 = "🐓";
+                    break;
+                case "tom": x2 = '🦞';
+                    break;
+                case "bau": x2 = '🍐';
+                    break;
+                case "cua": x2 = '🦀';
+                    break;
+                case "ca": x2 = '🐬';
+                    break;
+                case "nai": x2 = '🦌';
+            }
+        var x3;
+            switch (three) {
+                case "ga": x3 = "🐓";
+                    break;
+                case "tom": x3 = '🦞';
+                    break;
+                case "bau": x3 = '🍐';
+                    break;
+                case "cua": x3 = '🦀';
+                    break;
+                case "ca": x3 = '🐬';
+                    break;
+                case "nai":x3 = '🦌';
+            }
+        var all = [x1, x2, x3];
+    return full = all;
+    }
+var full = [];
+    module.exports.run = async function({ api, event, args, Currencies }) { var out = (msg) => api.sendMessage(msg,event.threadID, event.messageID);
+        const slotItems = ["ga", "tom", "bau", "cua", "ca", "nai"];
+            const moneyUser = (await Currencies.getData(event.senderID)).money;
+                var moneyBet = parseInt(args[1]);
+                    if (!args[0] || !isNaN(args[0])) return api.sendMessage("[𝑷𝑮🐧] => Hãy Bấm : /baucua [bầu/cua/cá/nai/gà/tôm] [số tiền]",event.threadID, event.messageID);
+                    if (isNaN(moneyBet) || moneyBet <= 0) return api.sendMessage("[𝑷𝑮🐧] => Số tiền đặt cược không được để trống hoặc là số tiền âm", event.threadID, event.messageID);
+                if (moneyBet > moneyUser) return api.sendMessage("[𝑩𝑶𝑻] => Số tiền bạn đặt lớn hơn số dư của bạn!", event.threadID, event.messageID);
+            if (moneyBet < 100) return api.sendMessage("[𝑩𝑶𝑻] => Số tiền đặt không được dưới 100 đô!", event.threadID, event.messageID);
+        var number = [], win = false;
+    for (let i = 0; i < 3; i++) number[i] = slotItems[Math.floor(Math.random() * slotItems.length)];
+        var itemm;
+            var icon;
+                switch (args[0]) {
+                    case "bầu":
+                        case "Bầu": itemm = "bau";
+                                icon = '🍐';
+                            break;
+                    case "cua": 
+                        case "Cua": itemm = "cua";
+                                icon = '🦀';
+                            break;
+                    case "cá":
+                        case "Cá": itemm = "ca";
+                                icon = '🐟';
+                            break;
+                    case "nai":
+                        case "Nai": itemm = "nai";
+                                icon = '🦌';
+                            break;
+                    case "gà": 
+                        case "Gà": itemm = "ga";
+                                icon = '🐓';
+                            break;
+                    case "tôm":
+                        case "Tôm": itemm = "tom";
+                                icon = '🦞';
+                            break;
+                                default: return api.sendMessage("[𝑩𝑶𝑻] => Hãy Bấm : /baucua [bầu/cua/cá/nai/gà/tôm] [số tiền]",event.threadID, event.messageID);
+                }      
+                await get(number[0],number[1],number[2]);
+            api.sendMessage({body:"🌺 𝑷𝒉𝒆́𝒑 𝑻𝒉𝒖𝒂̣̂𝒕 𝑾𝒊𝒏𝒙 𝑬𝒏𝑪𝒉𝒂𝒏𝑻𝒊𝒙...𝑪𝒉𝒐̛̀ 𝑩𝒐𝒕 𝑳𝒂̆́𝒄 𝑵𝒉𝒆́\n🌺 𝑪𝒉𝒖́𝒄 𝑩𝒂̣𝒏 𝑴𝒂𝒚 𝑴𝒂̆́𝒏...💝",attachment: createReadStream(__dirname + "/cache/baucua.gif")},event.threadID,async (error,info) => {
+                await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+                    api.unsendMessage(info.messageID);
+                          await new Promise(resolve => setTimeout(resolve, 100));
+    var array = [number[0],number[1],number[2]];
+        var listimg = [];
+           for (let string of array) {
+               listimg.push(createReadStream(__dirname + `/cache/${string}.jpg`));
+           }
+        if (array.includes(itemm)) {
+            var i = 0;
+                if (array[0] == itemm) i+=1;
+                    if (array[1] == itemm) i+=1;
+                if (array[2] == itemm) i+=1;
+            if (i == 1) {
+                var mon = parseInt(args[1]) + 300;  
+                    await Currencies.increaseMoney(event.senderID, mon); console.log("s1")
+                        return api.sendMessage({body:`➢ 𝑳𝒂̆́𝒄 𝑻𝒓𝒖́𝒏𝒈: ${full.join(" | ")}\n🌺𝑩𝒂̣𝒏 𝑻𝒉𝒂̆́𝒏𝒈 𝑳𝒐̛́𝒏 𝑽𝒂̀ 𝑵𝒉𝒂̣̂𝒏 𝑽𝒆̂̀ 𝑺𝒐̂́ 𝑻𝒊𝒆̂̀𝒏 ${mon}$ 💸\n➢ 𝑩𝒐𝒕 𝒍𝒂̆́𝒄 𝒓𝒂 𝒄𝒐́ 𝒎𝒐̣̂𝒕 𝒄𝒐𝒏 ${icon}`,attachment: listimg},event.threadID, event.messageID);
+            }
+            else if (i == 2) {
+                var mon = parseInt(args[1]) * 2; 
+                    await Currencies.increaseMoney(event.senderID, mon); console.log("s2")
+                        return api.sendMessage({body:`➢ 𝑳𝒂̆́𝒄 𝑻𝒓𝒖́𝒏𝒈: ${full.join(" | ")}\n🌺𝑩𝒂̣𝒏 𝑻𝒉𝒂̆́𝒏𝒈 𝑳𝒐̛́𝒏 𝑽𝒂̀ 𝑵𝒉𝒂̣̂𝒏 𝑽𝒆̂̀ 𝑺𝒐̂́ 𝑻𝒊𝒆̂̀𝒏 ${mon}$ 💸\n➢ 𝑩𝒐𝒕 𝒍𝒂̆́𝒄 𝒓𝒂 𝒄𝒐́ 𝒉𝒂𝒊 𝒄𝒐𝒏 ${icon}`,attachment: listimg},event.threadID, event.messageID);
+            }
+            else if (i == 3) {
+                var mon = parseInt(args[1]) * 3; 
+                    await Currencies.increaseMoney(event.senderID, mon); console.log('s3')
+                        return api.sendMessage({body:`➢ 𝑳𝒂̆́𝒄 𝑻𝒓𝒖́𝒏𝒈: ${full.join(" | ")}\n🌺𝑩𝒂̣𝒏 𝑻𝒉𝒂̆́𝒏𝒈 𝑳𝒐̛́𝒏 𝑽𝒂̀ 𝑵𝒉𝒂̣̂𝒏 𝑽𝒆̂̀ 𝑺𝒐̂́ 𝑻𝒊𝒆̂̀𝒏 ${mon}$ 💸\n➢ 𝑩𝒐𝒕 𝒍𝒂̆́𝒄 𝒓𝒂 𝒄𝒐́ 𝒃𝒂 𝒄𝒐𝒏 ${icon}`,attachment: listimg},event.threadID, event.messageID);
+            }
+            else return api.sendMessage("[𝑩𝑶𝑻] => 𝑳𝒐̂̃𝒊 𝒓𝒐̂̀𝒊 𝒃𝒂̂̀𝒖 𝒄𝒖𝒂 𝒄𝒐𝒏 𝒄𝒂̣̆𝒄 𝒃𝒐̛́𝒕 𝒏𝒈𝒉𝒊𝒆̣̂𝒏 𝒍𝒂̣𝒊",event.threadID,event.messageID);
+        } else  {
+            await Currencies.decreaseMoney(event.senderID, parseInt(args[1])); console.log('s4')
+            return api.sendMessage({body:`➢ 𝑳𝒂̆́𝒄 𝑻𝒓𝒖́𝒏𝒈: ${full.join(" | ")}\n🌺𝑩𝒂̣𝒏 𝑻𝒉𝒖𝒂 𝑹𝒐̂̀𝒊 𝑽𝒂̀ 𝑩𝒊̣ 𝑻𝒓𝒖̛̀ ${args[1]}$ 💸\n➢ 𝑽𝒊̀ 𝒏𝒉𝒂̀ 𝒄𝒂́𝒊 𝒍𝒂̆́𝒄 𝒓𝒂 𝒌𝒉𝒐̂𝒏𝒈 𝒄𝒐́ 𝒄𝒐𝒏 ${icon}`,attachment: listimg},event.threadID, event.messageID);
+        }
+            } ,event.messageID);
+    };

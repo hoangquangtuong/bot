@@ -1,17 +1,17 @@
 module.exports.config = {
     name: "tarot",
-    version: "2.6.2",
+    version: "0.0.1",
     hasPermssion: 0,
-    credits: "JRT",
-    description: "Xem bài tarot",
-    commandCategory: "Kiến thức",
+    credits: "Raiku ?",
+    description: "Bói bài tarot",
+    commandCategory: "Tiện ích",
     cooldowns: 5
 };
 
 module.exports.run = async function ({ api, event, args }) {
     const axios = require("axios")
-    const c = (await axios.get('https://raw.githubusercontent.com/J-JRT/tarot/mainV2/data.json')).data
-  if(args[0] > c.length) return api.sendMessage('[⚜️]→ Không Thể Vượt Quá Số Bài Đang Có Trong Data', event.threađID)
+    const c = (await axios.get('https://raw.githubusercontent.com/ThanhAli-Official/tarot/main/data.json')).data
+  if(args[0] > c.length) return api.sendMessage('Không thể vượt quá số bài đang có trong hệ thống dữ liệu', event.threađID)
     if(!args[0]){
     var k = Math.floor(Math.random() * c.length)
   } else {
@@ -22,7 +22,7 @@ module.exports.run = async function ({ api, event, args }) {
         responseType: "stream"
       })).data;
     const msg = ({
-        body: `====== [ 𝐓𝐀𝐑𝐎𝐓 ] ======\n\n➢ Tên: ${x.name}\n➢ Thuộc bộ: ${x.suite}\n➢  Mô tả: ${x.vi.description}\n➢ Diễn dịch: ${x.vi.interpretation}\n➢ Đảo ngược: ${x.vi.reversed}`,
+        body: `===[ 𝗕𝗢́𝗜 𝗕𝗔̀𝗜 𝗧𝗔𝗥𝗢𝗧 ]===\n\n→ Tên lá bài: ${x.name}\n→ Thuộc bộ: ${x.suite}\n→ Mô tả: ${x.vi.description}\n→ Diễn dịch: ${x.vi.interpretation}\n→ Bài ngược: ${x.vi.reversed}`,
         attachment: t
     })
     return api.sendMessage(msg, event.threadID, event.messageID)

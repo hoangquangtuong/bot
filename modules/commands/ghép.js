@@ -14,23 +14,6 @@ module.exports.run = async function({ api, event,Threads, Users }) {
 
         var { participantIDs } =(await Threads.getData(event.threadID)).threadInfo;
         var tle = Math.floor(Math.random() * 101);
-        let mung = [
-    "Chúc 2 bạn trăm năm hạnh phút",
-    "Chúc 2 bạn xây dựng được 1 tổ ấm hạnh phúc",
-    "Chúc 2 bạn cùng nhau nương tựa đến cuối đời",
-    "Chúc 2 bạn hạnh phúc",
-    "Trách phận vô duyên...",
-  "Hơi thấp nhưng không sao. Hãy cố gắng lên!",
-  "3 phần duyên nợ, 7 phần cố gắng",
-  "Tỷ lệ mà mối quan hệ này có thể nên duyên cũng khá là nhỏ đấy! Phải cố gắng hơn nữa",
-  "Date với nhau đi. Để mối quan hệ này có thể tiến xa hơn",
-  "Hãy chủ động bắt chuyện hơn nữa. Hai bạn khá là hợp đôi",
-  "Hãy tin vào duyên số đi, vì nó có thật đấy!",
-  "Hợp đôi lắm đấy. Quan tâm chăm sóc cho mối quan hệ này nhiều hơn nữa nhé!",
-  "Lưu số nhau đi, bao giờ cưới thì gọi nhau lên lễ đường!",
-  "Cưới đi chờ chi!"
-  ]
-  let chuc = mung[Math.floor(Math.random() * mung.length)]
         var namee = (await Users.getData(event.senderID)).name
         const botID = api.getCurrentUserID();
         const listUserID = event.participantIDs.filter(ID => ID != botID && ID != event.senderID);
@@ -56,6 +39,6 @@ module.exports.run = async function({ api, event,Threads, Users }) {
               imglove.push(fs.createReadStream(__dirname + "/cache/giflove.png"));
               imglove.push(fs.createReadStream(__dirname + "/cache/avt2.png"));
 
-        var msg = {body: `[🥰]→ Ghép đôi thành công!\n[❤️]→ Lời chúc:\n${chuc}\n[💕]→ Tỉ lệ hợp đôi: ${tle}%\n`+namee+" "+"💓"+" "+name, mentions: arraytag, attachment: imglove}
+        var msg = {body: `🥰Ghép đôi thành công!\n💌Chúc 2 bạn trăm năm hạnh phúc\n💕Tỉ lệ hợp đôi: ${tle}%\n`+namee+" "+"💓"+" "+name, mentions: arraytag, attachment: imglove}
         return api.sendMessage(msg, event.threadID, event.messageID)
 }

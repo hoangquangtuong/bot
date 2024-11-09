@@ -5,7 +5,6 @@ module.exports.config = {
   credits: "Mirai Team",
   description: "Play caro with AI",
   commandCategory: "game",
-  usages: "ttt",
   cooldowns: 5,
   usages: "x/o/delete/continue"
 };
@@ -187,8 +186,8 @@ module.exports.run = async function ({ event, api, args }) {
   let concak = "" + prefix + this.config.name;
   let newData;
   if (args.length == 0) return api.sendMessage("Vui lòng chọn X hoặc O", threadID, messageID);
-  if (args[0].toLowerCase() == "delete") {
-    global.moduleData.tictactoe.delete(threadID);
+  if (args[0] == "delete") {
+global.moduleData.tictactoe.delete(threadID);
     return api.sendMessage("Đã xóa bàn cờ!", threadID, messageID);
   }
   if (args[0].toLowerCase() == "continue") {

@@ -77,7 +77,7 @@ module.exports.handleEvent = async function ({
             })).data;
             fs.writeFileSync(__dirname + `/cache/${path_1}.png`, Buffer.from(img_nai, "utf-8"));
         }
-        if (itemOne == "gà") {
+        if (itemOne == "g��") {
             var icon_1 = "🐓",
                 path_1 = "ga";
             let img_ga = (await axios.get(gaaa, {
@@ -321,7 +321,7 @@ module.exports.run = async function ({
                     }
                 }]
             });
-            return api.sendMessage('Tạo bàn chơi bầu cua thành công!\n...baucua join\n...baucua start\n...baucua leave\n...baucua end', threadID, messageID);
+            return api.sendMessage('Tạo bàn chơi bầu cua thành công!\n...banbaucua join\n...banbaucua start\n...banbaucua leave\n...banbaucua end', threadID, messageID);
             break;
         }
         case "join":

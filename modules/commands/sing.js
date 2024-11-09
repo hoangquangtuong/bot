@@ -47,10 +47,10 @@ module.exports.handleReply = async function ({ api, event, handleReply }) {
     try {
         var path = `${__dirname}/cache/sing-${event.senderID}.mp3`
         var data = await downloadMusicFromYoutube('https://www.youtube.com/watch?v=' + handleReply.link[event.body -1], path);
-        if (fs.statSync(path).size > 26214400) return api.sendMessage('[⚜️]→ Không thể gửi file vì dung lượng lớn hơn 25MB.', event.threadID, () => fs.unlinkSync(path), event.messageID);
+        if (fs.statSync(path).size > 26214400) return api.sendMessage('→ Không thể gửi file vì dung lượng lớn hơn 25MB.', event.threadID, () => fs.unlinkSync(path), event.messageID);
         api.unsendMessage(handleReply.messageID)
         return api.sendMessage({ 
-            body: `==== 『 𝐒𝐈𝐍𝐆 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  』 ====\n\n[🎵]→ Title: ${data.title}\n[⏱️]→ Thời lượng video: ${this.convertHMS(data.dur)}\n[⚜️]→ Tên kênh: ${data.author}\n[📈]→ Số view: ${data.viewCount}\n[🔰]→ Số like: ${data.likes}\n[⏱️]→ Thời gian xử lý: ${Math.floor((Date.now()- data.timestart)/1000)} giây\n━━━━━━━━━━━━━━━\n[⚜️]=== 『 𝐁𝐎𝐓 𝐉𝐑𝐓  』 ===[⚜️]\n\n===「${timeNow}」===`,
+            body: `==== 『 𝐒𝐈𝐍𝐆 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  』 ====\n→ Title: ${data.title}\n→ Thời lượng video: ${this.convertHMS(data.dur)}\n→ Tên kênh: ${data.author}\n→ Số view: ${data.viewCount}\n→ Số like: ${data.likes}\n→ Thời gian xử lý: ${Math.floor((Date.now()- data.timestart)/1000)} giây\n━━━━━━━━━━━━━━━\n===「${timeNow}」===`,
             attachment: fs.createReadStream(path)}, event.threadID, ()=> fs.unlinkSync(path), 
          event.messageID)
             
@@ -68,7 +68,7 @@ module.exports.convertHMS = function(value) {
     return (hours != '00' ? hours +':': '') + minutes+':'+seconds;
 }
 module.exports.run = async function ({ api, event, args }) {
-    if (args.length == 0 || !args) return api.sendMessage('[⚜️]→ Phần tìm kiếm không được để trống!', event.threadID, event.messageID);
+    if (args.length == 0 || !args) return api.sendMessage('→ Phần tìm kiếm không được để trống!', event.threadID, event.messageID);
     const keywordSearch = args.join(" ");
     const moment = require("moment-timezone"); 
     var timeNow = moment.tz("Asia/Ho_Chi_Minh").format("HH:mm:ss")
@@ -79,9 +79,9 @@ module.exports.run = async function ({ api, event, args }) {
     if (args.join(" ").indexOf("https://") == 0) {
         try {
             var data = await downloadMusicFromYoutube(args.join(" "), path);
-            if (fs.statSync(path).size > 26214400) return api.sendMessage('[⚜️]→ Không thể gửi file vì dung lượng lớn hơn 25MB.', event.threadID, () => fs.unlinkSync(path), event.messageID);
+            if (fs.statSync(path).size > 26214400) return api.sendMessage('→ Không thể gửi file vì dung lượng lớn hơn 25MB.', event.threadID, () => fs.unlinkSync(path), event.messageID);
             return api.sendMessage({ 
-                body: `==== 『 𝐒𝐈𝐍𝐆 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  』 ====\n\n[🎵]→ Title: ${data.title}\n[⏱️]→ Thời lượng video: ${this.convertHMS(data.dur)}\n[⚜️]→ Tên kênh: ${data.author}\n[📈]→ Số view: ${data.viewCount}\n[🔰]→ Số like: ${data.likes}\n[⏱️]→ Thời gian xử lý: ${Math.floor((Date.now()- data.timestart)/1000)} giây\n━━━━━━━━━━━━━━━\n[⚜️]=== 『 𝐁𝐎𝐓 𝐉𝐑𝐓  』 ===[⚜️]\n\n===「${timeNow}」===`,
+                body: `==== 『 𝐒𝐈𝐍𝐆 𝐘𝐎𝐔𝐓𝐔𝐁𝐄  』 ====\n→ Title: ${data.title}\n→ Thời lượng video: ${this.convertHMS(data.dur)}\n→ Tên kênh: ${data.author}\n→ Số view: ${data.viewCount}\n→ Số like: ${data.likes}\n→ Thời gian xử lý: ${Math.floor((Date.now()- data.timestart)/1000)} giây\n━━━━━━━━━━━━━━━\n===「${timeNow}」===`,
                 attachment: fs.createReadStream(path)}, event.threadID, ()=> fs.unlinkSync(path), 
             event.messageID)
             
@@ -97,9 +97,9 @@ module.exports.run = async function ({ api, event, args }) {
             for (let value of data) {
               link.push(value.id);
               num = num+=1
-              msg += (`${num}. [🎬]→ Title ${value.title}\n[⏰]→ Thời lượng: ${value.length.simpleText}\n\n`);
+              msg += (`${num}. → Title ${value.title}\n→ Thời lượng: ${value.length.simpleText}\n\n`);
             }
-            var body = `[🔎]→ Có ${link.length} kết quả trùng với từ khoá tìm kiếm của bạn:\n━━━━━━━━━━━━━━━\n\n${msg}\n━━━━━━━━━━━━━━━\n\n[⚜️]→ Hãy reply (phản hồi) chọn một trong những tìm kiếm trên\n\n===「${timeNow}」===`
+            var body = `→ Có ${link.length} kết quả trùng với từ khoá tìm kiếm của bạn:\n━━━━━━━━━━━━━━━\n\n${msg}\n━━━━━━━━━━━━━━━\n→ Hãy reply (phản hồi) chọn một trong những tìm kiếm trên\n\n===「${timeNow}」===`
             return api.sendMessage({
               body: body
             }, event.threadID, (error, info) => global.client.handleReply.push({
@@ -110,7 +110,7 @@ module.exports.run = async function ({ api, event, args }) {
               link
             }), event.messageID);
           } catch(e) {
-            return api.sendMessage('[⚜️]→ Đã xảy ra lỗi, vui lòng thử lại trong giây lát!!\n' + e, event.threadID, event.messageID);
+            return api.sendMessage('→ Đã xảy ra lỗi, vui lòng thử lại trong giây lát!!\n' + e, event.threadID, event.messageID);
         }
     }
 }

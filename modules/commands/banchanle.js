@@ -4,9 +4,9 @@ module.exports.config = {
 	version: "1.0.0",
 	hasPermssion: 0,
 	credits: "Thiệu Trung Kiên",
-	description: "Cược chẳn lẻ",
-	commandCategory: "Game",
-	usages: "banchanle",
+	description: "jv k biết",
+	commandCategory: "game",
+	usages: "[create/join/start/end]",
 	cooldowns: 5
 }, module.exports.run = async function({
 	api: e,
@@ -77,7 +77,7 @@ module.exports.config = {
 				return g ? g.author != i ? e.sendMessage("Bạn không phải là người tạo ra bàn game nên không thể xóa bàn game", s, o) : (global.chanle.delete(s), e.sendMessage("Đã xóa bàn game!", s, o)) : e.sendMessage("Nhóm này hiện chưa có bàn game nào!\n=> Vui lòng hãy tạo bàn game mới để tham gia!", s, o);
 			default:
 				return e.sendMessage({
-					body: "Chơi Chẵn Lẻ Nhiều Người\n1.=>chanle -c/create <price> để tạo phòng\n2.=>chanle join để vào phòng\n3.=>chanle start để bắt đầu trò chơi\n4.=>chanle end để xóa phòng",
+					body: "Chơi Chẵn Lẻ Nhiều Người\n1.=>banchanle -c/create <price> để tạo phòng\n2.=>banchanle join để vào phòng\n3.=>banchanle start để bắt đầu trò chơi\n4.=>banchanle end để xóa phòng",
 					attachment: c
 				}, s, o)
 		}
@@ -172,7 +172,9 @@ module.exports.config = {
 
                     function images() {
                         if ("chẵn" == t)
-                            var i = ["https://i.imgur.com/6fIJU1q.jpg", "https://i.imgur.com/XPg6Uvq.jpg", "https://i.imgur.com/IWjB9kN.jpg", "https://i.imgur.com/XVxgPhY.png", "https://i.imgur.com/dRzktqf.png"];
+                            var i = [
+                      "https://i.imgur.com/6fIJU1q.jpg", "https://i.imgur.com/XPg6Uvq.jpg", "https://i.imgur.com/IWjB9kN.jpg", "https://i.imgur.com/XVxgPhY.png", "https://i.imgur.com/dRzktqf.png"
+                ];
                         else if ("lẻ" == t)
                             i = ["https://i.imgur.com/u1DjwX0.png", "https://i.imgur.com/unnBcv9.png", "https://i.imgur.com/181R8Te.jpg", "https://i.imgur.com/y67IGtv.jpg", "https://i.imgur.com/y67IGtv.jpg"];
                         return i;

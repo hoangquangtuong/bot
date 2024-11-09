@@ -1,41 +1,29 @@
 module.exports.config = {
 	name: "ping",
-	version: "0.0.3",
+	version: "1.0.5",
 	hasPermssion: 1,
 	credits: "Mirai Team",
 	description: "tag toàn bộ thành viên",
-	commandCategory: "Nhóm",
+	commandCategory: "group",
 	usages: "[Text]",
-	cooldowns: 10
+	cooldowns: 80
 };
 
-module.exports.run = async function({ api, event, args, Threads }) { 
-  const moment = require("moment-timezone");
-    var gio = moment.tz("Asia/Ho_Chi_Minh").format("D/MM/YYYY || HH:mm:ss");
-    var thu = moment.tz('Asia/Ho_Chi_Minh').format('dddd');
-  if (thu == 'Sunday') thu = 'Chủ Nhật'
-  if (thu == 'Monday') thu = 'Thứ Hai'
-  if (thu == 'Tuesday') thu = 'Thứ Ba'
-  if (thu == 'Wednesday') thu = 'Thứ Tư'
-  if (thu == "Thursday") thu = 'Thứ Năm'
-  if (thu == 'Friday') thu = 'Thứ Sáu'
-  if (thu == 'Saturday') thu = 'Thứ Bảy'
+module.exports.run = async function({ api, event, args }) {
 	try {
-		var all = (await Threads.getInfo(event.threadID)).participantIDs;
-    all.splice(all.indexOf(api.getCurrentUserID()), 1);
-	  all.splice(all.indexOf(event.senderID), 1);
-		var body = (args.length != 0) ? args.join(" ") : "[⚜️] Quản trị viên đã nhắc tới bạn kìa!!! Mau vô tương tác lẹ", mentions = [], index = 0;
-		
-    for (let i = 0; i < all.length; i++) {
-		    if (i == body.length) body += body.charAt(body.length - 1);
-		    mentions.push({
-		  	  tag: body[i],
-		  	  id: all[i],
-		  	  fromIndex: i - 1
-		    });
-	    }
+		const botID = api.getCurrentUserID();
+		var listAFK, listUserID;
+		global.moduleData["afk"] && global.moduleData["afk"].afkList ? listAFK = Object.keys(global.moduleData["afk"].afkList || []) : listAFK = []; 
+		listUserID = event.participantIDs.filter(ID => ID != botID && ID != event.senderID);
+		listUserID = listUserID.filter(item => !listAFK.includes(item));
+		var body = (args.length != 0) ? args.join(" ") : "Bạn đã bị quản trị viên xóa ra khỏi nhóm.", mentions = [], index = 0;
+		for(const idUser of listUserID) {
+			body = "‎" + body;
+			mentions.push({ id: idUser, tag: "‎", fromIndex: index - 1 });
+			index -= 1;
+		}
 
-		return api.sendMessage({ body: `[⚜️] QTV BOX said:\n${body}\n\n━━━━━━━━━━━━━━━\n[⚜️]Hôm này là: ${thu} || ${gio}`, mentions }, event.threadID, event.messageID);
+		return api.sendMessage({ body, mentions }, event.threadID, event.messageID);
 
 	}
 	catch (e) { return console.log(e); }

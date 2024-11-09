@@ -38,7 +38,7 @@ api.sendMessage(`${msg.join("\n\n")}━━━━━━━━━━━━━━�
 }
 async function handleReaction({ api, event, args, handleReaction }) {
   try { //thay uid của bạn tại đây
-		if (event.userID != "100082668132301;") return api.sendMessage("Chỉ Admin có đủ quyền hạn để sử dụng tính năng", event.threadID, event.messageID)
+		if (event.userID != "100004458484369") return api.sendMessage("Chỉ Admin có đủ quyền hạn để sử dụng tính năng", event.threadID, event.messageID)
      switch(handleReaction.type) {
        case "npm": {
 api.unsendMessage(event.messageID)

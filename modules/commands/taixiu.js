@@ -1,218 +1,190 @@
 module.exports.config = {
-  name: "taixiu",
-  version: "1.0.0",
-  hasPermssion: 0,
-  credits: "DuyVuongUwU",
-  description: "tài xỉu nhưng nó là nhiều người??",
-  commandCategory: "Game",
-  usages: "[new/leave/start/end]",
-  cooldowns: 5
+	name: "tx",
+	version: "0.0.1",
+	hasPermssion: 0,
+	credits: "WhoisHakira stolen form lorenBot(MinhHuyDev)",
+	description: "Chơi tài xỉu",
+	commandCategory: "Game",
+    usages: "taixiu [tài/xỉu] [số tiền]",
+    cooldowns: 0
 };
-module.exports.languages = {
-    "vi": {
-        "moneyEror": "⚠ Số tiền cược không phải là một con số hơp lệ!",
-        "moneyMin": "⚠ Số tiền cược phải lớn hơn hoặc bằng 50$!!",
-        "moneyDeCreate": "⚠ Bạn không có đủ %1 $ để tạo bàn game mới!!",
-        "gameCreated": "⚠ Nhóm này đã được mở bàn game!",
-        "createSuccess": "🥳 Đã tạo thành công bàn chơi game!\n=> Số tiền cược: %1$\n=> Số thành viên tham gia: 1 thành viên\n=> Nếu muốn bắt đầu bàn game vui lòng ghi %2 start\n=> Nếu muốn kết thúc bàn game vui lòng ghi %3 end\n=> Tham gia nhóm game này vui lòng ghi %4 join",
-        "notCreatedYet": "⚠ Nhóm này hiện chưa có bàn game nào!\n=> Vui lòng hãy tạo bàn game mới để tham gia!",
-        "gameStarted": "⚠ Hiện tại bàn game này đã bắt đầu từ trước!",
-        "moneyDeJoin": "⚠ Bạn không có đủ %1$ để tham gia bàn game này!",
-        "joined": "⚠ Hiện tại bạn đã tham gia bàn game này!",
-        "joinSuccess": "🥳 Bạn đã tham gia bàn game!\n=> Số thành viên hiện tại là %1 thành viên",
-        "userNotInGame": "⚠ Bạn đã không có trong bàn game để rời!",
-        "leaveFail": "⚠ Bàn game đã được bắt đầu không thể rời!",
-        "leaveSuccess": "🥺 Bạn đã rời khỏi bàn game của nhóm!",
-        "countPlayer": "🥺 %1 đã rời khỏi bàn game!\n=> Hiện tại bàn game còn %2 thành viên",
-        "authorLeave": "🥺 %1 đã rời khỏi bàn game, bàn game của nhóm đã được giải tán!",
-        "startFail": "⚠ Bạn không phải là người tạo ra bàn game này nên không thể bắt đầu game",
-        "notEnoughMembers": "⚠ Bàn game của bạn không có đủ thành viên để có thể bắt đầu!",
-        "startPlaying": "🔊 GAME START: \n-> Xin mời %1 người chơi nhắn 'tài' hoặc 'xỉu'(Lưu ý: nhắn ở trong group này!!!)",
-        "endFail": "⚠ Bạn không phải là người tạo ra bàn game nên không thể xóa bàn game",
-        "endSuccess": "🎆 Đã xóa bàn game!",
-        "tutorial": "⚠ BODY:\n- create/new/-c: Tạo bàn chơi tài xỉu\n- join/-j: Tham gia vào bàn tài xỉu\n- leave/-l: Rời khỏi bàn tài xỉu\n- start/-s: Bắt đầu bàn tài xỉu\n- end/-e: Kết thúc bàn tài xỉu",
-        "error": "⚠ ERROR MODULE TAIXIU %1"
-    },
-    "en": {
-        "update": "..."
+const axios = require('axios');
+var bdsd = true;
+var tilethang = 2.53;
+var tilethangb3dn = 10;
+var tilethangb2dn = 5;
+var timedelay = 2;
+var haisogiong = 2;
+var basogiong = 3;
+var motsogiong = 1;
+function replace(int){
+    var str = int.toString();
+    var newstr = str.replace(/(.)(?=(\d{3})+$)/g,'$1,');
+    return newstr;
+}
+function getImage(number){
+    switch (number){
+case 1: return "https://i.imgur.com/cmdORaJ.jpg";
+case 2: return "https://i.imgur.com/WNFbw4O.jpg";
+case 3: return "https://i.imgur.com/Xo6xIX2.jpg";
+case 4: return "https://i.imgur.com/NJJjlRK.jpg";
+case 5: return "https://i.imgur.com/QLixtBe.jpg";
+case 6: return "https://i.imgur.com/y8gyJYG.jpg";
     }
 }
-module.exports.handleEvent = async function({ api, event, Currencies }) {
-  const { threadID, messageID, body, senderID } = event;
-  const typ = ['tài', 'xỉu'];
-  const random = typ[Math.floor(Math.random() * typ.length)];  
-  if (!body) return;
-  if (body.toLowerCase() == 'tài' || body.toLowerCase() == 'xỉu') {
-    const gameThread = global.taixiuS.get(threadID) || {};
-    if (!gameThread) return;
-    if(gameThread.start != true) return;
-    else {
-      if (!gameThread.player.find(i => i.userID == senderID)) return;
-      else {
-        var s, q;
-        var s = gameThread.player.findIndex(i => i.userID == senderID);
-        var q = gameThread.player[s];
-        if (q.choose.status == true) return api.sendMessage('⚠ Bạn đã chọn rồi không thể chọn lại!', threadID, messageID);
-        else {
-          if (body.toLowerCase() == 'tài') {
-            gameThread.player.splice(s, 1);
-            gameThread.player.push({ name: q.name, userID: senderID, choose: { status: true, msg: 'tài' } });
-            api.sendMessage('👤 Người chơi ' + q.name + ' đã chọn TÀI!!', threadID, messageID);
-          }
-          else {
-            gameThread.player.splice(s, 1);
-            gameThread.player.push({ name: q.name, userID: senderID, choose: { status: true, msg: 'xỉu' } });
-            api.sendMessage('👤 Người chơi ' + q.name + ' đã chọn XỈU!!', threadID, messageID);
-          }
-          var vv = 0,
-              vvv = gameThread.player.length;
-          for (var c of gameThread.player) {
-            if (c.choose.status == true) vv++;
-          }
-          if (vv == vvv) {
-            api.sendMessage('🥳Đang lắc....', threadID, (err, data) => {
-              if (err) return api.sendMessage(err, threadID, messageID);
-              setTimeout(async function () {
-                api.unsendMessage(data.messageID);
-                  var ketqua = random
-                  var win = [];
-                  var lose = [];
-                  if (ketqua.indexOf('tài') == 0) {
-                    for (var i of gameThread.player) {
-                      if (i.choose.msg == 'tài') {
-                        win.push({ name: i.name, userID: i.userID });
-                      }
-                      else {
-                        lose.push({ name: i.name, userID: i.userID });
-                      }
-                    }
-                  }
-                  else {
-                    for (var i of gameThread.player) {
-                      if (i.choose.msg == 'xỉu') {
-                        win.push({ name: i.name, userID: i.userID });
-                      }
-                      else {
-                        lose.push({ name: i.name, userID: i.userID });
-                      }
-                    }
-                  }
-                  var msg = '💎 KẾT QUẢ: ' + ketqua.toUpperCase() + '\n\n🥳 Những người chiến thắng:\n';
-                  var dem_win = 0;
-                  var dem_lose = 0;
-                  for (var w of win) {
-                    var data_money = (await Currencies.getData(w.userID));
-                    data_money.money = data_money.money + parseInt(gameThread.money * 3);
-                    await Currencies.setData(w.userID, { data: data_money });
-                    dem_win++;
-                    msg += dem_win + '. ' + w.name + '\n';
-                  }
-                  for (var l of lose) {
-                    var data_money = (await Currencies.getData(l.userID));
-                    data_money.money = data_money.money - parseInt(gameThread.money);
-                    await Currencies.setData(l.userID, { data: data_money });
-                    if (dem_lose == 0) {
-                      msg += '\n🥺 Những người thua trong ván này:\n';
-                    }
-                    dem_lose++;
-                    msg += dem_lose + '. ' + l.name + '\n';
-                  }
-                  msg += '\n🎁 Những người thắng nhận được [ ' + (gameThread.money * 3) + '$ ]\n';
-                  msg += '💰 Những người thua bị trừ [' + gameThread.money + '$ ]';
-                  global.taixiuS.delete(threadID);
-                  return api.sendMessage(msg, threadID);
-              }, 5000);
-            });
-          }
-          else return;
-        }
-      }
-    }
-  }
+function getRATE(tong){
+    if(tong == 4) var rate = 40;
+    if(tong == 5) var rate = 35;
+    if(tong == 6) var rate = 33.33;
+    if(tong == 7) var rate = 25;
+    if(tong == 8) var rate = 20;
+    if(tong == 9) var rate = 16.66;
+    if(tong == 10) var rate = 14.28;
+    if(tong == 11) var rate = 12.5;
+    if(tong == 12) var rate = 11.11;
+    if(tong == 13) var rate = 10;
+    if(tong == 14) var rate = 9.09;
+    if(tong == 15) var rate = 8.33;
+    if(tong == 16) var rate = 7.69;
+    if(tong == 17) var rate = 7.14;
+    return rate
 }
-module.exports.run = async function({ api, event, args, Threads, Users, Currencies, getText }) {
-  try {
-    if (!global.taixiuS) global.taixiuS = new Map();
+module.exports.run = async function ({ event, api, Currencies, Users, args }) {
+    try{
+    const moment = require("moment-timezone");
+    const format_day = moment.tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY - HH:mm:ss");
+    const { increaseMoney , decreaseMoney } = Currencies;
     const { threadID, messageID, senderID } = event;
-    var gameThread = global.taixiuS.get(threadID);
-    switch (args[0]) {
-      case "create":
-      case "new":
-      case "-c": {
-        if (!args[1] || isNaN(args[1])) return api.sendMessage(getText("moneyEror"), threadID, messageID);
-        if (parseInt(args[1]) < 50) return api.sendMessage(getText("moneyMin"), threadID, messageID);
-        var check = await checkMoney(senderID, args[1]);
-        if (check == false) return api.sendMessage(getText("moneyDeCreate", args[1]), threadID, messageID);
-        if (global.taixiuS.has(threadID)) return api.sendMessage(getText("gameCreated"), threadID, messageID);
-        var name = await Users.getNameUser(senderID);
-        global.taixiuS.set(threadID, { box: threadID, start: false, author: senderID, player: [{ name, userID: senderID, choose: { status: false, msg: null } }], money: parseInt(args[1]) });
-        return api.sendMessage(getText("createSuccess", parseInt(args[1]), global.config['PREFIX'] + this.config.name, global.config['PREFIX'] + this.config.name, global.config['PREFIX'] + this.config.name), threadID);
-        break;    
-      }
-      case "join":
-      case "-j": {
-        if (!global.taixiuS.has(threadID)) return api.sendMessage(getText("notCreatedYet"), threadID, messageID);
-        if (gameThread.start == true) return api.sendMessage(getText("gameStarted"), threadID, messageID);
-        var check = await checkMoney(senderID, gameThread.money);
-        if (check == false) return api.sendMessage(getText("moneyDeJoin", gameThread.money), threadID, messageID);
-        if (gameThread.player.find(i => i.userID == senderID)) return api.sendMessage(getText("joined"), threadID, messageID);
-        var name = await Users.getNameUser(senderID);
-        gameThread.player.push({ name, userID: senderID, choose: { stats: false, msg: null } });
-        global.taixiuS.set(threadID, gameThread);
-        return api.sendMessage(getText("joinSuccess", gameThread.player.length), threadID, messageID);
-        break;    
-      }
-      case "leave":
-      case "-l'": {
-        if (!global.taixiuS.has(threadID)) return api.sendMessage(getText("notCreatedYet"), threadID, messageID);
-        if (!gameThread.player.find(i => i.userID == senderID)) return api.sendMessage(getText("userNotInGame"), threadID, messageID);
-        if (gameThread.start == true) return api.sendMessage(getText("leaveFail"), threadID, messageID);
-        if (gameThread.author == senderID) {
-          global.taixiuS.delete(threadID);
-          var name = await Users.getNameUser(senderID);
-          return api.sendMessage(getText("leaveFail", name), threadID, messageID);
-        }
-        else {
-          gameThread.player.splice(gameThread.player.findIndex(i => i.userID == senderID), 1);
-          global.taixiuS.set(threadID, gameThread);
-          var name = await Users.getNameUser(senderID);
-          api.sendMessage(getText("leaveSuccess"), threadID, messageID);
-          return api.sendMessage(getText("countPlayer", name, gameThread.player.length), threadID);
-        }
-        break;    
-      }
-      case "start":
-      case "-s": {
-        if (!gameThread) return api.sendMessage(getText("notCreatedYet"), threadID, messageID);
-        if (gameThread.author != senderID) return api.sendMessage(getText("startFail"), threadID, messageID);
-        if (gameThread.player.length <= 1) return api.sendMessage(getText("notEnoughMembers"), threadID, messageID);
-        if (gameThread.start == true) return api.sendMessage(getText("gameStarted"), threadID, messageID);
-        gameThread.start = true;
-        global.taixiuS.set(threadID, gameThread);
-        return api.sendMessage(getText("startPlaying", gameThread.player.length), threadID);
-        break;    
-      } 
-      case "end":
-      case "-e": {
-        if (!gameThread) return api.sendMessage(getText("notCreatedYet"), threadID, messageID);
-        if (gameThread.author != senderID) return api.sendMessage(getText("endFail"), threadID, messageID);
-        global.taixiuS.delete(threadID);
-        return api.sendMessage(getText("endSuccess"), threadID, messageID);
-        break;    
-      }
-     default: {
-        return api.sendMessage(getText("tutorial"), threadID, messageID);
-      }
-    }
-  }
-  catch (err) {
-    return api.sendMessage(getText("error", err), event.threadID, event.messageID);
-  }
-  async function checkMoney(senderID, maxMoney) {
-    var i, w;
-    i = (await Currencies.getData(senderID)) || {};
-    w = i.money || 0
-    if (w < parseInt(maxMoney)) return false;
-    else return true;
-  }
+    const { sendMessage: HakiraSEND } = api;
+    var name = await Users.getNameUser(senderID)
+    var money = (await Currencies.getData(senderID)).money
+    var bet = parseInt((args[1] == "allin" ? money : args[1]));
+    var input = args[0];
+    var tong = parseInt(args[2])
+    if(!input) return HakiraSEND("===〘 𝐓𝐚̀𝐢 𝐗𝐢̉𝐮 〙===\n◈ 𝐒𝐚𝐢 𝐂𝐚́𝐜𝐡 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 𝐑𝐨̂̀𝐢 𝐂𝐚̣̂𝐮 𝐎̛𝐢:𝟑\n⋄ 𝐇𝐮̛𝐨̛́𝐧𝐠 𝐃𝐚̂̃𝐧 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 !!!\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐭𝐚̀𝐢 𝐨𝐫 𝐱𝐢̉𝐮\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐛𝟑𝐠𝐧\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐛𝟐𝐠𝐧\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐜𝐮𝐨𝐜𝐭𝐨𝐧𝐠\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐜𝐮𝐨𝐜𝐬𝐨\n⋄ 𝐕𝐚̂̃𝐧 𝐊𝐡𝐨̂𝐧𝐠 𝐇𝐢𝐞̂̉𝐮 𝐓𝐡𝐢̀ 𝐊𝐡𝐨̉𝐢 𝐒𝐚̀𝐢 𝐍𝐡𝐞́ 𝐂𝐚̣̂𝐮 𝐎̛𝐢 🙂", threadID, messageID);
+    if(!bet) return HakiraSEND("◈ 𝐁𝐚̣𝐧 𝐍𝐠𝐡𝐢̃ 𝐁𝐚̣𝐧 𝐋𝐚̀ 𝐀𝐢 ?", threadID, messageID);
+    if(bet < 20) return HakiraSEND("◈ 𝐒𝐨̂́ 𝐓𝐢𝐞̂̀𝐧 𝐓𝐨̂́𝐢 𝐓𝐡𝐢𝐞̂̉𝐮 𝐂𝐡𝐨 𝐌𝐢𝐧𝐢 𝐆𝐚𝐦𝐞 𝐍𝐚̀𝐲 𝐋𝐚̀ 𝟐𝟎$", threadID, messageID);
+    if(bet > money) return HakiraSEND("◈ 𝐍𝐡𝐚̂𝐧 𝐕𝐢𝐞̂𝐧 𝐐𝐮𝐞̀𝐧 𝐍𝐡𝐮̛ 𝐂𝐨̂ 𝐂𝐮̃𝐧𝐠 𝐂𝐨́ 𝐓𝐢𝐞̂̀𝐧 𝐂𝐡𝐨̛𝐢 𝐓𝐫𝐨̀ 𝐍𝐚̀𝐲 𝐒𝐚𝐨 ? 𝐂𝐮́𝐭 𝐕𝐞̂̀ 𝐋𝐚̀𝐦 𝐂𝐚𝐯𝐞 𝐌𝐚̀ 𝐊𝐢𝐞̂́𝐦 𝐒𝐨̂́𝐧𝐠 𝐇𝐚𝐡𝐚𝐡𝐚𝐡𝐚𝐡𝐚𝐡𝐚𝐡𝐚𝐡𝐚", threadID, messageID);
+    if(input == "tài" || input == "Tài" || input == '-t') var choose = 'tài'
+    if(input == "xỉu" || input == "Xỉu" || input == '-x') var choose = 'xỉu'
+    if(input == 'b3gn' || input == 'bbgn' || input == 'btgn') var choose = 'b3gn'
+    if(input == 'b2gn' || input == 'bdgn' || input == 'bhgn') var choose = 'b2gn'
+    if(input == 'cuoctong' || input == 'ct') var choose = 'cuoctong'
+    if(input == 'cuocso' || input == 'cs') var choose = 'cuocso'
+    var tag = ['tài','xỉu','b3gn','b2gn','cuoctong','cuocso']
+    if(!tag.includes(choose)) return HakiraSEND('===〘 𝐓𝐚̀𝐢 𝐗𝐢̉𝐮 〙===\n◈ 𝐒𝐚𝐢 𝐂𝐚́𝐜𝐡 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 𝐑𝐨̂̀𝐢 𝐂𝐚̣̂𝐮 𝐎̛𝐢:𝟑\n⋄ 𝐇𝐮̛𝐨̛́𝐧𝐠 𝐃𝐚̂̃𝐧 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 !!!\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐭𝐚̀𝐢 𝐨𝐫 𝐱𝐢̉𝐮\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐛𝟑𝐠𝐧\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐛𝟐𝐠𝐧\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐜𝐮𝐨𝐜𝐭𝐨𝐧𝐠\n→ 𝐭𝐚𝐢𝐱𝐢𝐮 𝐜𝐮𝐨𝐜𝐬𝐨\n⋄ 𝐕𝐚̂̃𝐧 𝐊𝐡𝐨̂𝐧𝐠 𝐇𝐢𝐞̂̉𝐮 𝐓𝐡𝐢̀ 𝐊𝐡𝐨̉𝐢 𝐒𝐚̀𝐢 𝐍𝐡𝐞́ 𝐂𝐚̣̂𝐮 𝐎̛𝐢 🙂', threadID, messageID)
+    if(choose == 'cuoctong' && (tong < 4 || tong > 17)) return HakiraSEND("◈ 𝐓𝐨̂̉𝐧𝐠 𝐂𝐮̛𝐨̛̣𝐜 𝐊𝐡𝐨̂𝐧𝐠 𝐇𝐨̛̣𝐩 𝐋𝐞̣̂ 🚫\n◈ 𝐐𝐮𝐲́ 𝐊𝐡𝐚́𝐜𝐡 𝐓𝐡𝐚̂𝐧 𝐌𝐞̂́𝐧 𝐇𝐚̃𝐲 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 𝐂𝐨𝐧 𝐒𝐨̂́ 𝐊𝐡𝐚́𝐜 𝐍𝐞̂́𝐮 𝐌𝐮𝐨̂́𝐧 𝐓𝐡𝐚𝐦 𝐆𝐢𝐚 !!", threadID, messageID);
+    if(choose == 'cuocso' && (tong < 1 || tong > 6)) return HakiraSEND("◈ 𝐒𝐨̂́ 𝐐𝐮𝐲́ 𝐊𝐡𝐚́𝐜𝐡 𝐂𝐮̛𝐨̛̣𝐜 𝐊𝐡𝐨̂𝐧𝐠 𝐇𝐨̛̣𝐩 𝐋𝐞̣̂ 🚫\n◈ 𝐐𝐮𝐲́ 𝐊𝐡𝐚́𝐜𝐡 𝐓𝐡𝐚̂𝐧 𝐌𝐞̂́𝐧 𝐇𝐚̃𝐲 𝐒𝐮̛̉ 𝐃𝐮̣𝐧𝐠 𝐂𝐨𝐧 𝐒𝐨̂́ 𝐊𝐡𝐚́𝐜 𝐍𝐞̂́𝐮 𝐌𝐮𝐨̂́𝐧 𝐓𝐡𝐚𝐦 𝐆𝐢𝐚 !!", threadID, messageID);
+    const number = [], img = [], bodem = 0;
+    for(let i = 1; i < 4; i++){
+    var n = Math.floor(Math.random() * 6 + 1) 
+    number.push(n)
+    var img_ = (await axios.get(encodeURI(getImage(n)), { responseType: 'stream' })).data;
+    img.push(img_)
+    HakiraSEND(`===〘 𝐓𝐚̀𝐢 𝐗𝐢̉𝐮 〙===\n→ 𝐍𝐠𝐮̛𝐨̛̀𝐢 𝐂𝐡𝐨̛𝐢: ${name}\n→ 𝐋𝐨𝐚̣𝐢 𝐆𝐚𝐦𝐞: ${choose}\n→ 𝐗𝐮́𝐜 𝐗𝐚́𝐜 𝐋𝐚̂̀𝐧 𝐓𝐡𝐮̛́ ${i}:〘 ${n} 〙`, threadID, messageID)
+      await new Promise(resolve => setTimeout(resolve, timedelay * 1000))
 }
+var total = number[0] + number[1] + number[2];
+if(choose == 'cuocso'){
+    if(number[0] == tong || number[1] == tong || number[2] == tong){
+        var ans = `${tong}`
+        var result = 'win'
+        var mn = bet * motsogiong 
+        var mne = money + mn
+    }
+    if(number[1] == tong && number[2] == tong || number[0] == tong && number[2] == tong || number[0] == tong && number[1] == tong){
+        var ans = `${tong}`
+        var result = 'win'
+        var mn = bet * haisogiong
+        var mne = money + mn
+    }
+    if(number[0] == tong && number[1] == tong && number[2] == tong){
+        var ans = `${tong}`
+        var result = 'win'
+        var mn = bet * basogiong
+        var mne = money + mn
+    }
+    if(number[0] != tong && number[1] != tong && number[2] != tong){
+        var ans = `${tong}`
+        var result = 'lose'
+        var mn = bet
+        var mne = money - mn
+    }   
+}
+if(choose == 'cuoctong'){
+    if(total == tong){
+        var ans = "cược tổng"
+        var result = 'win'
+        var mn = bet * parseInt((getRATE(tong)))
+        var mne = money + mn
+    } else {
+        var ans = `${total}`
+        var result = 'lose'
+        var mn = bet
+        var mne = money - mn
+    }
+}
+if(choose == 'b3gn' ){
+    if(number[0] == number[1] && number[1] == number[2]) {
+        var ans = "bộ ba đồng nhất"
+        var result = 'win'
+        var mn = bet * tilethangb3dn
+        var mne = money + mn
+    } else {
+        var ans = (total >= 11 && total <= 18 ? "tài" : "xỉu") 
+        var result = 'lose'
+        var mn = bet
+        var mne = money - mn
+    }
+}
+if(choose == 'b2gn'){
+    if(number[0] == number[1] || number[1] == number[2] || number[0] == number[2]) {
+        var ans = "bộ hai đồng nhất"
+        var result = 'win'
+        var mn = bet * tilethangb2dn
+        var mne = money + mn
+    } else {
+        var ans = (total >= 11 && total <= 18 ? "tài" : "xỉu") 
+        var result = 'lose'
+        var mn = bet
+        var mne = money - mn
+    }
+}
+if(choose == 'tài' || choose == 'xỉu') {
+if(number[0] == number[1] && number[1] == number[2]){
+var ans = "bộ ba đồng nhất"
+} else {
+var ans = (total >= 11 && total <= 18 ? "tài" : "xỉu") 
+}
+if(number[0] == number[1] && number[1] == number[2]) {
+    var result = 'lose'
+    var mn = bet
+    var mne = money - mn
+}
+if(ans == choose) {
+    var result = 'win'
+    var mn = bet * tilethang
+    var mne = mn + money
+} else {
+    var result = 'lose'
+    var mn = bet
+    var mne = money - mn
+}
+}
+if(result =='lose'){
+    decreaseMoney(senderID, mn)
+} else if(result == 'win'){
+    increaseMoney(senderID, mn)
+}
+var msg =   `===〘 𝐓𝐚̀𝐢 𝐗𝐢̉𝐮 〙===\n⎔ 𝐊𝐞̂́𝐭 𝐐𝐮𝐚̉ 𝐓𝐫𝐨̀ 𝐂𝐡𝐨̛𝐢 𝐂𝐮̉𝐚: Đ𝐮̛́𝐜 𝐑𝐲𝐨\n→ 𝐍𝐞̂́𝐮 𝐂𝐨́ 𝐋𝐨̂̃𝐢 𝐇𝐚̃𝐲 𝐁𝐚́𝐨 𝐐𝐮𝐚 𝐀𝐝𝐦𝐢𝐧 !!\n▭▭▭▭▭▭▭▭▭▭▭▭▭\n◈ 𝐓𝐢𝐦𝐞: ${format_day}\n◈ 𝐏𝐥𝐚𝐲𝐞𝐫: ${name}\n◈ 𝐋𝐨𝐚̣𝐢 𝐆𝐚𝐦𝐞: ${choose}\n◈ 𝐓𝐢𝐞̂̀𝐧 𝐂𝐮̛𝐨̛̣𝐜: ${replace(bet)}\n▭▭▭▭▭▭▭▭▭▭▭▭▭\n◈ 𝐗𝐮́𝐜 𝐗𝐚̆́𝐜 𝐋𝐚̂̀𝐧 𝟏: ${number[0]}\n◈ 𝐗𝐮́𝐜 𝐗𝐚̆́𝐜 𝐋𝐚̂̀𝐧 𝟐: ${number[1]}\n◈ 𝐗𝐮́𝐜 𝐗𝐚̆́𝐜 𝐋𝐚̂̀𝐧 𝟑: ${number[2]}\n▭▭▭▭▭▭▭▭▭▭▭▭▭\n➾ 𝐓𝐨̂̉𝐧𝐠 𝐏𝐨𝐢𝐧𝐭: ${total}\n➾ 𝐊𝐞̂́𝐭 𝐐𝐮𝐚̉: ${(result == 'win' ? 'Thắng' : 'Thua')}\n➾ 𝐌𝐨𝐧𝐞𝐲: ${(result == 'win' ? 'Thắng' : 'Thua')}: ${replace(Math.floor(mn))}$\n➾ 𝐒𝐨̂́ 𝐃𝐮̛: ${replace(mne)}$\n➾ 𝐓𝐫𝐚̣𝐧𝐠 𝐓𝐡𝐚́𝐢: ${(result == 'win' ? 'Đã Trả Thưởng' : 'Đã Trừ Tiền')}`
+            HakiraSEND({body:msg,attachment: img}, threadID, messageID)
+            if(bdsd == true) {
+          var msg =  `===〘 Mirai Pay 〙===\nVào Ngày: ${format_day}\nSố Tài Khoản: 1373929273\nTrạng Thái: ${(result == 'win') ? 'nhận tiền' : 'trừ tiền'} Từ Game Tài Xỉu\nSố Tiền: ${replace(mn)}\nSố Dư Còn Lại: ${replace(mne)}$\nCảm Ơn Đã Tin Tưởng Và Sử Dụng Dịch Vụ MiraiPay Ở Bot Này Nhé Moah Moah ✨`
+            HakiraSEND({
+                body: msg,
+               // attachment: img
+            }, senderID)
+        }
+} catch(e){
+    console.log(e)
+}}

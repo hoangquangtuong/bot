@@ -1,11 +1,11 @@
-const coindown = 5000
+const coindown = 1000
 module.exports.config = {
 	name: "giadinh",
 	version: "1.0.1",
 	hasPermssion: 0,
 	credits: "tdunguwu",
 	description: "Ghép đôi với những người trong nhóm",
-	commandCategory: "Tình yêu",
+	commandCategory: "tiện ích",
 	cooldowns: 5,
 	dependencies: {
         "axios": "",
@@ -16,7 +16,7 @@ module.exports.onLoad = async() => {
     const { resolve } = global.nodemodule["path"];
     const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
     const { downloadFile } = global.utils;
-    const dirMaterial = __dirname + `/cache/canvas/`;
+    const dirMaterial = __dirname + `/cache/canvas`;
     const path = resolve(__dirname, 'cache/canvas', 'araa.jpg');
     if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
     if (!existsSync(path)) await downloadFile("https://imgur.com/D35mTwa.jpg", path);
@@ -66,12 +66,16 @@ module.exports.run = async function({ api, event, args, Users, Threads, Currenci
    let balance = (await Currencies.getData(senderID)).money;
     if (balance <= coindown) return api.sendMessage('Nghèo mà đòi ghép đôi =))',threadID,messageID);
      await Currencies.decreaseMoney(event.senderID, parseInt(coindown));
+   
+    
+   
        if (!args[0]) {
-         var tl = ['21%', '67%', '19%', '37%', '17%', '96%', '52%', '62%', '76%', '83%', '100%', '99%', "0%", "48%"];
+         var tl = ['21%', '67%', '19%', '37%', '17%', '96%', '52%', '62%', '76%', '83%', '100%', '99%', "0%", "48%",'13%', '23%', '33%', '43%', '53%', '63%', '73%'];
         var tle = tl[Math.floor(Math.random() * tl.length)];
-         var tile = ['21%', '67%', '19%', '37%', '17%', '96%', '52%', '62%', '76%', '83%', '100%', '99%', "0%", "48%"];
-        var tle1 = tl[Math.floor(Math.random() * tile.length)];
-    let name = await Users.getNameUser(event.senderID)
+        var info = await api.getUserInfo(event.senderID);
+    var nameSender = info[event.senderID].name;
+    var arraytag = [];
+        arraytag.push({id: event.senderID, tag: nameSender});
  let loz = await api.getThreadInfo(event.threadID);
         var emoji = loz.participantIDs;
         var e = emoji[Math.floor(Math.random() * emoji.length)];
@@ -81,6 +85,6 @@ module.exports.run = async function({ api, event, args, Users, Threads, Currenci
          var name1 = (await Users.getData(e)).name
          var name2 = (await Users.getData(r)).name
 var one = senderID, two = e, three = r;
-    return makeImage({ one, two, three }).then(path => api.sendMessage({ body: `[❤️] Chúc mừng ${name} đã ghép đôi thành công -${coindown}\n[💓] Chúc mừng bạn đã có một gia đình hạnh phúc với ${name1} và có đứa con đầu lòng là ${name2}\n[⚜️] Tỉ lệ hợp đôi của bạn với ${name1} là ${tle}\n[💖] Tỉ lệ hạnh phúc của gia đình bạn là ${tle1}`, attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
+    return makeImage({ one, two, three }).then(path => api.sendMessage({ body: `Chúc Mừng ${nameSender} Vừa Phập Nhau Với ${name1} Và Có Thai Một Bbi Xinh Gái Trạng Thái Single ${name2}\nTiền Khách Sạn 2 Bạn Phải Trả Là -${coindown} 💸\nHạnh Phúc Gia Đình Bạn Đang Ở Mức : ${tle} 💞`,mentions: arraytag, attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
     }
       }

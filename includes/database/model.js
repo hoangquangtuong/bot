@@ -13,7 +13,7 @@ module.exports = function (input) {
 		model: {
 			Users,
 			Threads,
-			Currencies,
+			Currencies
 		},
 		use: function (modelName) {
 			return this.model[`${modelName}`];
