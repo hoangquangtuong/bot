@@ -67,7 +67,7 @@
         "sqlite": "^4.1.1",
         "sqlite3": "^5.1.7",
         "string-similarity": "",
-        "systeminformation": "^5.22.7",
+        "systeminformation": "^5.23.14",
         "totp-generator": "",
         "tslib": "^2.5.3",
         "websocket-stream": "^5.5.0",
