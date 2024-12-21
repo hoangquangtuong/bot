@@ -8,7 +8,8 @@ const myMonitor = new Monitor({
   config: {
     intervalUnits: 'seconds', // minutes, seconds,hour
     generateId: false // defaults is 
-
+  }
+});
 
 myMonitor.on('up', function (res, state) {
     console.log('Check Connected : ' + res.address + ':' + res.port + ' Is Online !'); //ping 
